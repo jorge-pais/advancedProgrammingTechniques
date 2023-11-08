@@ -1,6 +1,7 @@
 #include "mainwindow.h"
-
+#include "world.h"
 #include <QApplication>
+
 
 int main(int argc, char *argv[])
 {
