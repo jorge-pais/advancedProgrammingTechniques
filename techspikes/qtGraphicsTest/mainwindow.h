@@ -7,6 +7,7 @@
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QKeyEvent>
+#include <QTransform>
 #include <ctime>
 
 #include <iostream>

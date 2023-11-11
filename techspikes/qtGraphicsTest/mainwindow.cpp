@@ -3,20 +3,18 @@
 
 #define TILE_SIZE 40
 
+/// TODO FIND A SOLUTION TO FETCH THIS TYPE OF RESOURCE
+/// AND MAYBE INCLUDE IT IN THE FINAL BINARY
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     srand(time(0));
 
     Map map;
     map.generateRandomMap();
-
-    /// TODO FIND A SOLUTION TO FETCH THIS TYPE OF RESOURCE
-    /// AND MAYBE INCLUDE IT IN THE FINAL BINARY
-    QPixmap playerSprite("/home/jorgep/repos/team-d6-fa/techspikes/qtGraphicsTest/resources/tux.png");
 
     // Create the scene
     QGraphicsScene *scene = new QGraphicsScene(this);
@@ -32,10 +30,12 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
+    QPixmap playerSprite = QPixmap("/home/jorgep/repos/team-d6-fa/techspikes/qtGraphicsTest/resources/tux.png");
+
     //Resize the sprite
     playerSprite = playerSprite.scaled(TILE_SIZE, TILE_SIZE,
                                        Qt::KeepAspectRatio,
-                                       Qt::SmoothTransformation);
+                                       Qt::SmoothTransformation); // facing right
     player = new QGraphicsPixmapItem(playerSprite);
 
     scene->addItem(player); player->setZValue(1);
@@ -55,6 +55,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     case Qt::Key_Left:
     case Qt::Key_A:
         player->setX(player->pos().x() - TILE_SIZE);
+        //player->setPixmap(playerFlipped);
         break;
     case Qt::Key_Down:
     case Qt::Key_S:
@@ -63,6 +64,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     case Qt::Key_Right:
     case Qt::Key_D:
         player->setX(player->pos().x() + TILE_SIZE);
+        //player->setPixmap(playerSprite);
         break;
     }
 }
