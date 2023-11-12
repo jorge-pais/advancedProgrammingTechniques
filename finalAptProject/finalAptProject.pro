@@ -10,10 +10,14 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    worlddelegate.cpp \
+    worldview.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    worlddelegate.h \
+    worldview.h
 
 FORMS += \
     mainwindow.ui
@@ -27,3 +31,4 @@ unix:!macx: LIBS += -L$$PWD/../../worldlib/ -lworld
 
 INCLUDEPATH += $$PWD/../../worldlib
 DEPENDPATH += $$PWD/../../worldlib
+
