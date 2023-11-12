@@ -38,3 +38,5 @@ void WorldView::enemyDeadSlot()
 {
     // show the enemy dying on screen
 }
+
+void WorldView::renderTiles(){}
