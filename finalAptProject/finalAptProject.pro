@@ -2,8 +2,8 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17
-DEFINES += QT_NO_VERSION_TAGGING
+CONFIG += c++17 DQT_NO_VERSION_TAGGING
+
 
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -34,4 +34,3 @@ LIBS += -Wl,-rpath,/lib/x86_64-linux-gnu
 
 INCLUDEPATH += $$PWD/../../worldlib
 DEPENDPATH += $$PWD/../../worldlib
-
