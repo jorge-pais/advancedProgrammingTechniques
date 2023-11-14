@@ -70,10 +70,9 @@ void WorldDelegate::attack(Enemy enemy)
     if((px == ex && (py == ey - 1 || py == ey +1)) || (py == ey && (px == ex - 1 || px == ex +1))){
         protagonist->setHealth(protagonist->getHealth()-enemy.getValue());
         if(enemy.getValue() < protagonist->getHealth()){
-            enemy.dead();
+            enemy.setDefeated(true);
         }
     }
-    //TODO
 }
 /*
 void WorldDelegate::attackedSlot(QPointer<Enemy> enemy)
