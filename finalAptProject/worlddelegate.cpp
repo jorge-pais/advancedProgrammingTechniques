@@ -61,6 +61,18 @@ void WorldDelegate::enemyStatus()
 
 void WorldDelegate::attack(Enemy enemy)
 {
+    auto tiles = world.getTiles();
+    auto protagonist = world.getProtagonist();
+    int px = protagonist->getXPos();
+    int py = protagonist->getYPos();
+    int ex = enemy.getXPos();
+    int ey = enemy.getYPos();
+    if((px == ex && (py == ey - 1 || py == ey +1)) || (py == ey && (px == ex - 1 || px == ex +1))){
+        protagonist->setHealth(protagonist->getHealth()-enemy.getValue());
+        if(enemy.getValue() < protagonist->getHealth()){
+            enemy.dead();
+        }
+    }
     //TODO
 }
 /*
