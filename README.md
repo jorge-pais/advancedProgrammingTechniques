@@ -1,7 +1,7 @@
 # Final Project - Advanced Programming Techniques
 
-## Week 7 - Tasks
+## Week 8 - Tasks
 
 - Jorge - Basic UI
 - Kris - Attacking game logic
-- Hussain - Setting up classes
+- Hussain - Signals and slots and emitting signals
