@@ -10,7 +10,7 @@
 ## Week 8 - Tasks
 
 - Jorge - 
-- Kris - 
+- Kris - Handling signals to game logic and respons to view
 - Hussain - Signals and slots and emitting all signals
 
 
