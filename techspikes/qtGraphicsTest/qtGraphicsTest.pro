@@ -2,9 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17 DQT_NO_VERSION_TAGGING
-
-
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -13,13 +11,13 @@ CONFIG += c++17 DQT_NO_VERSION_TAGGING
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    worlddelegate.cpp \
-    worldview.cpp
+    map.cpp
 
 HEADERS += \
     mainwindow.h \
-    worlddelegate.h \
-    worldview.h
+    map.h \
+    world.h \
+    world_global.h
 
 FORMS += \
     mainwindow.ui
@@ -29,8 +27,9 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-unix:!macx: LIBS += -L$$PWD/../../worldlib/ -lworld
-LIBS += -Wl,-rpath,/lib/x86_64-linux-gnu
+# include path for the world library header files
+INCLUDEPATH += -L$PWD/../../../worldLib/
 
-INCLUDEPATH += $$PWD/../../worldlib
-DEPENDPATH += $$PWD/../../worldlib
+# library path and linking
+LIBS += -L$$PWD/../../../worldLib/
+LIBS += -lworld
