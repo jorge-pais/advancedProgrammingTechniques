@@ -9,6 +9,7 @@
 #include <QKeyEvent>
 #include <QTransform>
 #include <ctime>
+#include <memory>
 
 #include <iostream>
 #include "map.h"
