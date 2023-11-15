@@ -11,13 +11,18 @@ CONFIG += c++17 DQT_NO_VERSION_TAGGING
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    graphicalview.cpp \
     main.cpp \
     mainwindow.cpp \
     worlddelegate.cpp \
     worldview.cpp
 
 HEADERS += \
+    graphicalview.h \
     mainwindow.h \
+    pathfinder.h \
+    world.h \
+    world_global.h \
     worlddelegate.h \
     worldview.h
 
@@ -29,8 +34,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-unix:!macx: LIBS += -L$$PWD/../../worldlib/ -lworld
+unix:!macx: LIBS += -L$$PWD/../../worldLib/ -lworld
 LIBS += -Wl,-rpath,/lib/x86_64-linux-gnu
 
-INCLUDEPATH += $$PWD/../../worldlib
-DEPENDPATH += $$PWD/../../worldlib
+INCLUDEPATH += $$PWD/../../worldLib
+DEPENDPATH += $$PWD/../../worldLib
