@@ -2,6 +2,7 @@
 #define WORLDDELEGATE_H
 
 #include <QObject>
+#include <memory>
 #include "world.h"
 #include "worldview.h"
 
@@ -15,6 +16,7 @@ private:
     World& world;
 
 public:
+
     WorldDelegate(WorldView& view, World& world);
 
     std::vector<std::unique_ptr<Tile>> getWorldTiles();
@@ -26,11 +28,13 @@ public:
     void setProtagonistHealth(float healthValue);
     void setProtagonistPosition(int newWorldX, int newWorldY);
     void setProtagonistEnergy(float energyValue);
-    void enemyStatus();// what is this supposed to do?
+    std::string enemyStatus(Enemy& enemy);// what is this supposed to do?
     void attack(Enemy enemy); // maybe we won't need this due to the slot
 
+signals:
+    void poisonSignal();
 public slots:
-    //void attackedSlot(QPointer<Enemy> enemy);
+    void attackedSlot(std::shared_ptr<Enemy> enemy);
     void movedSlot(int x, int y);
 };
 

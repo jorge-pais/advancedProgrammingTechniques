@@ -2,8 +2,15 @@
 
 WorldDelegate::WorldDelegate(WorldView& view, World& world) : view(view), world(world)
 {
-    //QObject::connect(&view, &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
+    QObject::connect(&view, &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
     QObject::connect(&view, &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+    for(auto& enemy : this->getWorldEnemies()){
+       PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+       if(pEnemy){
+           QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
+       }
+    }
+
 }
 
 std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldTiles()
@@ -54,9 +61,16 @@ void WorldDelegate::setProtagonistEnergy(float energyValue)
     protagonist->setEnergy(energyValue);
 }
 
-void WorldDelegate::enemyStatus()
+std::string  WorldDelegate::enemyStatus(Enemy& enemy)
 {
-    //TODO
+    if (dynamic_cast<PEnemy*>(&enemy))
+    {
+        return "PEnemy";
+    }
+    else
+    {
+        return "Regular";
+    }
 }
 
 void WorldDelegate::attack(Enemy enemy)
@@ -74,12 +88,13 @@ void WorldDelegate::attack(Enemy enemy)
         }
     }
 }
-/*
-void WorldDelegate::attackedSlot(QPointer<Enemy> enemy)
+
+void WorldDelegate::attackedSlot(std::shared_ptr<Enemy> enemy)
 {
-    // TODO
+    std::string enemyType = enemyStatus(*enemy);
+
 }
-*/
+
 void WorldDelegate::movedSlot(int x, int y)
 {
     // TODO

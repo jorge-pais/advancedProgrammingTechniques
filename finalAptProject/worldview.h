@@ -20,7 +20,7 @@ public:
 
 signals:
     void playerMovedSignal(int x, int y);
-    //void attackSignal(QPointer<Enemy> enemy);
+    void attackSignal(std::shared_ptr<Enemy> enemy);
 
 public slots:
     void poisonLevelUpdatedSlot(int value);
