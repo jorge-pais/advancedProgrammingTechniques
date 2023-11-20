@@ -8,12 +8,22 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     srand(time(0));
 
-    QGraphicsScene *scene = new QGraphicsScene(this);
 
+    // I'm very lost on why this isn't loading the picture
+    // I've tried everything i know
+    World* gameWorld = new World();
+
+    QString worldPath{":/images/resources/world_images/worldmap.png"};
+
+    gameWorld->createWorld(worldPath, 5, 2, 0.25);
+
+    QGraphicsScene *scene = new QGraphicsScene(this);
     this->gView = new GraphicalView(ui->graphicsView, scene);
 
 }
 
+
+/// THIS PART SHOULD SIGNAL TO SIGNAL THE WORLD DELEGATE
 void MainWindow::keyPressEvent(QKeyEvent *event){
 
     /// TODO Figure out why the arrow keys aren't working
