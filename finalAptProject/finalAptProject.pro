@@ -39,3 +39,13 @@ LIBS += -Wl,-rpath,/lib/x86_64-linux-gnu
 
 INCLUDEPATH += $$PWD/../../worldLib
 DEPENDPATH += $$PWD/../../worldLib
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../worldlib/release/ -lworld
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../worldlib/debug/ -lworld
+else:unix: LIBS += -L$$PWD/../../worldlib/ -lworld
+
+INCLUDEPATH += $$PWD/../../worldlib
+DEPENDPATH += $$PWD/../../worldlib
+
+RESOURCES += \
+    images.qrc
