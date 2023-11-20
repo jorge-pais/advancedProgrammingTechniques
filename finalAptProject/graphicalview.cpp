@@ -14,7 +14,7 @@ GraphicalView::GraphicalView(QGraphicsView* qGraphicsView, QGraphicsScene * scen
         }
     }
 
-    QPixmap playerSprite = QPixmap("/home/jorgep/repos/team-d6-fa/finalAptProject/resources/entities/tux.png");
+    QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");
 
     //Resize the sprite
     playerSprite = playerSprite.scaled(TILE_SIZE, TILE_SIZE,
