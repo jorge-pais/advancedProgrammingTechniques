@@ -36,6 +36,7 @@ signals:
 public slots:
     void attackedSlot(std::shared_ptr<Enemy> enemy);
     void movedSlot(int x, int y);
+    void rightArrowSlot();
 };
 
 #endif // WORLDDELEGATE_H

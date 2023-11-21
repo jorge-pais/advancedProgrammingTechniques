@@ -21,6 +21,7 @@ public:
 signals:
     void playerMovedSignal(int x, int y);
     void attackSignal(std::shared_ptr<Enemy> enemy);
+    void rightArrowSignal();
 
 public slots:
     void poisonLevelUpdatedSlot(int value);
