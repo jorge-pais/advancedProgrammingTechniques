@@ -34,8 +34,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-unix:!macx: LIBS += -L$$PWD/../../worldLib/ -lworld
-LIBS += -Wl,-rpath,/lib/x86_64-linux-gnu
+unix:!macx: LIBS += -L$$PWD/../../worldlib/ -lworld
 
-INCLUDEPATH += $$PWD/../../worldLib
-DEPENDPATH += $$PWD/../../worldLib
+INCLUDEPATH += $$PWD/../../worldlib
+DEPENDPATH += $$PWD/../../worldlib

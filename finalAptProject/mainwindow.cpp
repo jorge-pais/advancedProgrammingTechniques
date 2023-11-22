@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     srand(time(0));
 
+    World gameWorld{};
+    gameWorld.createWorld("/Documents/QtGame/team-d6-fa/techspikes/qtGraphicsTest/resources$", 5, 2, 0.25);
+
     QGraphicsScene *scene = new QGraphicsScene(this);
 
     this->gView = new GraphicalView(ui->graphicsView, scene);
@@ -16,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::keyPressEvent(QKeyEvent *event){
 
+    emit mainWindowEventSignal(event);
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
     case Qt::Key_Up:

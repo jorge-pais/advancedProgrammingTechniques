@@ -15,6 +15,7 @@
 #include <iostream>
 
 #include "graphicalview.h"
+#include "world.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,6 +28,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+signals:
+    void mainWindowEventSignal(QKeyEvent *event);
 
 private:
     Ui::MainWindow *ui;

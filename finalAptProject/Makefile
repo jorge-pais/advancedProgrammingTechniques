@@ -40,7 +40,7 @@ DISTNAME      = finalAptProject1.0.0
 DISTDIR = /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/.tmp/finalAptProject1.0.0
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS) -L/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/../../worldlib/ -lworld -Wl,-rpath,/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread   
+LIBS          = $(SUBLIBS) -L/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/../../worldlib/ -lworld /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -52,17 +52,21 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = main.cpp \
+SOURCES       = graphicalview.cpp \
+		main.cpp \
 		mainwindow.cpp \
 		worlddelegate.cpp \
 		worldview.cpp moc_mainwindow.cpp \
+		moc_world.cpp \
 		moc_worlddelegate.cpp \
 		moc_worldview.cpp
-OBJECTS       = main.o \
+OBJECTS       = graphicalview.o \
+		main.o \
 		mainwindow.o \
 		worlddelegate.o \
 		worldview.o \
 		moc_mainwindow.o \
+		moc_world.o \
 		moc_worlddelegate.o \
 		moc_worldview.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -143,9 +147,14 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		finalAptProject.pro mainwindow.h \
+		finalAptProject.pro graphicalview.h \
+		mainwindow.h \
+		pathfinder.h \
+		world.h \
+		world_global.h \
 		worlddelegate.h \
-		worldview.h main.cpp \
+		worldview.h graphicalview.cpp \
+		main.cpp \
 		mainwindow.cpp \
 		worlddelegate.cpp \
 		worldview.cpp
@@ -334,8 +343,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h worlddelegate.h worldview.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp worlddelegate.cpp worldview.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinder.h world.h world_global.h worlddelegate.h worldview.h $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp worlddelegate.cpp worldview.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -368,17 +377,24 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++1z -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_worlddelegate.cpp moc_worldview.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_worlddelegate.cpp moc_worldview.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 moc_mainwindow.cpp: mainwindow.h \
+		graphicalview.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject -I/home/hussain/Documents/QtGame/worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
+moc_world.cpp: world.h \
+		world_global.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject -I/home/hussain/Documents/QtGame/worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include world.h -o moc_world.cpp
+
 moc_worlddelegate.cpp: worlddelegate.h \
-		../../worldlib/world.h \
-		../../worldlib/world_global.h \
+		world.h \
+		world_global.h \
 		worldview.h \
 		worlddelegate.h \
 		moc_predefs.h \
@@ -386,8 +402,8 @@ moc_worlddelegate.cpp: worlddelegate.h \
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject -I/home/hussain/Documents/QtGame/worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worlddelegate.h -o moc_worlddelegate.cpp
 
 moc_worldview.cpp: worldview.h \
-		../../worldlib/world.h \
-		../../worldlib/world_global.h \
+		world.h \
+		world_global.h \
 		worlddelegate.h \
 		worldview.h \
 		moc_predefs.h \
@@ -415,29 +431,37 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 ####### Compile
 
+graphicalview.o: graphicalview.cpp graphicalview.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o graphicalview.o graphicalview.cpp
+
 main.o: main.cpp mainwindow.h \
-		../../worldlib/world.h \
-		../../worldlib/world_global.h
+		graphicalview.h \
+		world.h \
+		world_global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
+		graphicalview.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 worlddelegate.o: worlddelegate.cpp worlddelegate.h \
-		../../worldlib/world.h \
-		../../worldlib/world_global.h \
+		world.h \
+		world_global.h \
 		worldview.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worlddelegate.o worlddelegate.cpp
 
 worldview.o: worldview.cpp worldview.h \
-		../../worldlib/world.h \
-		../../worldlib/world_global.h \
+		world.h \
+		world_global.h \
 		worlddelegate.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worldview.o worldview.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_world.o: moc_world.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_world.o moc_world.cpp
 
 moc_worlddelegate.o: moc_worlddelegate.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_worlddelegate.o moc_worlddelegate.cpp
