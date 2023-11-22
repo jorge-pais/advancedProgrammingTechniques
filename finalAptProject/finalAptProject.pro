@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17 DQT_NO_VERSION_TAGGING
+CONFIG += c++20 DQT_NO_VERSION_TAGGING
 
 
 
@@ -37,14 +37,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 unix:!macx: LIBS += -L$$PWD/../../worldLib/ -lworld
 LIBS += -Wl,-rpath,/lib/x86_64-linux-gnu
 
-INCLUDEPATH += $$PWD/../../worldLib
-DEPENDPATH += $$PWD/../../worldLib
-
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../worldlib/release/ -lworld
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../worldlib/debug/ -lworld
 else:unix: LIBS += -L$$PWD/../../worldlib/ -lworld
 
-INCLUDEPATH += $$PWD/../../worldlib
+#INCLUDEPATH += $$PWD/../../worldlib
 DEPENDPATH += $$PWD/../../worldlib
 
 RESOURCES += \

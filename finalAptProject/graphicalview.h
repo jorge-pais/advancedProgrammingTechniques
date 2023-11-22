@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsView>
+#include <QGraphicsScene>
 #include <QBrush>
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
@@ -10,16 +11,27 @@
 #include <QTransform>
 #include <ctime>
 
-#define MAP_SIZE 20
+#include "worlddelegate.h"
+
 #define TILE_SIZE 40
+
+/// TODO: WE SHOULD REFACTOR THIS CLASS NAME INTO
+/// SOMETHING DIFFERENT FROM THE QT CLASSES
 
 class GraphicalView
 {
 public:
-    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene);
+    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, WorldDelegate * delegate);
+
     QGraphicsPixmapItem * player;
+
+    void renderTiles();
+
 private:
-    //QGraphicsPixmapItem ** enemies; // Replace this be with a smart pointer to the array
+    QGraphicsView * view;
+    QGraphicsScene* scene;
+    WorldDelegate * delegate;
+
 };
 
 #endif // GRAPHICALVIEW_H

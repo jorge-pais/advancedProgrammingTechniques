@@ -13,7 +13,10 @@
 #include <memory>
 
 #include <iostream>
+#include <sstream>
+#include <string>
 
+#include "worlddelegate.h"
 #include "world.h"
 #include "graphicalview.h"
 
@@ -30,7 +33,9 @@ public:
     ~MainWindow();
 private:
     Ui::MainWindow *ui;
-    GraphicalView * gView;
+    //GraphicalView * gView;
+    //WorldDelegate * worldDelegate;
+    //World * gameWorld;
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
