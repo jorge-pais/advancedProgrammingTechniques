@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>resources/entities/tux.png</file>
+        <file>resources/world_images/worldmap.png</file>
+    </qresource>
+</RCC>

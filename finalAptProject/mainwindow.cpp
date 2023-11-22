@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
     srand(time(0));
 
     World gameWorld{};
-    gameWorld.createWorld("/Documents/QtGame/team-d6-fa/techspikes/qtGraphicsTest/resources$", 5, 2, 0.25);
+    //gameWorld.createWorld("/Documents/QtGame/team-d6-fa/techspikes/qtGraphicsTest/resources$", 5, 2, 0.25);
+    gameWorld.createWorld(":/images/resources/world_images/worldmap.png", 5, 2, 0.25);
 
     QGraphicsScene *scene = new QGraphicsScene(this);
 
