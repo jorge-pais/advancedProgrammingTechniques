@@ -56,7 +56,8 @@ SOURCES       = graphicalview.cpp \
 		main.cpp \
 		mainwindow.cpp \
 		worlddelegate.cpp \
-		worldview.cpp moc_mainwindow.cpp \
+		worldview.cpp qrc_images.cpp \
+		moc_mainwindow.cpp \
 		moc_world.cpp \
 		moc_worlddelegate.cpp \
 		moc_worldview.cpp
@@ -65,6 +66,7 @@ OBJECTS       = graphicalview.o \
 		mainwindow.o \
 		worlddelegate.o \
 		worldview.o \
+		qrc_images.o \
 		moc_mainwindow.o \
 		moc_world.o \
 		moc_worlddelegate.o \
@@ -247,7 +249,8 @@ Makefile: finalAptProject.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qm
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		finalAptProject.pro
+		finalAptProject.pro \
+		images.qrc
 	$(QMAKE) -o Makefile finalAptProject.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf:
@@ -328,6 +331,7 @@ Makefile: finalAptProject.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qm
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf:
 finalAptProject.pro:
+images.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile finalAptProject.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 
@@ -342,6 +346,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinder.h world.h world_global.h worlddelegate.h worldview.h $(DISTDIR)/
 	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp worlddelegate.cpp worldview.cpp $(DISTDIR)/
@@ -369,8 +374,15 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_images.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_images.cpp
+qrc_images.cpp: images.qrc \
+		/usr/lib/qt5/bin/rcc \
+		resources/entities/tux.png \
+		resources/world_images/worldmap.png
+	/usr/lib/qt5/bin/rcc -name images images.qrc -o qrc_images.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -382,6 +394,8 @@ compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 moc_mainwindow.cpp: mainwindow.h \
 		graphicalview.h \
+		world.h \
+		world_global.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject -I/home/hussain/Documents/QtGame/worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
@@ -397,6 +411,8 @@ moc_worlddelegate.cpp: worlddelegate.h \
 		world_global.h \
 		worldview.h \
 		worlddelegate.h \
+		mainwindow.h \
+		graphicalview.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject -I/home/hussain/Documents/QtGame/worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worlddelegate.h -o moc_worlddelegate.cpp
@@ -406,6 +422,8 @@ moc_worldview.cpp: worldview.h \
 		world_global.h \
 		worlddelegate.h \
 		worldview.h \
+		mainwindow.h \
+		graphicalview.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject -I/home/hussain/Documents/QtGame/worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worldview.h -o moc_worldview.cpp
@@ -427,7 +445,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
@@ -442,20 +460,29 @@ main.o: main.cpp mainwindow.h \
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
 		graphicalview.h \
+		world.h \
+		world_global.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 worlddelegate.o: worlddelegate.cpp worlddelegate.h \
 		world.h \
 		world_global.h \
-		worldview.h
+		worldview.h \
+		mainwindow.h \
+		graphicalview.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worlddelegate.o worlddelegate.cpp
 
 worldview.o: worldview.cpp worldview.h \
 		world.h \
 		world_global.h \
-		worlddelegate.h
+		worlddelegate.h \
+		mainwindow.h \
+		graphicalview.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worldview.o worldview.cpp
+
+qrc_images.o: qrc_images.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_images.o qrc_images.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
