@@ -14,6 +14,7 @@
 #include <iostream>
 #include "map.h"
 
+#include "world.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
