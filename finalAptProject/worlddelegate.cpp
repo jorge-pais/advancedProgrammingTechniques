@@ -101,7 +101,7 @@ void WorldDelegate::movedSlot(int x, int y)
     // TODO
 }
 
-void WorldDelegate::rightArrowSlot(){
+void WorldDelegate::rightArrowFunction(){
     if(world.getProtagonist()->getXPos() < world.getCols()){
         world.getProtagonist()->setXPos(world.getProtagonist()->getXPos() + 1);
     }

@@ -30,13 +30,13 @@ public:
     void setProtagonistEnergy(float energyValue);
     std::string enemyStatus(Enemy& enemy);// what is this supposed to do?
     void attack(Enemy enemy); // maybe we won't need this due to the slot
+    void rightArrowFunction();
 
 signals:
     void poisonSignal();
 public slots:
     void attackedSlot(std::shared_ptr<Enemy> enemy);
     void movedSlot(int x, int y);
-    void rightArrowSlot();
 };
 
 #endif // WORLDDELEGATE_H
