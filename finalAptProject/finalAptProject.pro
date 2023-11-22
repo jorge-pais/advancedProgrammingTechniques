@@ -37,10 +37,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 unix:!macx: LIBS += -L$$PWD/../../worldLib/ -lworld
 LIBS += -Wl,-rpath,/lib/x86_64-linux-gnu
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../worldlib/release/ -lworld
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../worldlib/debug/ -lworld
-else:unix: LIBS += -L$$PWD/../../worldlib/ -lworld
-
 #INCLUDEPATH += $$PWD/../../worldlib
 DEPENDPATH += $$PWD/../../worldlib
 

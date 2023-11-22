@@ -10,6 +10,7 @@
 #include <QKeyEvent>
 #include <QTransform>
 #include <ctime>
+#include <iostream>
 
 #include "worlddelegate.h"
 

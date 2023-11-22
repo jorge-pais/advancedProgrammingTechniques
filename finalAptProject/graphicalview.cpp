@@ -20,14 +20,15 @@ void GraphicalView::renderTiles(){
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < cols; j++){
             tileValue = worldTiles[i*cols + j]->getValue();
-
+            std::cout << tileValue << " ";
             // Print a rectangle there
             /// TODO this should call another function to figure out the
             /// what tile sprite to use
             scene->addRect(i*TILE_SIZE, j*TILE_SIZE, TILE_SIZE, TILE_SIZE,
                            QPen(Qt::NoPen),
-                           QBrush(QColor(255, tileValue, 0)));
+                           QBrush(QColor(tileValue, tileValue, tileValue)));
         }
+        std::cout << std::endl;
     }
 
     QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");

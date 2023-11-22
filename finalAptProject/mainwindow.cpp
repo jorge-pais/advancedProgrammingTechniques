@@ -3,36 +3,30 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow) // Initialize with references
 {
     ui->setupUi(this);
     srand(time(0));
 
-    // I'm very lost on why this isn't loading the picture
-    // I've tried everything i know
-
-    //QString worldPath();
-    QString worldPath{":/images/resources/world_images/worldmap.png"};
-
-    std::cout << "test, the filepath is this: " << worldPath.toStdString() << std::endl;
-
-    /// TEST: Open the image from the path
-    //std::ostringstream oss;
-    //oss << "feh --zoom 1000 " << worldPath.toStdString() << " &!";
-    //std::system(oss.str().c_str());
-
     World world{};
+    World * r_world{&world};
+    WorldView wView{};
+    WorldView* r_wView{&wView};
+    WorldDelegate worldDelegate(r_wView, r_world);
+    WorldDelegate * r_worldDelegate{&worldDelegate};
+
+
+    /// the world isn't loading when using the worldmap.png image
+    /// idk why, worldmap4.png seems to work alright
+    QString worldPath{":/images/resources/world_images/worldmap4.png"};
+
     world.createWorld(worldPath, 0, 0, 0.0);
 
-    std::cout << "test?" << std::endl;
+    // Initialize GraphicalView
+    QGraphicsScene * scene = new QGraphicsScene();
+    gView = new GraphicalView(ui->graphicsView, scene, r_worldDelegate);
 
-    //WorldView wView{};
-
-    //WorldDelegate worldDelegate(&wView, &gameWorld);
-    //worldDelegate.getWorldTiles();
-
-    //QGraphicsScene scene = new QGraphicsScene(this);
-    //GraphicalView gView {ui->graphicsView, scene};
+    gView->renderTiles();
 }
 
 /// THIS PART SHOULD SIGNAL TO SIGNAL THE WORLD DELEGATE

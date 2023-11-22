@@ -1,18 +1,22 @@
 #include "worldview.h"
 
-WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate)
-{
-    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
-    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
-    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
-    for(auto& enemy : delegate.getWorldEnemies()){
-        QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
-        PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
-        if(pEnemy){
-            QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
-        }
-    }
+WorldView::WorldView(){
+
 }
+
+//WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate)
+//{
+//    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
+//    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
+//    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
+//    for(auto& enemy : delegate.getWorldEnemies()){
+//        QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
+//        PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+//        if(pEnemy){
+//            QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
+//        }
+//    }
+//}
 
 void WorldView::poisonLevelUpdatedSlot(int value)
 {
