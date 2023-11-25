@@ -13,7 +13,11 @@
 #include <memory>
 
 #include <iostream>
+#include <sstream>
+#include <string>
 
+#include "worlddelegate.h"
+#include "world.h"
 #include "graphicalview.h"
 #include "world.h"
 
@@ -33,7 +37,10 @@ signals:
 
 private:
     Ui::MainWindow *ui;
-    GraphicalView * gView;
+    //World world;
+    //WorldView wView;
+    //WorldDelegate worldDelegate; // Changed to non-pointer
+    GraphicalView *gView; // Pointer, as GraphicalView needs a QGraphicsView
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

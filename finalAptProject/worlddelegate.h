@@ -12,12 +12,12 @@ class WorldDelegate : public QObject
     Q_OBJECT
 
 private:
-    WorldView& view;
-    World& world;
+    WorldView* view;
+    World* world;
 
 public:
 
-    WorldDelegate(WorldView& view, World& world);
+    WorldDelegate(WorldView* view, World* world);
 
     std::vector<std::unique_ptr<Tile>> getWorldTiles();
     std::vector<std::unique_ptr<Enemy>> getWorldEnemies();

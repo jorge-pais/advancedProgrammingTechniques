@@ -3,21 +3,34 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow) // Initialize with references
 {
     ui->setupUi(this);
     srand(time(0));
 
-    World gameWorld{};
-    //gameWorld.createWorld("/Documents/QtGame/team-d6-fa/techspikes/qtGraphicsTest/resources$", 5, 2, 0.25);
-    gameWorld.createWorld(":/images/resources/world_images/worldmap.png", 5, 2, 0.25);
+    World world{};
+    World * r_world{&world};
+    WorldView wView{};
+    WorldView* r_wView{&wView};
+    WorldDelegate worldDelegate(r_wView, r_world);
+    WorldDelegate * r_worldDelegate{&worldDelegate};
 
-    QGraphicsScene *scene = new QGraphicsScene(this);
 
-    this->gView = new GraphicalView(ui->graphicsView, scene);
+    /// the world isn't loading when using the worldmap.png image
+    /// idk why, worldmap4.png seems to work alright
+    QString worldPath{":/images/resources/world_images/worldmap.png"};
 
+    world.createWorld(worldPath, 0, 0, 0.0);
+
+    // Initialize GraphicalView
+    QGraphicsScene * scene = new QGraphicsScene();
+    gView = new GraphicalView(ui->graphicsView, scene, r_worldDelegate);
+
+    gView->renderTiles();
 }
 
+/// THIS PART SHOULD SIGNAL TO SIGNAL THE WORLD DELEGATE
+/// WHICH WOULD THEN SIGNAL THE WORLD TO UPDATE THE VIEW
 void MainWindow::keyPressEvent(QKeyEvent *event){
 
     emit mainWindowEventSignal(event);
@@ -42,10 +55,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         //player->setPixmap(playerSprite);
         break;
     }
+    gView->view->centerOn(gView->player);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-

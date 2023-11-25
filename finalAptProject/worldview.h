@@ -12,11 +12,11 @@ class WorldView : public QObject
 {
     Q_OBJECT
 private:
-    WorldDelegate& delegate;
+    //WorldDelegate& delegate;
 
 public:
     WorldView();
-    WorldView(WorldDelegate& delegate);
+    //WorldView(WorldDelegate& delegate);
 
     virtual void renderTiles();
 

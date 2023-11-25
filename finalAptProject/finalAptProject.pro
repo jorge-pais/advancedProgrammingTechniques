@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17 DQT_NO_VERSION_TAGGING
+CONFIG += c++20 DQT_NO_VERSION_TAGGING
 
 
 
