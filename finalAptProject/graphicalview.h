@@ -28,8 +28,9 @@ public:
 
     void renderTiles();
 
-private:
     QGraphicsView * view;
+
+private:
     QGraphicsScene* scene;
     WorldDelegate * delegate;
 
