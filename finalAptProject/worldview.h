@@ -4,6 +4,8 @@
 #include <QObject>
 #include "world.h"
 #include "worlddelegate.h"
+#include <QKeyEvent>
+#include "mainwindow.h"
 
 class WorldDelegate;
 class WorldView : public QObject
@@ -28,6 +30,7 @@ public slots:
     void protagonistHealthChangedSlot(int h);
     void protagonistEnergyChangedSlot(int e);
     void enemyDeadSlot();
+    void mainWindowEventSlot(QKeyEvent *event);
 };
 
 #endif // WORLDVIEW_H

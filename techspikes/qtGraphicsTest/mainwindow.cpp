@@ -13,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     srand(time(0));
 
+    World gameWorld{};
+    gameWorld.createWorld("/Documents/QtGame/team-d6-fa/techspikes/qtGraphicsTest/resources$");
+
     Map map;
     map.generateRandomMap();
 

@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 /// WHICH WOULD THEN SIGNAL THE WORLD TO UPDATE THE VIEW
 void MainWindow::keyPressEvent(QKeyEvent *event){
 
+    emit mainWindowEventSignal(event);
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
     case Qt::Key_Up:
