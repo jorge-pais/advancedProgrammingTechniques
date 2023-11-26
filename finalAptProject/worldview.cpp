@@ -1,20 +1,24 @@
 #include "worldview.h"
 
-WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate)
-{
-    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
-    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
-    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
-    connect(dynamic_cast<MainWindow*>(parent()), &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+WorldView::WorldView(){
 
-    for(auto& enemy : delegate.getWorldEnemies()){
-        QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
-        PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
-        if(pEnemy){
-            QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
-        }
-    }
 }
+
+//WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate)
+//{
+//    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
+//    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
+//    QObject::connect(delegate.getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
+//    connect(dynamic_cast<MainWindow*>(parent()), &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+//
+//    for(auto& enemy : delegate.getWorldEnemies()){
+//        QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
+//        PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+//        if(pEnemy){
+//            QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
+//        }
+//    }
+//}
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {

@@ -1,6 +1,6 @@
 #include "graphicalview.h"
 
-GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, WorldDelegate * delegate)
+GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate)
 {
     this->view = graphicsView;
     this->scene = scene;
@@ -11,22 +11,23 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
 
 /// THIS function should be called only when loading the map i guess...
 void GraphicalView::renderTiles(){
-    int rows = ((WorldDelegate*)delegate)->getWorldRows();
-    int cols = ((WorldDelegate*)delegate)->getWorldColumns();
-    std::vector<std::unique_ptr<Tile>> worldTiles = delegate->getWorldTiles();
+    int rows = delegate->getWorldRows();
+    int cols = delegate->getWorldColumns();
+    std::vector<std::unique_ptr<Tile>> worldTiles = delegate->getWorldTiles()d;
 
+    std::cout << "renderTiles() called" << std::endl;
     // Render the map on the screen
-    int tileValue;
-    for(int i = 0; i < rows; i++){
-        for(int j = 0; j < cols; j++){
-            tileValue = worldTiles[i*cols + j]->getValue();
-            std::cout << tileValue << " ";
-            // Print a rectangle there
+    float tileValue;
+    for(int y = 0; y < rows; y++){
+        for(int x = 0; x < cols; x++){
+            tileValue = worldTiles[y*rows + x]->getValue();
+
+            //std::cout << tileValue << " ";
             /// TODO this should call another function to figure out the
             /// what tile sprite to use
-            scene->addRect(i*TILE_SIZE, j*TILE_SIZE, TILE_SIZE, TILE_SIZE,
+            scene->addRect(y*TILE_SIZE, x*TILE_SIZE, TILE_SIZE, TILE_SIZE,
                            QPen(Qt::NoPen),
-                           QBrush(QColor(tileValue, tileValue, tileValue)));
+                           QBrush(QColor(255*tileValue, 255*tileValue, 255*tileValue)));
         }
         std::cout << std::endl;
     }
@@ -45,5 +46,16 @@ void GraphicalView::renderTiles(){
 
     player->setPos(rand()%cols * TILE_SIZE, rand()%rows * TILE_SIZE);
     player->setZValue(1);
+
     return;
 }
+
+//void GraphicalView::renderPlayer(){
+//
+//}
+//
+//void GraphicalView::renderEntities(){
+//
+//}
+
+

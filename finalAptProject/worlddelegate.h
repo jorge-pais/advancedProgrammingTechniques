@@ -12,16 +12,17 @@ class WorldDelegate : public QObject
     Q_OBJECT
 
 private:
-    WorldView* view;
-    World* world;
+    std::shared_ptr<WorldView> view;
+    std::shared_ptr<World> world;
 
 public:
 
-    WorldDelegate(WorldView* view, World* world);
+    WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
 
     std::vector<std::unique_ptr<Tile>> getWorldTiles();
     std::vector<std::unique_ptr<Enemy>> getWorldEnemies();
     std::vector<std::unique_ptr<Tile>> getWorldHealthPacks();
+    //void createWorld(String worldPath);
     int getWorldRows() const;
     int getWorldColumns() const;
     std::unique_ptr<Protagonist> getWorldProtagonist() const;

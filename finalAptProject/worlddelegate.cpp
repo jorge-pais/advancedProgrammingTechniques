@@ -1,7 +1,10 @@
 #include "worlddelegate.h"
 
-WorldDelegate::WorldDelegate(WorldView* view, World* world) : view(view), world(world)
+WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world)
 {
+    this->view = view;
+    this->world = world;
+
     //QObject::connect(&view, &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
     //QObject::connect(&view, &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
     //for(auto& enemy : this->getWorldEnemies()){
@@ -12,6 +15,13 @@ WorldDelegate::WorldDelegate(WorldView* view, World* world) : view(view), world(
     //}
 
 }
+
+//void WorldDelegate::createWorld(String worldPath){
+//
+//    QString path(worldPath);
+//
+//    world->createWorld(path);
+//}
 
 std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldTiles()
 {
@@ -95,8 +105,8 @@ void WorldDelegate::attackedSlot(std::shared_ptr<Enemy> enemy)
     if (enemyType == "PEnemy") {
             emit poisonSignal();
         }
-    auto tiles = world.getTiles();
-    auto protagonist = world.getProtagonist();
+    auto tiles = world->getTiles();
+        auto protagonist = world->getProtagonist();
     int px = protagonist->getXPos();
     int py = protagonist->getYPos();
     int ex = enemy->getXPos();

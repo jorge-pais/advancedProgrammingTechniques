@@ -19,10 +19,12 @@
 /// TODO: WE SHOULD REFACTOR THIS CLASS NAME INTO
 /// SOMETHING DIFFERENT FROM THE QT CLASSES
 
+class WorldDelegate;
+
 class GraphicalView
 {
 public:
-    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, WorldDelegate * delegate);
+    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate);
 
     QGraphicsPixmapItem * player;
 
@@ -32,7 +34,7 @@ public:
 
 private:
     QGraphicsScene* scene;
-    WorldDelegate * delegate;
+    std::shared_ptr<WorldDelegate> delegate;
 
 };
 
