@@ -66,7 +66,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     /// getTiles(), which causes the ownership of these to be in the scope of the function we call once???
     /// How come this is an actual good way to do things??? Now it is necessary to pass a reference,
     /// or copy, or something else, and I've lost 3 hours trying to make this work
-    gView->renderTiles();
+    //gView->renderTiles();
 }
 
 MainWindow::~MainWindow()

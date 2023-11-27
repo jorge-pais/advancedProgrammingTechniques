@@ -16,14 +16,7 @@ WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<Wo
 
 }
 
-//void WorldDelegate::createWorld(String worldPath){
-//
-//    QString path(worldPath);
-//
-//    world->createWorld(path);
-//}
-
-std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldTiles()
+const std::vector<std::unique_ptr<Tile>>& WorldDelegate::getWorldTiles() const
 {
     return world->getTiles();
 }

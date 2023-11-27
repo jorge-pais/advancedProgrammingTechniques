@@ -19,7 +19,7 @@ public:
 
     WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
 
-    std::vector<std::unique_ptr<Tile>> getWorldTiles();
+    const std::vector<std::unique_ptr<Tile>>& getWorldTiles() const;
     std::vector<std::unique_ptr<Enemy>> getWorldEnemies();
     std::vector<std::unique_ptr<Tile>> getWorldHealthPacks();
     //void createWorld(String worldPath);
