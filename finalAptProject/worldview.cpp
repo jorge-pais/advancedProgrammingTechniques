@@ -20,6 +20,8 @@ WorldView::WorldView(){
 //    }
 //}
 
+void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del) : delegate(del){}
+
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {
     //handle the events and then emit these signals with appropriate parameters
@@ -50,5 +52,3 @@ void WorldView::enemyDeadSlot()
 {
     // show the enemy dying on screen
 }
-
-void WorldView::renderTiles(){}

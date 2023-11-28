@@ -1,12 +1,16 @@
 #include "worlddelegate.h"
 
+//QLoggingCategory worldDelegateCategory("worlddelegate");
+
 WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world)
 {
     this->view = view;
     this->world = world;
 
-    //QObject::connect(&view, &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
-    //QObject::connect(&view, &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+    this->view->setDelegate(std::make_shared<WorldDelegate>(*this));
+
+    //QObject::connect(view, &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
+    //QObject::connect(view, &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
     //for(auto& enemy : this->getWorldEnemies()){
     //   PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
     //   if(pEnemy){
@@ -16,7 +20,7 @@ WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<Wo
 
 }
 
-const std::vector<std::unique_ptr<Tile>>& WorldDelegate::getWorldTiles() const
+std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldTiles()
 {
     return world->getTiles();
 }
@@ -64,7 +68,7 @@ void WorldDelegate::setProtagonistEnergy(float energyValue)
     protagonist->setEnergy(energyValue);
 }
 
-std::string  WorldDelegate::enemyStatus(Enemy& enemy)
+std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
     if (dynamic_cast<PEnemy*>(&enemy))
     {

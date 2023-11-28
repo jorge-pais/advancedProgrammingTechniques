@@ -14,18 +14,19 @@ class WorldDelegate : public QObject
 private:
     std::shared_ptr<WorldView> view;
     std::shared_ptr<World> world;
+    std::vector<std::unique_ptr<Tile>> tiles;
 
 public:
 
     WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
 
-    const std::vector<std::unique_ptr<Tile>>& getWorldTiles() const;
+    std::vector<std::unique_ptr<Tile>> getWorldTiles();
     std::vector<std::unique_ptr<Enemy>> getWorldEnemies();
     std::vector<std::unique_ptr<Tile>> getWorldHealthPacks();
-    //void createWorld(String worldPath);
     int getWorldRows() const;
     int getWorldColumns() const;
     std::unique_ptr<Protagonist> getWorldProtagonist() const;
+
     void setProtagonistHealth(float healthValue);
     void setProtagonistPosition(int newWorldX, int newWorldY);
     void setProtagonistEnergy(float energyValue);

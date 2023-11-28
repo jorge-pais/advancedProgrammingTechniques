@@ -2,9 +2,11 @@
 #define WORLDVIEW_H
 
 #include <QObject>
+#include <QKeyEvent>
+
 #include "world.h"
 #include "worlddelegate.h"
-#include <QKeyEvent>
+#include "graphicalview.h"
 #include "mainwindow.h"
 
 class WorldDelegate;
@@ -12,13 +14,14 @@ class WorldView : public QObject
 {
     Q_OBJECT
 private:
-    //WorldDelegate& delegate;
+    std::shared_ptr<WorldDelegate> delegate = nullptr;
+    std::shared_ptr<GraphicalView> gView;
 
 public:
     WorldView();
     //WorldView(WorldDelegate& delegate);
 
-    virtual void renderTiles();
+    void setDelegate(std::shared_ptr<WorldDelegate> delegate);
 
 signals:
     void playerMovedSignal(int x, int y);

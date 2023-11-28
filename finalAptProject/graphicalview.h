@@ -14,7 +14,7 @@
 
 #include "worlddelegate.h"
 
-#define TILE_SIZE 40
+#define TILE_SIZE 20
 
 /// TODO: WE SHOULD REFACTOR THIS CLASS NAME INTO
 /// SOMETHING DIFFERENT FROM THE QT CLASSES
@@ -29,6 +29,8 @@ public:
     QGraphicsPixmapItem * player;
 
     void renderTiles();
+    void addPlayer(int x, int y);
+    //void addEntities();
 
     QGraphicsView * view;
 

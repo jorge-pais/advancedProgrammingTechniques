@@ -6,5 +6,9 @@
         <file>resources/world_images/maze3.png</file>
         <file>resources/world_images/maze2.png</file>
         <file>resources/world_images/maze1.png</file>
+        <file>resources/entities/snowball-2.png</file>
+        <file>resources/entities/smartball-2.png</file>
+        <file>resources/entities/captain_left-2.png</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>
