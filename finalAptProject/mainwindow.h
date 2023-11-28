@@ -15,7 +15,6 @@
 #include <iostream>
 
 #include "graphicalview.h"
-#include "worlddelegate.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,12 +27,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void addDelegate(std::shared_ptr<WorldDelegate> wDelegate);
 
 private:
     Ui::MainWindow *ui;
     GraphicalView * gView;
-    std::shared_ptr<WorldDelegate> delegate;
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
