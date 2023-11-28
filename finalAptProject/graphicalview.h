@@ -1,6 +1,8 @@
 #ifndef GRAPHICALVIEW_H
 #define GRAPHICALVIEW_H
 
+#include "worldview.h"
+
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <QBrush>
@@ -13,7 +15,7 @@
 #define MAP_SIZE 20
 #define TILE_SIZE 40
 
-class GraphicalView
+class GraphicalView : public WorldView
 {
 public:
     GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene);
