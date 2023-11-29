@@ -33,7 +33,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         break;
     case Qt::Key_Right:
     case Qt::Key_D:
-        emit gView->rightArrowSignal();
         gView->player->setX(gView->player->pos().x() + TILE_SIZE);
         //player->setPixmap(playerSprite);
         break;
