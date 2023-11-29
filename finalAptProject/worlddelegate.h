@@ -32,6 +32,8 @@ public:
     std::string enemyStatus(Enemy& enemy);// what is this supposed to do?
     void attack(Enemy enemy); // maybe we won't need this due to the slot
 
+    void connectSlots();
+
 signals:
     void poisonSignal();
 public slots:
