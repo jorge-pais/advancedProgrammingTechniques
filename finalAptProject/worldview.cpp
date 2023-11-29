@@ -20,7 +20,9 @@ WorldView::WorldView(){
 //    }
 //}
 
-void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del) : delegate(del){}
+void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
+    this->delegate = del;
+}
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {

@@ -17,9 +17,8 @@ private:
     std::vector<std::unique_ptr<Tile>> tiles;
 
 public:
-
+    WorldDelegate();
     WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
-
     std::vector<std::unique_ptr<Tile>> getWorldTiles();
     std::vector<std::unique_ptr<Enemy>> getWorldEnemies();
     std::vector<std::unique_ptr<Tile>> getWorldHealthPacks();
