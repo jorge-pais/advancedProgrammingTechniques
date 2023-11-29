@@ -1,19 +1,34 @@
 #include "graphicalview.h"
 
-GraphicalView::GraphicalView(QGraphicsView* qGraphicsView, QGraphicsScene * scene)
+GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate)
 {
+    this->view = graphicsView;
+    this->scene = scene;
+    this->delegate = delegate;
     // Create the scene
-    qGraphicsView->setScene(scene);
+    graphicsView->setScene(scene);
+}
 
-    // Render the map on the screen
-    for(int i = 0; i < MAP_SIZE; i++){
-        for(int j = 0; j < MAP_SIZE; j++){
-            scene->addRect(i*TILE_SIZE, j*TILE_SIZE, TILE_SIZE, TILE_SIZE,
-                           QPen(Qt::NoPen),
-                           QBrush(QColor(255, (rand()%20) * 10, 0)));
-        }
+/// THIS function should be called only when loading the map i guess...
+void GraphicalView::renderTiles(){
+    std::cout << "renderTiles() called" << std::endl;
+
+    std::vector<std::unique_ptr<Tile>> worldTiles = delegate->getWorldTiles();
+
+    float value; int x, y;
+    for(const auto& tilePtr : worldTiles){ // This is how you pass the tiles by referece!
+        x = tilePtr->getXPos();
+        y = tilePtr->getYPos();
+        value = tilePtr->getValue();
+        //std::cout << value << " ";
+        scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
+                       QPen(Qt::NoPen),
+                       QBrush(QColor(255*value, 255*value, 255*value)));
     }
+    return;
+}
 
+void GraphicalView::addPlayer(int xStart, int yStart){
     QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");
 
     //Resize the sprite
@@ -26,6 +41,6 @@ GraphicalView::GraphicalView(QGraphicsView* qGraphicsView, QGraphicsScene * scen
 
     // Spawn player in random position
 
-    player->setPos(rand()%MAP_SIZE * TILE_SIZE, rand()%MAP_SIZE * TILE_SIZE);
+    player->setPos(yStart, xStart);
     player->setZValue(1);
 }

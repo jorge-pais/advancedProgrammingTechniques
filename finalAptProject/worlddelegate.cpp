@@ -1,67 +1,73 @@
 #include "worlddelegate.h"
 
-WorldDelegate::WorldDelegate(WorldView& view, World& world) : view(view), world(world)
-{
-    QObject::connect(&view, &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
-    QObject::connect(&view, &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
-    for(auto& enemy : this->getWorldEnemies()){
-       PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
-       if(pEnemy){
-           QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
-       }
-    }
+//QLoggingCategory worldDelegateCategory("worlddelegate");
 
+WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world)
+{
+    this->view = view;
+    this->world = world;
+
+    //this->view->setDelegate(std::make_shared<WorldDelegate>(*this));
+
+    //QObject::connect(view.get(), &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
+    //QObject::connect(view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+    //for(auto& enemy : this->getWorldEnemies()){
+    //   PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+    //   if(pEnemy){
+    //       QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
+    //   }
+    //}
 }
 
 std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldTiles()
 {
-    return world.getTiles();
+    return world->getTiles();
 }
 
 std::vector<std::unique_ptr<Enemy>> WorldDelegate::getWorldEnemies()
 {
-    return world.getEnemies();
+    return world->getEnemies();
 }
 
 std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldHealthPacks()
 {
-    return world.getHealthPacks();
+    return world->getHealthPacks();
 }
 
 int WorldDelegate::getWorldRows() const
 {
-    return world.getRows();
+    return world->getRows();
 }
 
 int WorldDelegate::getWorldColumns() const
 {
-    return world.getCols();
+    return world->getCols();
 }
 
 std::unique_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const
 {
-    return world.getProtagonist();
+    return world->getProtagonist();
 }
 
 void WorldDelegate::setProtagonistHealth(float healthValue)
 {
-    auto protagonist = world.getProtagonist();
+    auto protagonist = world->getProtagonist();
     protagonist->setHealth(healthValue);
 }
 
 void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY)
 {
-    auto protagonist = world.getProtagonist();
+    auto protagonist = world->getProtagonist();
     protagonist->setPos(newWorldX, newWorldY);
 }
 
 void WorldDelegate::setProtagonistEnergy(float energyValue)
 {
-    auto protagonist = world.getProtagonist();
+    auto protagonist = world->getProtagonist();
     protagonist->setEnergy(energyValue);
 }
 
-std::string  WorldDelegate::enemyStatus(Enemy& enemy)
+std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
     if (dynamic_cast<PEnemy*>(&enemy))
     {
@@ -75,8 +81,8 @@ std::string  WorldDelegate::enemyStatus(Enemy& enemy)
 
 void WorldDelegate::attack(Enemy enemy)
 {
-    auto tiles = world.getTiles();
-    auto protagonist = world.getProtagonist();
+    auto tiles = world->getTiles();
+    auto protagonist = world->getProtagonist();
     int px = protagonist->getXPos();
     int py = protagonist->getYPos();
     int ex = enemy.getXPos();
@@ -95,8 +101,8 @@ void WorldDelegate::attackedSlot(std::shared_ptr<Enemy> enemy)
     if (enemyType == "PEnemy") {
             emit poisonSignal();
         }
-    auto tiles = world.getTiles();
-    auto protagonist = world.getProtagonist();
+    auto tiles = world->getTiles();
+        auto protagonist = world->getProtagonist();
     int px = protagonist->getXPos();
     int py = protagonist->getYPos();
     int ex = enemy->getXPos();
