@@ -4,7 +4,6 @@ WorldDelegate::WorldDelegate(WorldView& view, World& world) : view(view), world(
 {
     QObject::connect(&view, &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
     QObject::connect(&view, &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
-    QObject::connect(&view, &WorldView::rightArrowSignal, this, &WorldDelegate::rightArrowSlot);
     for(auto& enemy : this->getWorldEnemies()){
        PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
        if(pEnemy){
@@ -99,10 +98,4 @@ void WorldDelegate::attackedSlot(std::shared_ptr<Enemy> enemy)
 void WorldDelegate::movedSlot(int x, int y)
 {
     // TODO
-}
-
-void WorldDelegate::rightArrowSlot(){
-    if(world.getProtagonist()->getXPos() < world.getCols()){
-        world.getProtagonist()->setXPos(world.getProtagonist()->getXPos() + 1);
-    }
 }
