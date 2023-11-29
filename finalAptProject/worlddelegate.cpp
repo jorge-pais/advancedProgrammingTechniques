@@ -8,15 +8,19 @@ WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<Wo
     this->world = world;
 
     //this->view->setDelegate(std::make_shared<WorldDelegate>(*this));
+}
 
-    //QObject::connect(view.get(), &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
-    //QObject::connect(view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
-    //for(auto& enemy : this->getWorldEnemies()){
-    //   PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
-    //   if(pEnemy){
-    //       QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
-    //   }
-    //}
+void WorldDelegate::connectSlots(){
+    QObject::connect(this->view.get(), &WorldView::attackSignal, this, &WorldDelegate::attackedSlot);
+    QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+
+    if(this->getWorldEnemies().size() != 0)
+        for(auto& enemy : this->getWorldEnemies()){
+            PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+            if(pEnemy){
+                QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
+            }
+        }
 }
 
 std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldTiles()
