@@ -20,10 +20,15 @@
 #include "world.h"
 #include "graphicalview.h"
 #include "world.h"
+#include "worldview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+class GraphicalView;
+class WorldView;
+class WorldDelegate;
 
 class MainWindow : public QMainWindow
 {
@@ -37,10 +42,11 @@ signals:
 
 private:
     Ui::MainWindow *ui;
-    //World world;
-    //WorldView wView;
-    //WorldDelegate worldDelegate; // Changed to non-pointer
-    GraphicalView *gView; // Pointer, as GraphicalView needs a QGraphicsView
+
+    std::shared_ptr<World> world;
+    std::shared_ptr<WorldView> wView;
+    std::shared_ptr<WorldDelegate> worldDelegate; // Changed to non-pointer
+    std::shared_ptr<GraphicalView> gView; // Pointer, as GraphicalView needs a QGraphicsView
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

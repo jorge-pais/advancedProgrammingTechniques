@@ -2,29 +2,32 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow) // Initialize with references
+    : QMainWindow(parent),
+    ui(new Ui::MainWindow), // Initialize with references
+    world(std::make_shared<World>()),
+    wView(std::make_shared<WorldView>()),
+    worldDelegate(std::make_shared<WorldDelegate>(wView, world))
 {
     ui->setupUi(this);
     srand(time(0));
-
-    World world{};
-    World * r_world{&world};
-    WorldView wView{};
-    WorldView* r_wView{&wView};
-    WorldDelegate worldDelegate(r_wView, r_world);
-    WorldDelegate * r_worldDelegate{&worldDelegate};
-
 
     /// the world isn't loading when using the worldmap.png image
     /// idk why, worldmap4.png seems to work alright
     QString worldPath{":/images/resources/world_images/worldmap.png"};
 
-    world.createWorld(worldPath, 0, 0, 0.0);
+    world->createWorld(worldPath, 0, 0, 0.0);
+
+    //std::vector<std::unique_ptr<Tile>> map = world->getTiles();
+
+    //for(int y = 0; y < world->getRows(); y++){
+    //    for(int x = 0; x < world->getCols(); x++)
+    //        std::cout << map[y*world->getCols() + x]->getValue() << " ";
+    //    std::cout << std::endl;
+    //}
 
     // Initialize GraphicalView
     QGraphicsScene * scene = new QGraphicsScene();
-    gView = new GraphicalView(ui->graphicsView, scene, r_worldDelegate);
+    gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, worldDelegate);
 
     gView->renderTiles();
 }
@@ -34,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::keyPressEvent(QKeyEvent *event){
 
     emit mainWindowEventSignal(event);
+
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
     case Qt::Key_Up:
@@ -55,7 +59,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         //player->setPixmap(playerSprite);
         break;
     }
-    gView->view->centerOn(gView->player);
+    //gView->view->centerOn(gView->player);
+
+    //gView->renderTiles();
 }
 
 MainWindow::~MainWindow()

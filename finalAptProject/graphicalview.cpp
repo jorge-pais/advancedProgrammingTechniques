@@ -1,6 +1,6 @@
 #include "graphicalview.h"
 
-GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, WorldDelegate * delegate)
+GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate)
 {
     this->view = graphicsView;
     this->scene = scene;
@@ -11,26 +11,24 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
 
 /// THIS function should be called only when loading the map i guess...
 void GraphicalView::renderTiles(){
-    int rows = ((WorldDelegate*)delegate)->getWorldRows();
-    int cols = ((WorldDelegate*)delegate)->getWorldColumns();
+    std::cout << "renderTiles() called" << std::endl;
+
     std::vector<std::unique_ptr<Tile>> worldTiles = delegate->getWorldTiles();
 
-    // Render the map on the screen
-    int tileValue;
-    for(int i = 0; i < rows; i++){
-        for(int j = 0; j < cols; j++){
-            tileValue = worldTiles[i*cols + j]->getValue();
-            std::cout << tileValue << " ";
-            // Print a rectangle there
-            /// TODO this should call another function to figure out the
-            /// what tile sprite to use
-            scene->addRect(i*TILE_SIZE, j*TILE_SIZE, TILE_SIZE, TILE_SIZE,
-                           QPen(Qt::NoPen),
-                           QBrush(QColor(tileValue, tileValue, tileValue)));
-        }
-        std::cout << std::endl;
+    float value; int x, y;
+    for(const auto& tilePtr : worldTiles){ // This is how you pass the tiles by referece!
+        x = tilePtr->getXPos();
+        y = tilePtr->getYPos();
+        value = tilePtr->getValue();
+        //std::cout << value << " ";
+        scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
+                       QPen(Qt::NoPen),
+                       QBrush(QColor(255*value, 255*value, 255*value)));
     }
+    return;
+}
 
+void GraphicalView::addPlayer(int xStart, int yStart){
     QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");
 
     //Resize the sprite
@@ -43,7 +41,6 @@ void GraphicalView::renderTiles(){
 
     // Spawn player in random position
 
-    player->setPos(rand()%cols * TILE_SIZE, rand()%rows * TILE_SIZE);
+    player->setPos(yStart, xStart);
     player->setZValue(1);
-    return;
 }

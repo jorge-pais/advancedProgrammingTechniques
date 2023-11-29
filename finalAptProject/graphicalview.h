@@ -14,25 +14,29 @@
 
 #include "worlddelegate.h"
 
-#define TILE_SIZE 40
+#define TILE_SIZE 20
 
 /// TODO: WE SHOULD REFACTOR THIS CLASS NAME INTO
 /// SOMETHING DIFFERENT FROM THE QT CLASSES
 
+class WorldDelegate;
+
 class GraphicalView
 {
 public:
-    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, WorldDelegate * delegate);
+    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate);
 
     QGraphicsPixmapItem * player;
 
     void renderTiles();
+    void addPlayer(int x, int y);
+    //void addEntities();
 
     QGraphicsView * view;
 
 private:
     QGraphicsScene* scene;
-    WorldDelegate * delegate;
+    std::shared_ptr<WorldDelegate> delegate;
 
 };
 
