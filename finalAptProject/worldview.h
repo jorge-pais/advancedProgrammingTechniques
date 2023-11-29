@@ -19,9 +19,10 @@ private:
 
 public:
     WorldView();
-    WorldView(WorldDelegate& delegate);
+    //WorldView(WorldDelegate& delegate);
 
     void setDelegate(std::shared_ptr<WorldDelegate> delegate);
+    void connectSlots();
 
 signals:
     void playerMovedSignal(int x, int y);
