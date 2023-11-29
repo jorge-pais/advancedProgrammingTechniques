@@ -20,7 +20,8 @@ private:
 public:
     WorldView();
     //WorldView(WorldDelegate& delegate);
-
+    void setGraphicalView(std::shared_ptr<GraphicalView> gView);
+    void setTextView(std::shared_ptr<TextView> tView);
     void setDelegate(std::shared_ptr<WorldDelegate> delegate);
     void connectSlots();
     void attack();

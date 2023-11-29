@@ -29,7 +29,7 @@ public:
     void setProtagonistHealth(float healthValue);
     void setProtagonistPosition(int newWorldX, int newWorldY);
     void setProtagonistEnergy(float energyValue);
-    std::string enemyStatus(Enemy& enemy);// what is this supposed to do?
+    std::string enemyStatus(Enemy& enemy);
     void attack(std::shared_ptr<Enemy> enemy); // maybe we won't need this due to the slot
 
     void connectSlots();

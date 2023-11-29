@@ -55,6 +55,7 @@ OBJECTS_DIR   = ./
 SOURCES       = graphicalview.cpp \
 		main.cpp \
 		mainwindow.cpp \
+		textview.cpp \
 		worlddelegate.cpp \
 		worldview.cpp qrc_images.cpp \
 		moc_mainwindow.cpp \
@@ -64,6 +65,7 @@ SOURCES       = graphicalview.cpp \
 OBJECTS       = graphicalview.o \
 		main.o \
 		mainwindow.o \
+		textview.o \
 		worlddelegate.o \
 		worldview.o \
 		qrc_images.o \
@@ -151,12 +153,14 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		finalAptProject.pro graphicalview.h \
 		mainwindow.h \
 		pathfinder.h \
+		textview.h \
 		world.h \
 		world_global.h \
 		worlddelegate.h \
 		worldview.h graphicalview.cpp \
 		main.cpp \
 		mainwindow.cpp \
+		textview.cpp \
 		worlddelegate.cpp \
 		worldview.cpp
 QMAKE_TARGET  = finalAptProject
@@ -345,8 +349,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinder.h world.h world_global.h worlddelegate.h worldview.h $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp worlddelegate.cpp worldview.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinder.h textview.h world.h world_global.h worlddelegate.h worldview.h $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp textview.cpp worlddelegate.cpp worldview.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -480,6 +484,15 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		graphicalview.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
+
+textview.o: textview.cpp textview.h \
+		worlddelegate.h \
+		world.h \
+		world_global.h \
+		worldview.h \
+		graphicalview.h \
+		mainwindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o textview.o textview.cpp
 
 worlddelegate.o: worlddelegate.cpp worlddelegate.h \
 		world.h \

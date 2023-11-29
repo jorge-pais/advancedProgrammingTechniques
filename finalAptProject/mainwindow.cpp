@@ -21,11 +21,15 @@ MainWindow::MainWindow(QWidget *parent)
     QGraphicsScene * scene = new QGraphicsScene();
     gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, worldDelegate);
 
+    //Initialize TextView
+    tView = std::make_shared<TextView>(ui->textBrowser, scene, worldDelegate);
+
     worldDelegate->connectSlots();
     wView->connectSlots();
 
 
     gView->renderTiles();
+    //tView->renderTiles();
 }
 
 /// THIS PART SHOULD SIGNAL TO SIGNAL THE WORLD DELEGATE
