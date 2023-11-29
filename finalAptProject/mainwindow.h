@@ -8,6 +8,7 @@
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QKeyEvent>
+#include <QPushButton>
 #include <QTransform>
 #include <ctime>
 #include <memory>
@@ -40,6 +41,9 @@ public:
     ~MainWindow();
 signals:
     void mainWindowEventSignal(QKeyEvent *event);
+
+private slots:
+    void submitCommand();
 
 private:
     Ui::MainWindow *ui;

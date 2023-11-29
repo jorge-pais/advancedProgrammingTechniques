@@ -51,6 +51,14 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     emit playerMovedSignal(x, y);
 }
 
+void WorldView::attackNearestEnemy(){
+    //find nearest enemy and then use the pathfinder to send the protagonist there and attack
+}
+
+void WorldView::takeNearestHealthPack(){
+    //find nearest healthpack and then use the pathfinder to send the protagonist there and increase health
+}
+
 void WorldView::poisonLevelUpdatedSlot(int value)
 {
     // show the poision on screen
