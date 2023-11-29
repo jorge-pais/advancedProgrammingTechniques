@@ -113,10 +113,12 @@ void WorldDelegate::movedSlot(int x, int y)
     }
 
     auto enemies = world->getEnemies();
-    for(auto enemy = begin(enemies); enemy != end(enemies); ++enemy){
-        if(enemy->getXPos == newX && enemy->getYpos == newY){
-            attack(enemy);
+    for(const auto& enemy : enemies){
+        if(enemy->getXPos() == newX && enemy->getYPos() == newY){
+            attack(std::move(const_cast<std::unique_ptr<Enemy>&>(enemy)));
             return;
         }
     }
+
+    protagonist->setPos(newX, newY);
 }
