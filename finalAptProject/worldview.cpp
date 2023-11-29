@@ -45,12 +45,12 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     case Qt::Key_Right:
     case Qt::Key_D:
         x++;
-        break;
+        break;       
     }
     //handle the events and then emit these signals with appropriate parameters
     emit playerMovedSignal(x, y);
-    emit attackSignal(nullptr);
 }
+
 void WorldView::poisonLevelUpdatedSlot(int value)
 {
     // show the poision on screen
