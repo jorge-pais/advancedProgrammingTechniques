@@ -122,5 +122,19 @@ void WorldDelegate::attackedSlot(std::shared_ptr<Enemy> enemy)
 
 void WorldDelegate::movedSlot(int x, int y)
 {
-    // TODO
+    auto protagonist = world->getProtagonist();
+    int newX = protagonist->getXPos() + x;
+    int newY = protagonist->getYPos() + y;
+
+    if(newX < 0 || newY < 0 || (newX > world->getCols()) || (newY > world->getRows())){
+        return;
+    }
+
+    auto enemies = world->getEnemies();
+    for(auto enemy = begin(enemies); enemy != end(enemies); ++enemy){
+        if(enemy->getXPos == newX && enemy->getYpos == newY){
+            attack(enemy);
+            return;
+        }
+    }
 }
