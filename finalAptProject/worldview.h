@@ -23,10 +23,10 @@ public:
 
     void setDelegate(std::shared_ptr<WorldDelegate> delegate);
     void connectSlots();
+    void attack();
 
 signals:
     void playerMovedSignal(int x, int y);
-    void attackSignal(std::shared_ptr<Enemy> enemy);
 
 public slots:
     void poisonLevelUpdatedSlot(int value);

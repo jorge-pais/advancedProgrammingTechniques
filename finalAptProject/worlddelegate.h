@@ -30,14 +30,13 @@ public:
     void setProtagonistPosition(int newWorldX, int newWorldY);
     void setProtagonistEnergy(float energyValue);
     std::string enemyStatus(Enemy& enemy);// what is this supposed to do?
-    void attack(Enemy enemy); // maybe we won't need this due to the slot
+    void attack(std::shared_ptr<Enemy> enemy); // maybe we won't need this due to the slot
 
     void connectSlots();
 
 signals:
     void poisonSignal();
 public slots:
-    void attackedSlot(std::shared_ptr<Enemy> enemy);
     void movedSlot(int x, int y);
 };
 
