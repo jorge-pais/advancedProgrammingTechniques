@@ -8,6 +8,7 @@
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QKeyEvent>
+#include <QPushButton>
 #include <QTransform>
 #include <ctime>
 #include <memory>
@@ -29,6 +30,7 @@ QT_END_NAMESPACE
 class GraphicalView;
 class WorldView;
 class WorldDelegate;
+class TextView;
 
 class MainWindow : public QMainWindow
 {
@@ -40,6 +42,9 @@ public:
 signals:
     void mainWindowEventSignal(QKeyEvent *event);
 
+private slots:
+    void submitCommand();
+
 private:
     Ui::MainWindow *ui;
 
@@ -47,6 +52,7 @@ private:
     std::shared_ptr<WorldView> wView;
     std::shared_ptr<WorldDelegate> worldDelegate; // Changed to non-pointer
     std::shared_ptr<GraphicalView> gView; // Pointer, as GraphicalView needs a QGraphicsView
+    std::shared_ptr<TextView> tView;
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

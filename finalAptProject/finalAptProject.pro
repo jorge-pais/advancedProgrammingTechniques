@@ -14,6 +14,7 @@ SOURCES += \
     graphicalview.cpp \
     main.cpp \
     mainwindow.cpp \
+    textview.cpp \
     worlddelegate.cpp \
     worldview.cpp
 
@@ -21,6 +22,7 @@ HEADERS += \
     graphicalview.h \
     mainwindow.h \
     pathfinder.h \
+    textview.h \
     world.h \
     world_global.h \
     worlddelegate.h \
