@@ -15,7 +15,7 @@ void WorldDelegate::connectSlots(){
     QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
 
     if(this->getWorldEnemies().size() != 0)
-        for(auto& enemy : this->getWorldEnemies()){
+        for(auto& enemy : this->getWorldEnemies()){ // calling here world enemies makes it such that i can't get the enemies later on in the graphics views
             PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
             if(pEnemy){
                 QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
