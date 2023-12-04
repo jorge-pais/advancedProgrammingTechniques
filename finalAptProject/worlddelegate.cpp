@@ -120,5 +120,12 @@ void WorldDelegate::movedSlot(int x, int y)
         }
     }
 
+    auto healthpacks = world->getHealthPacks();
+    for(const auto& pack : healthpacks){
+        if(pack->getXPos() == newX && pack->getYPos() == newY){
+            protagonist->healthChanged(pack->getValue());
+        }
+    }
+
     protagonist->setPos(newX, newY);
 }
