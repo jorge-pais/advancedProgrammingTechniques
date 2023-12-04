@@ -86,19 +86,19 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 {
     std::string enemyType = enemyStatus(*enemy);
     if (enemyType == "PEnemy") {
-            emit poisonSignal();
-        }
+        emit poisonSignal();
+    }
     auto tiles = world->getTiles();
-        auto protagonist = world->getProtagonist();
+    auto protagonist = world->getProtagonist();
     int px = protagonist->getXPos();
     int py = protagonist->getYPos();
     int ex = enemy->getXPos();
     int ey = enemy->getYPos();
-    if((px == ex && (py == ey - 1 || py == ey +1)) || (py == ey && (px == ex - 1 || px == ex +1))){
-        protagonist->setHealth(protagonist->getHealth()-enemy->getValue());
-        if(enemy->getValue() < protagonist->getHealth()){
-            enemy->setDefeated(true);
-        }
+
+    protagonist->setHealth(protagonist->getHealth()-enemy->getValue());
+    if(enemy->getValue() < protagonist->getHealth()){
+        protagonist->setPos(enemy->getXPos(), enemy->getYPos());
+        enemy->setDefeated(true);
     }
 }
 
