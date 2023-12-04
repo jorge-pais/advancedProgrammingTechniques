@@ -90,14 +90,12 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     }
     auto tiles = world->getTiles();
     auto protagonist = world->getProtagonist();
-    int px = protagonist->getXPos();
-    int py = protagonist->getYPos();
     int ex = enemy->getXPos();
     int ey = enemy->getYPos();
 
     protagonist->setHealth(protagonist->getHealth()-enemy->getValue());
     if(enemy->getValue() < protagonist->getHealth()){
-        protagonist->setPos(enemy->getXPos(), enemy->getYPos());
+        protagonist->setPos(ex, ey);
         enemy->setDefeated(true);
     }
 }
@@ -123,9 +121,24 @@ void WorldDelegate::movedSlot(int x, int y)
     auto healthpacks = world->getHealthPacks();
     for(const auto& pack : healthpacks){
         if(pack->getXPos() == newX && pack->getYPos() == newY){
-            protagonist->healthChanged(pack->getValue());
+            protagonist->setHealth(protagonist->getHealth() + pack->getValue());
         }
     }
 
+    auto tiles = world->getTiles();
+    float difference = 0;
+    for(const auto& tile : tiles){
+        if(tile->getXPos() == x && tile->getYPos() == y){
+            difference += tile->getValue();
+        }
+        if(tile->getXPos() == newX && tile->getYPos() == newY){
+            difference -= tile->getValue();
+        }
+    }
+    if(difference < 0){
+        difference = -difference;
+    }
+
     protagonist->setPos(newX, newY);
+    protagonist->setEnergy(protagonist->getEnergy() - difference);
 }
