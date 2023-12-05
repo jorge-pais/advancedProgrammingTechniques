@@ -7,6 +7,7 @@
 #include "world.h"
 #include "worlddelegate.h"
 #include "graphicalview.h"
+#include "textview.h"
 #include "mainwindow.h"
 
 class WorldDelegate;
@@ -16,17 +17,21 @@ class WorldView : public QObject
 private:
     std::shared_ptr<WorldDelegate> delegate = nullptr;
     std::shared_ptr<GraphicalView> gView;
+    std::shared_ptr<TextView> tView;
 
 public:
     WorldView();
     //WorldView(WorldDelegate& delegate);
-
+    void setGraphicalView(std::shared_ptr<GraphicalView> gView);
+    void setTextView(std::shared_ptr<TextView> tView);
     void setDelegate(std::shared_ptr<WorldDelegate> delegate);
     void connectSlots();
+    void attack();//what is this for?
+    void attackNearestEnemy(); //used in text view
+    void takeNearestHealthPack();
 
 signals:
     void playerMovedSignal(int x, int y);
-    void attackSignal(std::shared_ptr<Enemy> enemy);
 
 public slots:
     void poisonLevelUpdatedSlot(int value);

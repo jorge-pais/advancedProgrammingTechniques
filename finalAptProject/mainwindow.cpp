@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     world(std::make_shared<World>()),
     wView(std::make_shared<WorldView>()),
     worldDelegate(std::make_shared<WorldDelegate>(wView, world))
+
 {
     ui->setupUi(this);
     srand(time(0));
@@ -21,7 +22,11 @@ MainWindow::MainWindow(QWidget *parent)
     QGraphicsScene * scene = new QGraphicsScene();
     gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, worldDelegate);
 
-    // Connect all signal/slots
+    //Initialize TextView
+    tView = std::make_shared<TextView>(ui->textBrowser, wView);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::submitCommand);
+
     worldDelegate->connectSlots();
     wView->connectSlots();
 
@@ -29,30 +34,30 @@ MainWindow::MainWindow(QWidget *parent)
     gView->renderTiles();
     gView->renderPlayer();
     gView->renderEntities();
+
+    tView->renderTiles();
 }
 
-/// THIS PART SHOULD SIGNAL TO SIGNAL THE WORLD DELEGATE
-/// WHICH WOULD THEN SIGNAL THE WORLD TO UPDATE THE VIEW
+void MainWindow::submitCommand()
+{
+    // Get the command from the QLineEdit
+    QString command = ui->lineEdit->text();
+
+    // Process the command using the TextView
+    tView->processCommand(command);
+
+    // Clear the QLineEdit for the next input
+    ui->lineEdit->clear();
+}
+
+/// this part signals the view and gives it the event,
+/// the view then extracts what this event means and gives the data to the delegate,
+/// the delegate then applies game logic and sends data to model
+/// model then sends new game values to view to display
+/// view then gives these values to text or graphical view to render in appropriate way
 void MainWindow::keyPressEvent(QKeyEvent *event){
 
     emit mainWindowEventSignal(event);
-
-    switch(event->key()){
-    case Qt::Key_Up:
-    case Qt::Key_W:
-        gView->player->setPosition(5, 5);
-        break;
-    case Qt::Key_Left:
-    case Qt::Key_A:
-        gView->player->setPosition(1, 1);
-        break;
-    case Qt::Key_Down:
-    case Qt::Key_S:
-        break;
-    case Qt::Key_Right:
-    case Qt::Key_D:
-        break;
-    }
 
     //gView->view->centerOn(gView->player);
 

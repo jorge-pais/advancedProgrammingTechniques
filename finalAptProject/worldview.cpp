@@ -4,6 +4,8 @@ WorldView::WorldView(){
 
 }
 
+//WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate){}
+
 void WorldView::connectSlots(){
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
@@ -49,6 +51,15 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     emit playerMovedSignal(dx, dy);
     emit attackSignal(nullptr);
 }
+
+void WorldView::attackNearestEnemy(){
+    //find nearest enemy and then use the pathfinder to send the protagonist there and attack
+}
+
+void WorldView::takeNearestHealthPack(){
+    //find nearest healthpack and then use the pathfinder to send the protagonist there and increase health
+}
+
 void WorldView::poisonLevelUpdatedSlot(int value)
 {
     // show the poision on screen

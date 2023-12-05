@@ -13,4 +13,12 @@
 - Kris - Handling signals to game logic and respons to view
 - Hussain - Signals and slots and emitting all signals
 
+## Week 9 - Tasks
 
+- Continuation of last weeks tasks
+
+## Week 10 - Tasks
+
+- Jorge - Finish graphical view
+- Kris - Implement attack function and energy
+- Hussain - Implement text view and switching between the views
