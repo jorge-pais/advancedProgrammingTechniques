@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     wView->setDelegate(worldDelegate);
 
     QString worldPath{":/images/resources/world_images/worldmap.png"};
-    world->createWorld(worldPath, 0, 0, 0.0);
+    world->createWorld(worldPath, 2, 0, 0.0);
 
 
     // Initialize GraphicalView
@@ -30,8 +30,11 @@ MainWindow::MainWindow(QWidget *parent)
     worldDelegate->connectSlots();
     wView->connectSlots();
 
-
+    // render the background tiles;
     gView->renderTiles();
+    gView->renderPlayer();
+    gView->renderEntities();
+
     tView->renderTiles();
 }
 

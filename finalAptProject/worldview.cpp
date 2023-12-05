@@ -27,28 +27,29 @@ void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {
-    int x = 0, y = 0;
+    int dx = 0, dy = 0;
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
     case Qt::Key_Up:
     case Qt::Key_W:
-        y++;
+        dy++;
         break;
     case Qt::Key_Left:
     case Qt::Key_A:
-        x--;
+        dx--;
         break;
     case Qt::Key_Down:
     case Qt::Key_S:
-        y--;
+        dy--;
         break;
     case Qt::Key_Right:
     case Qt::Key_D:
-        x++;
-        break;       
+        dx++;
+        break;
     }
     //handle the events and then emit these signals with appropriate parameters
-    emit playerMovedSignal(x, y);
+    emit playerMovedSignal(dx, dy);
+    emit attackSignal(nullptr);
 }
 
 void WorldView::attackNearestEnemy(){

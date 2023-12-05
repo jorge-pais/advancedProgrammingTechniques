@@ -1,10 +1,8 @@
 #include "graphicalview.h"
 
-GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate)
-{
-    this->view = graphicsView;
-    this->scene = scene;
-    this->delegate = delegate;
+GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate) :
+    view(graphicsView), scene(scene), delegate(delegate)
+{   
     // Create the scene
     graphicsView->setScene(scene);
 }
@@ -25,22 +23,25 @@ void GraphicalView::renderTiles(){
                        QPen(Qt::NoPen),
                        QBrush(QColor(255*value, 255*value, 255*value)));
     }
+
     return;
 }
 
-void GraphicalView::addPlayer(int xStart, int yStart){
-    QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");
+void GraphicalView::renderEntities(){
+    std::cout << "renderEntities() called" << std::endl;
 
-    //Resize the sprite
-    playerSprite = playerSprite.scaled(TILE_SIZE, TILE_SIZE,
-                                       Qt::KeepAspectRatio,
-                                       Qt::SmoothTransformation); // facing right
-    player = new QGraphicsPixmapItem(playerSprite);
+    for(const auto & enemyPtr : delegate->getWorldEnemies()){
+        //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
+        SpriteWithValue* a = new SpriteWithValue(enemyPtr->getXPos(), enemyPtr->getYPos(), enemyPtr->getValue());
+        entities.push_back(a);
+        scene->addItem(a->sprite);
+        scene->addItem(a->text);
+    }
+}
 
-    scene->addItem(player);
-
-    // Spawn player in random position
-
-    player->setPos(yStart, xStart);
-    player->setZValue(1);
+// Initialize the player, after this the render/update method should be called
+void GraphicalView::renderPlayer(){
+    player = new SpriteWithValue(delegate->getWorldProtagonist());
+    scene->addItem(player->sprite);
+    scene->addItem(player->text);
 }
