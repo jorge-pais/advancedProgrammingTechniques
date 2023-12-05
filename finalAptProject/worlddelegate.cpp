@@ -22,19 +22,41 @@ void WorldDelegate::connectSlots(){
         }
 }
 
-std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldTiles()
-{
-    return world->getTiles();
+/// I believe this function is very necessary, since there is no way
+/// easy way to move the unique_ptr back to the world vector, surprisingly
+void WorldDelegate::initializeWorld(){
+    //if (tiles == nullptr && healthPacks != nullptr && enemies != nullptr) return
+
+    for(auto & tile : world->getTiles()){
+        std::shared_ptr<Tile> sharedTile= std::move(tile);
+        tiles.push_back(sharedTile);
+    }
+
+    for(auto & enemy : world->getEnemies()){
+        std::shared_ptr<Enemy> sharedEnemy= std::move(enemy);
+        enemies.push_back(sharedEnemy);
+    }
+
+    for(auto & healthPack : world->getTiles()){
+        std::shared_ptr<Tile> sharedHealthPack= std::move(healthPack);
+        tiles.push_back(sharedHealthPack);
+    }
+
 }
 
-std::vector<std::unique_ptr<Enemy>> WorldDelegate::getWorldEnemies()
+std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldTiles()
 {
-    return world->getEnemies();
+    return this->tiles;
 }
 
-std::vector<std::unique_ptr<Tile>> WorldDelegate::getWorldHealthPacks()
+std::vector<std::shared_ptr<Enemy>> WorldDelegate::getWorldEnemies()
 {
-    return world->getHealthPacks();
+    return this->enemies;
+}
+
+std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldHealthPacks()
+{
+    return this->healthPacks;
 }
 
 int WorldDelegate::getWorldRows() const

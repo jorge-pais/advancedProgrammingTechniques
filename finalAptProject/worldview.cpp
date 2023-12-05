@@ -49,7 +49,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     }
     //handle the events and then emit these signals with appropriate parameters
     emit playerMovedSignal(dx, dy);
-    emit attackSignal(nullptr);
+    //emit attackSignal(nullptr);
 }
 
 void WorldView::attackNearestEnemy(){

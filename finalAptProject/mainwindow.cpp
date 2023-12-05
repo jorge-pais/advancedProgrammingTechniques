@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     QString worldPath{":/images/resources/world_images/worldmap.png"};
     world->createWorld(worldPath, 2, 0, 0.0);
 
+    // INITIALIZE THE WORLDDELEGATE, WE COPY EVERYTHING
+    worldDelegate->initializeWorld();
 
     // Initialize GraphicalView
     QGraphicsScene * scene = new QGraphicsScene();

@@ -11,10 +11,10 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
 void GraphicalView::renderTiles(){
     std::cout << "renderTiles() called" << std::endl;
 
-    std::vector<std::unique_ptr<Tile>> worldTiles = delegate->getWorldTiles();
+    std::vector<std::shared_ptr<Tile>> worldTiles = delegate->getWorldTiles();
 
     float value; int x, y;
-    for(const auto& tilePtr : worldTiles){ // This is how you pass the tiles by referece!
+    for(auto& tilePtr : worldTiles){ // This is how you pass the tiles by referece!
         x = tilePtr->getXPos();
         y = tilePtr->getYPos();
         value = tilePtr->getValue();

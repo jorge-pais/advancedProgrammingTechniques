@@ -14,14 +14,19 @@ class WorldDelegate : public QObject
 private:
     std::shared_ptr<WorldView> view;
     std::shared_ptr<World> world;
-    std::vector<std::unique_ptr<Tile>> tiles;
+
+    // Copied from world possibly
+    std::vector<std::shared_ptr<Tile>> tiles;
+    std::vector<std::shared_ptr<Enemy>> enemies;
+    std::vector<std::shared_ptr<Tile>> healthPacks;
 
 public:
     WorldDelegate();
     WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
-    std::vector<std::unique_ptr<Tile>> getWorldTiles();
-    std::vector<std::unique_ptr<Enemy>> getWorldEnemies();
-    std::vector<std::unique_ptr<Tile>> getWorldHealthPacks();
+    void initializeWorld();
+    std::vector<std::shared_ptr<Tile>> getWorldTiles();
+    std::vector<std::shared_ptr<Enemy>> getWorldEnemies();
+    std::vector<std::shared_ptr<Tile>> getWorldHealthPacks();
     int getWorldRows() const;
     int getWorldColumns() const;
     std::unique_ptr<Protagonist> getWorldProtagonist() const;
