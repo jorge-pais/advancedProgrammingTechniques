@@ -4,8 +4,8 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldViewCat("worldView");
 
-WorldView::WorldView(){
-
+WorldView::WorldView(MainWindow * mainWindow){
+    window = mainWindow;
 }
 
 //WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate){}
@@ -16,7 +16,7 @@ void WorldView::connectSlots(){
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
-    connect(dynamic_cast<MainWindow*>(parent()), &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+    connect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
 
     for(auto& enemy : delegate->getWorldEnemies()){
         QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
@@ -34,8 +34,10 @@ void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {
-    qCDebug(worldViewCat) << "window event SLOT called";
+    //qCDebug(worldViewCat) << "window event SLOT called";
+    std::cout << "window event SLOT called" << std::endl;
     int dx = 0, dy = 0;
+
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
     case Qt::Key_Up:

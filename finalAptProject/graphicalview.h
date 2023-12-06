@@ -37,7 +37,7 @@ struct SpriteWithValue{
         }
     }
 
-    SpriteWithValue(std::unique_ptr<Protagonist> prog){
+    SpriteWithValue(std::shared_ptr<Protagonist> prog){
         QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");
         playerSprite = playerSprite.scaled(TILE_SIZE, TILE_SIZE,
                                            Qt::KeepAspectRatio,

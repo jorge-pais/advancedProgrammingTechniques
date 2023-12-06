@@ -11,6 +11,8 @@
 #include "mainwindow.h"
 
 class WorldDelegate;
+class MainWindow;
+
 class WorldView : public QObject
 {
     Q_OBJECT
@@ -19,8 +21,11 @@ private:
     std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
 
+    MainWindow * window;
+
 public:
-    WorldView();
+    //WorldView();
+    WorldView(MainWindow * mainWindow);
     //WorldView(WorldDelegate& delegate);
     void setGraphicalView(std::shared_ptr<GraphicalView> gView);
     void setTextView(std::shared_ptr<TextView> tView);

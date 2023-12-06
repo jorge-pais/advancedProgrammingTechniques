@@ -20,16 +20,18 @@ private:
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Tile>> healthPacks;
 
+    std::shared_ptr<Protagonist> protagonist;
+
 public:
     WorldDelegate();
     WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
-    void initializeWorld();
+    void initializeWDelegate();
     std::vector<std::shared_ptr<Tile>> getWorldTiles();
     std::vector<std::shared_ptr<Enemy>> getWorldEnemies();
     std::vector<std::shared_ptr<Tile>> getWorldHealthPacks();
     int getWorldRows() const;
     int getWorldColumns() const;
-    std::unique_ptr<Protagonist> getWorldProtagonist() const;
+    std::shared_ptr<Protagonist> getWorldProtagonist() const;
     void setProtagonistHealth(float healthValue);
     void setProtagonistPosition(int newWorldX, int newWorldY);
     void setProtagonistEnergy(float energyValue);

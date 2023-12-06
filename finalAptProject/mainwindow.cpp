@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow),
     world(std::make_shared<World>()),
-    wView(std::make_shared<WorldView>()),
+    wView(std::make_shared<WorldView>(this)),
     worldDelegate(std::make_shared<WorldDelegate>(wView, world))
 
 {
@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     world->createWorld(worldPath, 2, 2, 0.0);
 
     // INITIALIZE THE WORLDDELEGATE, WE COPY EVERYTHING
-    worldDelegate->initializeWorld();
+    worldDelegate->initializeWDelegate();
 
     // Initialize GraphicalView
     QGraphicsScene * scene = new QGraphicsScene();
@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // render the background tiles;
     gView->renderTiles();
-    gView->renderPlayer();
     gView->renderEntities();
+    gView->renderPlayer();
 
     tView->renderTiles();
 }
