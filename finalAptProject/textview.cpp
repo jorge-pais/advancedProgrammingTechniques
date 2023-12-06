@@ -4,12 +4,11 @@
 #include "qloggingcategory.h"
 QLoggingCategory textViewCat("textView");
 
-TextView::TextView(QTextBrowser* textView, std::shared_ptr<WorldView> view)
+TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view)
 {
     this->textView = textView;
     this->view = view;
-    availableCommands << "up" << "right" << "down" << "left" << "goto" << "attack" << "take" << "help"; // Add available commands
-    connect(dynamic_cast<MainWindow*>(parent()), &MainWindow::mainWindowEventSignal, this, &TextView::mainWindowEventSlot);
+    this->lineEdit = lineEdit;
 }
 
 void TextView::renderTiles()
@@ -163,29 +162,3 @@ void TextView::printUnknownCommand()
     printMessage("Unknown command. Type 'help' for a list of available commands.");
 }
 
-void TextView::updateCommandSuggestions(const QString& partialCommand)
-{
-    QStringList suggestions;
-    for (const QString& command : availableCommands) {
-        if (command.startsWith(partialCommand, Qt::CaseInsensitive)) {
-            suggestions << command;
-        }
-    }
-    if (!suggestions.isEmpty()) {
-        QString suggestionText = "Suggestions: " + suggestions.join(", ");
-        printMessage(suggestionText);
-    }
-}
-
-void TextView::mainWindowEventSlot(QKeyEvent* event)
-{
-    qCDebug(textViewCat) << "event slot";
-    if (event->key() == Qt::Key_Tab) {
-        qCDebug(textViewCat) << "tab";
-        QString currentText = textView->toPlainText();
-        QStringList lines = currentText.split("\n");
-        QString lastLine = lines.last().simplified();
-        QString partialCommand = lastLine.section(' ', -1).trimmed(); // Get the last word
-        updateCommandSuggestions(partialCommand);
-    }
-}
