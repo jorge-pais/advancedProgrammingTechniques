@@ -28,10 +28,13 @@ public:
     TextView(QTextBrowser* textView, std::shared_ptr<WorldView> view);
     void renderTiles();
     void processCommand(const QString& command);
+    std::vector<std::shared_ptr<Tile>> worldTiles;
+    std::vector<std::shared_ptr<Enemy>> worldEnemies;
+    std::vector<std::shared_ptr<Tile>> worldHealthPacks;
+    std::shared_ptr<Protagonist> protagonist;
 
     private:
         QTextBrowser* textView;
-        //QGraphicsScene* scene;
         std::shared_ptr<WorldView> view;
         QStringList availableCommands;
 
