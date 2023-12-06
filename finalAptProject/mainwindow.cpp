@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     worldDelegate->connectSlots();
     wView->connectSlots();
+    wView->setGraphicalView(gView);
 
     // render the background tiles;
     gView->renderTiles();

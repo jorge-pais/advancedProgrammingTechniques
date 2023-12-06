@@ -27,6 +27,10 @@ void WorldView::connectSlots(){
     }
 }
 
+void WorldView::setGraphicalView(std::shared_ptr<GraphicalView> view){
+    this->gView = view;
+}
+
 void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
     qCDebug(worldViewCat) << "setDelegate() called";
     this->delegate = del;
