@@ -46,7 +46,7 @@ void WorldDelegate::initializeWDelegate(){
         enemies.push_back(sharedEnemy);
     }
 
-    for(auto & healthPack : world->getTiles()){
+    for(auto & healthPack : world->getHealthPacks()){
         std::shared_ptr<Tile> sharedHealthPack= std::move(healthPack);
         healthPacks.push_back(sharedHealthPack);
     }
