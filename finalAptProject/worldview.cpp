@@ -91,6 +91,7 @@ void WorldView::positionChangedSlot(int x, int y)
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
+    gView->player->setHealth(h);
     // show the health bar changing on screen
 }
 
@@ -103,5 +104,8 @@ void WorldView::protagonistEnergyChangedSlot(int e)
 void WorldView::enemyDeadSlot()
 {
     qCDebug(worldViewCat) << "enemyDeadSlot() called";
+    for(auto& enemy : gView->entities){
+        //if(enemy->)
+    }
     // show the enemy dying on screen
 }

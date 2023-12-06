@@ -172,7 +172,7 @@ void WorldDelegate::movedSlot(int x, int y)
 
     auto enemies = getWorldEnemies();
     for(const auto& enemy : enemies){
-        if(enemy->getXPos() == newX && enemy->getYPos() == newY){
+        if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
             attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
             return;
         }
