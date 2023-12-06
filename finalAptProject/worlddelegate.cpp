@@ -130,7 +130,7 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     if (enemyType == "PEnemy") {
         emit poisonSignal();
     }
-    auto tiles = world->getTiles();
+    auto tiles = getWorldTiles();
     auto protagonist = world->getProtagonist();
     int ex = enemy->getXPos();
     int ey = enemy->getYPos();
@@ -152,22 +152,7 @@ void WorldDelegate::movedSlot(int x, int y)
         return;
     }
 
-    auto enemies = world->getEnemies();
-    for(const auto& enemy : enemies){
-        if(enemy->getXPos() == newX && enemy->getYPos() == newY){
-            attack(std::move(const_cast<std::unique_ptr<Enemy>&>(enemy)));
-            return;
-        }
-    }
-
-    auto healthpacks = world->getHealthPacks();
-    for(const auto& pack : healthpacks){
-        if(pack->getXPos() == newX && pack->getYPos() == newY){
-            protagonist->setHealth(protagonist->getHealth() + pack->getValue());
-        }
-    }
-
-    auto tiles = world->getTiles();
+    auto tiles = getWorldTiles();
     float difference = 0;
     for(const auto& tile : tiles){
         if(tile->getXPos() == x && tile->getYPos() == y){
@@ -180,7 +165,25 @@ void WorldDelegate::movedSlot(int x, int y)
     if(difference < 0){
         difference = -difference;
     }
+    if((protagonist->getEnergy() - difference)*0.05 < 0){
+        return;
+    }
+
+    auto enemies = getWorldEnemies();
+    for(const auto& enemy : enemies){
+        if(enemy->getXPos() == newX && enemy->getYPos() == newY){
+            attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
+            return;
+        }
+    }
+
+    auto healthpacks = getWorldHealthPacks();
+    for(const auto& pack : healthpacks){
+        if(pack->getXPos() == newX && pack->getYPos() == newY){
+            protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+        }
+    }
 
     protagonist->setPos(newX, newY);
-    protagonist->setEnergy(protagonist->getEnergy() - difference);
+    protagonist->setEnergy((protagonist->getEnergy() - difference)*0.05);
 }
