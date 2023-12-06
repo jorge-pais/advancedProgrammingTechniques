@@ -71,21 +71,30 @@ void TextView::processCommand(const QString& command)
                 printArgs();// invalid number of arguments
             }
         };
+        int dx = 0, dy = 0;
+        commandHandlers["up"] = [&](const QStringList& args) {
+                //emit playerMovedSignal with y++
+                dy++;
+                emit view->playerMovedSignal(dx,dy);
 
-        commandHandlers["up"] = [this](const QStringList& args) {
-                // emit playerMovedSignal with y++
         };
 
-        commandHandlers["right"] = [this](const QStringList& args) {
+        commandHandlers["right"] = [&](const QStringList& args) {
                  // emit playerMovedSignal with x++
+                dx++;
+                emit view->playerMovedSignal(dx,dy);
         };
 
-        commandHandlers["down"] = [this](const QStringList& args) {
+        commandHandlers["down"] = [&](const QStringList& args) {
                  // emit playerMovedSignal with y--
+                dy--;
+                emit view->playerMovedSignal(dx,dy);
         };
 
-        commandHandlers["left"] = [this](const QStringList& args) {
+        commandHandlers["left"] = [&](const QStringList& args) {
                  // emit playerMovedSignal with x--
+                dx--;
+                emit view->playerMovedSignal(dx,dy);
         };
 
         commandHandlers["attack"] = [this](const QStringList& args) {
