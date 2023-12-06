@@ -51,22 +51,32 @@ struct SpriteWithValue{
         text->setZValue(1);
     }
 
-    SpriteWithValue(int x, int y, float value){
-        QPixmap enemySprite = QPixmap(":/images/resources/entities/smartball-2.png");
+    SpriteWithValue(std::shared_ptr<Tile> entity){
+    //SpriteWithValue(int x, int y, float value){
+
+        QPixmap spritePixmap;
+
+        if(dynamic_cast<PEnemy*>(entity.get())){
+            spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
+        }else if(dynamic_cast<Enemy*>(entity.get())){
+            spritePixmap = QPixmap(":/images/resources/entities/smartball-2.png");
+        }else{
+            spritePixmap = QPixmap(":/images/resources/entities/platter.png");
+        }
 
         //if(dynamic_cast<PEnemy*>(entity))
         //    enemySprite = QPixmap(":/images/resources/entities/tux.png");
         //else
         //enemySprite = QPixmap(":/images/resources/entities/smartball-2.png");
 
-        enemySprite = enemySprite.scaled(TILE_SIZE, TILE_SIZE,
+        spritePixmap = spritePixmap.scaled(TILE_SIZE, TILE_SIZE,
                                            Qt::KeepAspectRatio,
                                            Qt::SmoothTransformation); // facing
 
-        sprite = new QGraphicsPixmapItem(enemySprite);
-        text = new QGraphicsTextItem(QString::number(value));
+        sprite = new QGraphicsPixmapItem(spritePixmap);
+        text = new QGraphicsTextItem(QString::number(entity->getValue()));
 
-        setPosition(x, y);
+        setPosition(entity->getXPos(), entity->getYPos());
         sprite->setZValue(1);
         text->setZValue(1);
     }
