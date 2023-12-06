@@ -22,3 +22,9 @@
 - Jorge - Finish graphical view
 - Kris - Implement attack function and energy
 - Hussain - Implement text view and switching between the views
+
+## Week 11 - Tasks
+
+- Jorge - 
+- Kris - 
+- Hussain - Basic working textview and autocomplete
