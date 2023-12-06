@@ -86,23 +86,59 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 {
     std::string enemyType = enemyStatus(*enemy);
     if (enemyType == "PEnemy") {
-            emit poisonSignal();
-        }
+        emit poisonSignal();
+    }
     auto tiles = world->getTiles();
-        auto protagonist = world->getProtagonist();
-    int px = protagonist->getXPos();
-    int py = protagonist->getYPos();
+    auto protagonist = world->getProtagonist();
     int ex = enemy->getXPos();
     int ey = enemy->getYPos();
-    if((px == ex && (py == ey - 1 || py == ey +1)) || (py == ey && (px == ex - 1 || px == ex +1))){
-        protagonist->setHealth(protagonist->getHealth()-enemy->getValue());
-        if(enemy->getValue() < protagonist->getHealth()){
-            enemy->setDefeated(true);
-        }
+
+    protagonist->setHealth(protagonist->getHealth()-enemy->getValue());
+    if(enemy->getValue() < protagonist->getHealth()){
+        protagonist->setPos(ex, ey);
+        enemy->setDefeated(true);
     }
 }
 
 void WorldDelegate::movedSlot(int x, int y)
 {
-    // TODO
+    auto protagonist = world->getProtagonist();
+    int newX = protagonist->getXPos() + x;
+    int newY = protagonist->getYPos() + y;
+
+    if(newX < 0 || newY < 0 || (newX > world->getCols()) || (newY > world->getRows())){
+        return;
+    }
+
+    auto enemies = world->getEnemies();
+    for(const auto& enemy : enemies){
+        if(enemy->getXPos() == newX && enemy->getYPos() == newY){
+            attack(std::move(const_cast<std::unique_ptr<Enemy>&>(enemy)));
+            return;
+        }
+    }
+
+    auto healthpacks = world->getHealthPacks();
+    for(const auto& pack : healthpacks){
+        if(pack->getXPos() == newX && pack->getYPos() == newY){
+            protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+        }
+    }
+
+    auto tiles = world->getTiles();
+    float difference = 0;
+    for(const auto& tile : tiles){
+        if(tile->getXPos() == x && tile->getYPos() == y){
+            difference += tile->getValue();
+        }
+        if(tile->getXPos() == newX && tile->getYPos() == newY){
+            difference -= tile->getValue();
+        }
+    }
+    if(difference < 0){
+        difference = -difference;
+    }
+
+    protagonist->setPos(newX, newY);
+    protagonist->setEnergy(protagonist->getEnergy() - difference);
 }
