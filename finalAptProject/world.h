@@ -113,5 +113,4 @@ private:
     std::vector<std::unique_ptr<Tile>> healthPacks;
 };
 
-
 #endif // WORLD_H

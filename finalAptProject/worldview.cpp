@@ -27,8 +27,9 @@ void WorldView::connectSlots(){
     }
 }
 
-void WorldView::setGraphicalView(std::shared_ptr<GraphicalView> view){
-    this->gView = view;
+void WorldView::setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr<TextView> text){
+    this->gView = graphic;
+    this->tView = text;
 }
 
 void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){

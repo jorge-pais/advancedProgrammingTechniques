@@ -46,12 +46,11 @@ void WorldDelegate::initializeWDelegate(){
         enemies.push_back(sharedEnemy);
     }
 
-    for(auto & healthPack : world->getTiles()){
+    for(auto & healthPack : world->getHealthPacks()){
         std::shared_ptr<Tile> sharedHealthPack= std::move(healthPack);
         healthPacks.push_back(sharedHealthPack);
     }
     this->protagonist = std::move(world->getProtagonist());
-
 }
 
 std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldTiles()
@@ -115,13 +114,9 @@ std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
     qCDebug(worldDelegateCat) << "enemy() called";
     if (dynamic_cast<PEnemy*>(&enemy))
-    {
         return "PEnemy";
-    }
     else
-    {
         return "Regular";
-    }
 }
 
 void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)

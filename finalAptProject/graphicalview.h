@@ -14,15 +14,15 @@
 
 #include "worlddelegate.h"
 
-#define TILE_SIZE 40 ///TODO this define is different across files
+#define TILE_SIZE 40
 #define TEXT_OFFSET 25
 
+/// MAKE THIS INTO ANOTHER CLASS
 struct SpriteWithValue{
-    QGraphicsPixmapItem *sprite;
-    QGraphicsTextItem *text;
-    Tile* tile;
+    QGraphicsPixmapItem * sprite;
+    QGraphicsTextItem * text;
 
-    SpriteWithValue() : sprite(nullptr), text(nullptr), tile(nullptr){}
+    SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
     void setPosition(int x, int y){
         if(sprite)
@@ -56,6 +56,8 @@ struct SpriteWithValue{
 
         QPixmap spritePixmap;
 
+        text = new QGraphicsTextItem(QString::number(entity->getValue()));
+
         if(dynamic_cast<PEnemy*>(entity.get())){
             spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
         }else if(dynamic_cast<Enemy*>(entity.get())){
@@ -64,17 +66,11 @@ struct SpriteWithValue{
             spritePixmap = QPixmap(":/images/resources/entities/platter.png");
         }
 
-        //if(dynamic_cast<PEnemy*>(entity))
-        //    enemySprite = QPixmap(":/images/resources/entities/tux.png");
-        //else
-        //enemySprite = QPixmap(":/images/resources/entities/smartball-2.png");
-
         spritePixmap = spritePixmap.scaled(TILE_SIZE, TILE_SIZE,
                                            Qt::KeepAspectRatio,
                                            Qt::SmoothTransformation); // facing
 
         sprite = new QGraphicsPixmapItem(spritePixmap);
-        text = new QGraphicsTextItem(QString::number(entity->getValue()));
 
         setPosition(entity->getXPos(), entity->getYPos());
         sprite->setZValue(1);
