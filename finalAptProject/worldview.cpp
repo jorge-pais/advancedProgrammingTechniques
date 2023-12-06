@@ -31,6 +31,9 @@ void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
     qCDebug(worldViewCat) << "setDelegate() called";
     this->delegate = del;
 }
+std::shared_ptr<WorldDelegate> WorldView::getDelegate() const {
+    return delegate;
+}
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {

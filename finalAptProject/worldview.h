@@ -1,4 +1,4 @@
-#ifndef WORLDVIEW_H
+﻿#ifndef WORLDVIEW_H
 #define WORLDVIEW_H
 
 #include <QObject>
@@ -25,6 +25,7 @@ public:
     void setGraphicalView(std::shared_ptr<GraphicalView> gView);
     void setTextView(std::shared_ptr<TextView> tView);
     void setDelegate(std::shared_ptr<WorldDelegate> delegate);
+    std::shared_ptr<WorldDelegate> getDelegate() const;
     void connectSlots();
     void attack();//what is this for?
     void attackNearestEnemy(); //used in text view
