@@ -36,6 +36,8 @@ public:
     void attackNearestEnemy(); //used in text view
     void takeNearestHealthPack();
 
+    std::shared_ptr<WorldDelegate> getDelegate() const;
+
 signals:
     void playerMovedSignal(int x, int y);
 

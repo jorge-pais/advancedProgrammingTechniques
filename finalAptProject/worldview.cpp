@@ -4,11 +4,14 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldViewCat("worldView");
 
+std::shared_ptr<WorldDelegate> WorldView::getDelegate() const
+{
+    return delegate;
+}
+
 WorldView::WorldView(MainWindow * mainWindow){
     window = mainWindow;
 }
-
-//WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate){}
 
 void WorldView::connectSlots(){
     qCDebug(worldViewCat) << "connectSlots() called";
