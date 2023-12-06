@@ -33,7 +33,7 @@ void WorldDelegate::connectSlots(){
 ///
 /// For now we're only copying the vectors, perhaps the protagonist
 /// also needs to be copied.
-void WorldDelegate::initializeWorld(){
+void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
     //if (tiles == nullptr && healthPacks != nullptr && enemies != nullptr) return
     for(auto & tile : world->getTiles()){
@@ -50,6 +50,7 @@ void WorldDelegate::initializeWorld(){
         std::shared_ptr<Tile> sharedHealthPack= std::move(healthPack);
         healthPacks.push_back(sharedHealthPack);
     }
+    this->protagonist = std::move(world->getProtagonist());
 
 }
 
@@ -83,10 +84,10 @@ int WorldDelegate::getWorldColumns() const
     return world->getCols();
 }
 
-std::unique_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const
+std::shared_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const
 {
     qCDebug(worldDelegateCat) << "getWorldProtagonist() called";
-    return world->getProtagonist();
+    return this->protagonist;
 }
 
 void WorldDelegate::setProtagonistHealth(float healthValue)

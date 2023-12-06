@@ -36,7 +36,15 @@ void GraphicalView::renderEntities(){
 
     for(const auto & enemyPtr : delegate->getWorldEnemies()){
         //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
-        SpriteWithValue* a = new SpriteWithValue(enemyPtr->getXPos(), enemyPtr->getYPos(), enemyPtr->getValue());
+        SpriteWithValue* a = new SpriteWithValue(enemyPtr);
+        entities.push_back(a);
+        scene->addItem(a->sprite);
+        scene->addItem(a->text);
+    }
+
+    for(const auto & healthPtr : delegate->getWorldHealthPacks()){
+        //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
+        SpriteWithValue* a = new SpriteWithValue(healthPtr);
         entities.push_back(a);
         scene->addItem(a->sprite);
         scene->addItem(a->text);
