@@ -144,6 +144,7 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 
 void WorldDelegate::movedSlot(int x, int y)
 {
+    std::cout << "movedslot called with x: " << x << " and y: " << y << std::endl;
     auto protagonist = world->getProtagonist();
     int newX = protagonist->getXPos() + x;
     int newY = protagonist->getYPos() + y;

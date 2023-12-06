@@ -56,6 +56,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         break;
     }
     //handle the events and then emit these signals with appropriate parameters
+    std::cout << "moved signal emitted with x: " << dx << " and y: " << dy << std::endl;
     emit playerMovedSignal(dx, dy);
     //emit attackSignal(nullptr);
 }
@@ -78,6 +79,7 @@ void WorldView::poisonLevelUpdatedSlot(int value)
 
 void WorldView::positionChangedSlot(int x, int y)
 {
+    std::cout << "postionslot called with x: " << x << " and y: " << y << std::endl;
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
 }
