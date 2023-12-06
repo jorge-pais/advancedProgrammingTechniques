@@ -1,5 +1,9 @@
 #include "graphicalview.h"
 
+// QT Logging
+#include "qloggingcategory.h"
+QLoggingCategory graphicalViewCat("graphicalView");
+
 GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate) :
     view(graphicsView), scene(scene), delegate(delegate)
 {   
@@ -9,12 +13,12 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
 
 /// THIS function should be called only when loading the map i guess...
 void GraphicalView::renderTiles(){
-    std::cout << "renderTiles() called" << std::endl;
+    qCDebug(graphicalViewCat) << "renderTiles() called";
 
-    std::vector<std::unique_ptr<Tile>> worldTiles = delegate->getWorldTiles();
+    std::vector<std::shared_ptr<Tile>> worldTiles = delegate->getWorldTiles();
 
     float value; int x, y;
-    for(const auto& tilePtr : worldTiles){ // This is how you pass the tiles by referece!
+    for(auto& tilePtr : worldTiles){ // This is how you pass the tiles by referece!
         x = tilePtr->getXPos();
         y = tilePtr->getYPos();
         value = tilePtr->getValue();
@@ -28,7 +32,7 @@ void GraphicalView::renderTiles(){
 }
 
 void GraphicalView::renderEntities(){
-    std::cout << "renderEntities() called" << std::endl;
+    qCDebug(graphicalViewCat) << "renderEntities() called";
 
     for(const auto & enemyPtr : delegate->getWorldEnemies()){
         //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
@@ -41,6 +45,7 @@ void GraphicalView::renderEntities(){
 
 // Initialize the player, after this the render/update method should be called
 void GraphicalView::renderPlayer(){
+    qCDebug(graphicalViewCat) << "renderPlayer() called";
     player = new SpriteWithValue(delegate->getWorldProtagonist());
     scene->addItem(player->sprite);
     scene->addItem(player->text);
