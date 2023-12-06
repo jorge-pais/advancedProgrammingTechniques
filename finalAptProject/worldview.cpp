@@ -40,14 +40,13 @@ void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {
     //qCDebug(worldViewCat) << "window event SLOT called";
-    std::cout << "window event SLOT called" << std::endl;
     int dx = 0, dy = 0;
 
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
     case Qt::Key_Up:
     case Qt::Key_W:
-        dy++;
+        dy--;
         break;
     case Qt::Key_Left:
     case Qt::Key_A:
@@ -55,7 +54,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         break;
     case Qt::Key_Down:
     case Qt::Key_S:
-        dy--;
+        dy++;
         break;
     case Qt::Key_Right:
     case Qt::Key_D:
@@ -63,7 +62,6 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         break;
     }
     //handle the events and then emit these signals with appropriate parameters
-    std::cout << "moved signal emitted with x: " << dx << " and y: " << dy << std::endl;
     emit playerMovedSignal(dx, dy);
     //emit attackSignal(nullptr);
 }
@@ -86,7 +84,6 @@ void WorldView::poisonLevelUpdatedSlot(int value)
 
 void WorldView::positionChangedSlot(int x, int y)
 {
-    std::cout << "postionslot called with x: " << x << " and y: " << y << std::endl;
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->setPosition(x, y);
@@ -95,6 +92,7 @@ void WorldView::positionChangedSlot(int x, int y)
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
+    gView->player->setHealth(h);
     // show the health bar changing on screen
 }
 
@@ -107,5 +105,8 @@ void WorldView::protagonistEnergyChangedSlot(int e)
 void WorldView::enemyDeadSlot()
 {
     qCDebug(worldViewCat) << "enemyDeadSlot() called";
+    for(auto& enemy : gView->entities){
+        //if(enemy->)
+    }
     // show the enemy dying on screen
 }

@@ -140,12 +140,11 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 
 void WorldDelegate::movedSlot(int x, int y)
 {
-    std::cout << "movedslot called with x: " << x << " and y: " << y << std::endl;
     auto protagonist = getWorldProtagonist();
     int newX = protagonist->getXPos() + x;
     int newY = protagonist->getYPos() + y;
 
-    if(newX < 0 || newY < 0 || (newX > world->getCols()) || (newY > world->getRows())){
+    if(newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)){
         return;
     }
 
@@ -162,13 +161,13 @@ void WorldDelegate::movedSlot(int x, int y)
     if(difference < 0){
         difference = -difference;
     }
-    if((protagonist->getEnergy() - difference)*0.05 < 0){
+    if(protagonist->getEnergy() - difference < 0){
         return;
     }
 
     auto enemies = getWorldEnemies();
     for(const auto& enemy : enemies){
-        if(enemy->getXPos() == newX && enemy->getYPos() == newY){
+        if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
             attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
             return;
         }
@@ -182,5 +181,6 @@ void WorldDelegate::movedSlot(int x, int y)
     }
 
     protagonist->setPos(newX, newY);
-    protagonist->setEnergy((protagonist->getEnergy() - difference)*0.05);
+    protagonist->setEnergy(protagonist->getEnergy() - difference);
+    std::cout << protagonist->getEnergy() << std::endl;
 }
