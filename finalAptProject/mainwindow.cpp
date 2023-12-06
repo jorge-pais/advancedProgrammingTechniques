@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     worldDelegate->connectSlots();
     wView->connectSlots();
-    wView->setGraphicalView(gView);
+    wView->setViews(gView, tView);
 
     // render the graphicalView tiles and entities;
     gView->renderTiles();
