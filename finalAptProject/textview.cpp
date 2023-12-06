@@ -4,12 +4,11 @@
 #include "qloggingcategory.h"
 QLoggingCategory textViewCat("textView");
 
-TextView::TextView(QTextBrowser* textView, std::shared_ptr<WorldView> view)
+TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view)
 {
     this->textView = textView;
     this->view = view;
-    availableCommands << "up" << "right" << "down" << "left" << "goto" << "attack" << "take" << "help"; // Add available commands
-    connect(dynamic_cast<MainWindow*>(parent()), &MainWindow::mainWindowEventSignal, this, &TextView::mainWindowEventSlot);
+    this->lineEdit = lineEdit;
 }
 
 void TextView::renderTiles()
@@ -17,10 +16,10 @@ void TextView::renderTiles()
     qCDebug(textViewCat) << "renderTiles() called";
     // get the game world data
     std::shared_ptr<WorldDelegate> delegate = view->getDelegate();
-    std::vector<std::shared_ptr<Tile>> worldTiles = delegate->getWorldTiles();
-    std::vector<std::shared_ptr<Enemy>> worldEnemies = delegate->getWorldEnemies();
-    std::vector<std::shared_ptr<Tile>> worldHealthPacks = delegate->getWorldHealthPacks();
-    std::unique_ptr<Protagonist> protagonist = delegate->getWorldProtagonist();
+    worldTiles = delegate->getWorldTiles();
+    worldEnemies = delegate->getWorldEnemies();
+    worldHealthPacks = delegate->getWorldHealthPacks();
+    protagonist = delegate->getWorldProtagonist();
 
     textView->clear();
     std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
@@ -34,6 +33,7 @@ void TextView::renderTiles()
     }
 
     worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
+    std::cout << protagonist->getYPos() << std::endl;
 
     for (const auto& healthPack : worldHealthPacks) {
          worldView[healthPack->getYPos()][healthPack->getXPos()] = 'H';
@@ -62,6 +62,7 @@ void TextView::processCommand(const QString& command)
         QMap<QString, std::function<void(const QStringList&)>> commandHandlers;
 
         commandHandlers["goto"] = [this](const QStringList& args) {
+            qCDebug(textViewCat) << "goto";
             // handle "goto x y"
             if (args.size() == 3) {
                 int x = args[1].toInt();
@@ -73,39 +74,46 @@ void TextView::processCommand(const QString& command)
         };
         int dx = 0, dy = 0;
         commandHandlers["up"] = [&](const QStringList& args) {
-                //emit playerMovedSignal with y++
-                dy++;
-                emit view->playerMovedSignal(dx,dy);
+            //emit playerMovedSignal with y++
+            qCDebug(textViewCat) << "up";
+            dy--;
+            emit view->playerMovedSignal(dx,dy);
 
         };
 
         commandHandlers["right"] = [&](const QStringList& args) {
-                 // emit playerMovedSignal with x++
-                dx++;
-                emit view->playerMovedSignal(dx,dy);
+            // emit playerMovedSignal with x++
+            qCDebug(textViewCat) << "right";
+            dx++;
+            emit view->playerMovedSignal(dx,dy);
         };
 
         commandHandlers["down"] = [&](const QStringList& args) {
-                 // emit playerMovedSignal with y--
-                dy--;
-                emit view->playerMovedSignal(dx,dy);
+           // emit playerMovedSignal with y--
+           qCDebug(textViewCat) << "down";
+           dy++;
+           emit view->playerMovedSignal(dx,dy);
         };
 
         commandHandlers["left"] = [&](const QStringList& args) {
-                 // emit playerMovedSignal with x--
-                dx--;
-                emit view->playerMovedSignal(dx,dy);
+            // emit playerMovedSignal with x--
+           qCDebug(textViewCat) << "left";
+           dx--;
+           emit view->playerMovedSignal(dx,dy);
         };
 
         commandHandlers["attack"] = [this](const QStringList& args) {
+            qCDebug(textViewCat) << "attack";
             view->attackNearestEnemy();
         };
 
         commandHandlers["take"] = [this](const QStringList& args) {
+            qCDebug(textViewCat) << "take";
             view->takeNearestHealthPack();
         };
 
         commandHandlers["help"] = [this](const QStringList& args) {
+            qCDebug(textViewCat) << "help";
             printHelp();// print list of available commands
         };
 
@@ -154,29 +162,3 @@ void TextView::printUnknownCommand()
     printMessage("Unknown command. Type 'help' for a list of available commands.");
 }
 
-void TextView::updateCommandSuggestions(const QString& partialCommand)
-{
-    QStringList suggestions;
-    for (const QString& command : availableCommands) {
-        if (command.startsWith(partialCommand, Qt::CaseInsensitive)) {
-            suggestions << command;
-        }
-    }
-    if (!suggestions.isEmpty()) {
-        QString suggestionText = "Suggestions: " + suggestions.join(", ");
-        printMessage(suggestionText);
-    }
-}
-
-void TextView::mainWindowEventSlot(QKeyEvent* event)
-{
-    qCDebug(textViewCat) << "event slot";
-    if (event->key() == Qt::Key_Tab) {
-        qCDebug(textViewCat) << "tab";
-        QString currentText = textView->toPlainText();
-        QStringList lines = currentText.split("\n");
-        QString lastLine = lines.last().simplified();
-        QString partialCommand = lastLine.section(' ', -1).trimmed(); // Get the last word
-        updateCommandSuggestions(partialCommand);
-    }
-}

@@ -39,9 +39,6 @@ void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
     qCDebug(worldViewCat) << "setDelegate() called";
     this->delegate = del;
 }
-std::shared_ptr<WorldDelegate> WorldView::getDelegate() const {
-    return delegate;
-}
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {
@@ -93,12 +90,14 @@ void WorldView::positionChangedSlot(int x, int y)
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->setPosition(x, y);
+    tView->renderTiles();
 }
 
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
     gView->player->setHealth(h);
+    //tView->protagonist->setHealth(h);
     // show the health bar changing on screen
 }
 
