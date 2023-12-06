@@ -14,7 +14,7 @@
 
 #include "worlddelegate.h"
 
-#define TILE_SIZE 40
+#define TILE_SIZE 40 ///TODO this define is different across files
 #define TEXT_OFFSET 25
 
 struct SpriteWithValue{

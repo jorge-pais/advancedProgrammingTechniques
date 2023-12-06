@@ -1,6 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+// QT Logging
+#include "qloggingcategory.h"
+QLoggingCategory mainWindowCat("mainWindow");
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow),

@@ -1,5 +1,9 @@
 #include "textview.h"
 
+// QT Logging
+#include "qloggingcategory.h"
+QLoggingCategory textViewCat("textView");
+
 TextView::TextView(QTextBrowser* textView, std::shared_ptr<WorldView> view)
 {
     this->textView = textView;
