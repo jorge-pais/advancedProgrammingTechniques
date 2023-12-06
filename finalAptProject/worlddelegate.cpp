@@ -10,8 +10,6 @@ WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<Wo
 {
     this->view = view;
     this->world = world;
-
-    //this->view->setDelegate(std::make_shared<WorldDelegate>(*this));
 }
 
 void WorldDelegate::connectSlots(){

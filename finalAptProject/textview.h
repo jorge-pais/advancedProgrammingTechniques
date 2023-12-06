@@ -15,7 +15,7 @@
 
 #include "worldview.h"
 
-#define TILE_SIZE 20
+//#define TILE_SIZE 20
 
 class WorldView;
 
