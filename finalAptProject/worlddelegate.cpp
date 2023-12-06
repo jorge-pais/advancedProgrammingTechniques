@@ -31,7 +31,7 @@ void WorldDelegate::connectSlots(){
 ///
 /// For now we're only copying the vectors, perhaps the protagonist
 /// also needs to be copied.
-void WorldDelegate::initializeWorld(){
+void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
     //if (tiles == nullptr && healthPacks != nullptr && enemies != nullptr) return
     for(auto & tile : world->getTiles()){
@@ -44,11 +44,11 @@ void WorldDelegate::initializeWorld(){
         enemies.push_back(sharedEnemy);
     }
 
-    for(auto & healthPack : world->getTiles()){
+    for(auto & healthPack : world->getHealthPacks()){
         std::shared_ptr<Tile> sharedHealthPack= std::move(healthPack);
         healthPacks.push_back(sharedHealthPack);
     }
-
+    this->protagonist = std::move(world->getProtagonist());
 }
 
 std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldTiles()
@@ -81,10 +81,10 @@ int WorldDelegate::getWorldColumns() const
     return world->getCols();
 }
 
-std::unique_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const
+std::shared_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const
 {
     qCDebug(worldDelegateCat) << "getWorldProtagonist() called";
-    return world->getProtagonist();
+    return this->protagonist;
 }
 
 void WorldDelegate::setProtagonistHealth(float healthValue)
@@ -112,13 +112,9 @@ std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
     qCDebug(worldDelegateCat) << "enemy() called";
     if (dynamic_cast<PEnemy*>(&enemy))
-    {
         return "PEnemy";
-    }
     else
-    {
         return "Regular";
-    }
 }
 
 void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
@@ -128,8 +124,8 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     if (enemyType == "PEnemy") {
         emit poisonSignal();
     }
-    auto tiles = world->getTiles();
-    auto protagonist = world->getProtagonist();
+    auto tiles = getWorldTiles();
+    auto protagonist = getWorldProtagonist();
     int ex = enemy->getXPos();
     int ey = enemy->getYPos();
 
@@ -142,30 +138,15 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 
 void WorldDelegate::movedSlot(int x, int y)
 {
-    auto protagonist = world->getProtagonist();
+    auto protagonist = getWorldProtagonist();
     int newX = protagonist->getXPos() + x;
     int newY = protagonist->getYPos() + y;
 
-    if(newX < 0 || newY < 0 || (newX > world->getCols()) || (newY > world->getRows())){
+    if(newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)){
         return;
     }
 
-    auto enemies = world->getEnemies();
-    for(const auto& enemy : enemies){
-        if(enemy->getXPos() == newX && enemy->getYPos() == newY){
-            attack(std::move(const_cast<std::unique_ptr<Enemy>&>(enemy)));
-            return;
-        }
-    }
-
-    auto healthpacks = world->getHealthPacks();
-    for(const auto& pack : healthpacks){
-        if(pack->getXPos() == newX && pack->getYPos() == newY){
-            protagonist->setHealth(protagonist->getHealth() + pack->getValue());
-        }
-    }
-
-    auto tiles = world->getTiles();
+    auto tiles = getWorldTiles();
     float difference = 0;
     for(const auto& tile : tiles){
         if(tile->getXPos() == x && tile->getYPos() == y){
@@ -178,7 +159,26 @@ void WorldDelegate::movedSlot(int x, int y)
     if(difference < 0){
         difference = -difference;
     }
+    if(protagonist->getEnergy() - difference < 0){
+        return;
+    }
+
+    auto enemies = getWorldEnemies();
+    for(const auto& enemy : enemies){
+        if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
+            attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
+            return;
+        }
+    }
+
+    auto healthpacks = getWorldHealthPacks();
+    for(const auto& pack : healthpacks){
+        if(pack->getXPos() == newX && pack->getYPos() == newY){
+            protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+        }
+    }
 
     protagonist->setPos(newX, newY);
     protagonist->setEnergy(protagonist->getEnergy() - difference);
+    std::cout << protagonist->getEnergy() << std::endl;
 }

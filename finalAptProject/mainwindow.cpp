@@ -9,9 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow),
     world(std::make_shared<World>()),
-    wView(std::make_shared<WorldView>()),
+    wView(std::make_shared<WorldView>(this)),
     worldDelegate(std::make_shared<WorldDelegate>(wView, world))
-
+///
 {
     ui->setupUi(this);
     srand(time(0));
@@ -19,10 +19,10 @@ MainWindow::MainWindow(QWidget *parent)
     wView->setDelegate(worldDelegate);
 
     QString worldPath{":/images/resources/world_images/worldmap.png"};
-    world->createWorld(worldPath, 2, 0, 0.0);
+    world->createWorld(worldPath, 2, 2, 0.0);
 
     // INITIALIZE THE WORLDDELEGATE, WE COPY EVERYTHING
-    worldDelegate->initializeWorld();
+    worldDelegate->initializeWDelegate();
 
     // Initialize GraphicalView
     QGraphicsScene * scene = new QGraphicsScene();
@@ -43,17 +43,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     worldDelegate->connectSlots();
     wView->connectSlots();
+    wView->setViews(gView, tView);
 
-    // render the background tiles;
+    // render the graphicalView tiles and entities;
     gView->renderTiles();
-    gView->renderPlayer();
     gView->renderEntities();
+    gView->renderPlayer();
 
     tView->renderTiles();
 }
 
-void MainWindow::submitCommand()
-{
+void MainWindow::submitCommand(){
     // Get the command from the QLineEdit
     QString command = ui->lineEdit->text();
 
@@ -70,12 +70,7 @@ void MainWindow::submitCommand()
 /// model then sends new game values to view to display
 /// view then gives these values to text or graphical view to render in appropriate way
 void MainWindow::keyPressEvent(QKeyEvent *event){
-
     emit mainWindowEventSignal(event);
-
-    //gView->view->centerOn(gView->player);
-
-    //gView->renderTiles();
 }
 
 MainWindow::~MainWindow()

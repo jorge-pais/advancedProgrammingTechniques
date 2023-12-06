@@ -4,8 +4,8 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldViewCat("worldView");
 
-WorldView::WorldView(){
-
+WorldView::WorldView(MainWindow * mainWindow){
+    window = mainWindow;
 }
 
 //WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate){}
@@ -16,7 +16,7 @@ void WorldView::connectSlots(){
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
-    connect(dynamic_cast<MainWindow*>(parent()), &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+    connect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
 
     for(auto& enemy : delegate->getWorldEnemies()){
         QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
@@ -25,6 +25,11 @@ void WorldView::connectSlots(){
             QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
         }
     }
+}
+
+void WorldView::setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr<TextView> text){
+    this->gView = graphic;
+    this->tView = text;
 }
 
 void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
@@ -37,13 +42,14 @@ std::shared_ptr<WorldDelegate> WorldView::getDelegate() const {
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {
-    qCDebug(worldViewCat) << "window event SLOT called";
+    //qCDebug(worldViewCat) << "window event SLOT called";
     int dx = 0, dy = 0;
+
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
     case Qt::Key_Up:
     case Qt::Key_W:
-        dy++;
+        dy--;
         break;
     case Qt::Key_Left:
     case Qt::Key_A:
@@ -51,7 +57,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         break;
     case Qt::Key_Down:
     case Qt::Key_S:
-        dy--;
+        dy++;
         break;
     case Qt::Key_Right:
     case Qt::Key_D:
@@ -83,11 +89,13 @@ void WorldView::positionChangedSlot(int x, int y)
 {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
+    gView->player->setPosition(x, y);
 }
 
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
+    gView->player->setHealth(h);
     // show the health bar changing on screen
 }
 
@@ -100,5 +108,8 @@ void WorldView::protagonistEnergyChangedSlot(int e)
 void WorldView::enemyDeadSlot()
 {
     qCDebug(worldViewCat) << "enemyDeadSlot() called";
+    for(auto& enemy : gView->entities){
+        //if(enemy->)
+    }
     // show the enemy dying on screen
 }

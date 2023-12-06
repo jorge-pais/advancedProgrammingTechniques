@@ -14,15 +14,15 @@
 
 #include "worlddelegate.h"
 
-#define TILE_SIZE 40 ///TODO this define is different across files
+#define TILE_SIZE 40
 #define TEXT_OFFSET 25
 
+/// MAKE THIS INTO ANOTHER CLASS
 struct SpriteWithValue{
-    QGraphicsPixmapItem *sprite;
-    QGraphicsTextItem *text;
-    Tile* tile;
+    QGraphicsPixmapItem * sprite;
+    QGraphicsTextItem * text;
 
-    SpriteWithValue() : sprite(nullptr), text(nullptr), tile(nullptr){}
+    SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
     void setPosition(int x, int y){
         if(sprite)
@@ -37,7 +37,7 @@ struct SpriteWithValue{
         }
     }
 
-    SpriteWithValue(std::unique_ptr<Protagonist> prog){
+    SpriteWithValue(std::shared_ptr<Protagonist> prog){
         QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");
         playerSprite = playerSprite.scaled(TILE_SIZE, TILE_SIZE,
                                            Qt::KeepAspectRatio,
@@ -51,22 +51,28 @@ struct SpriteWithValue{
         text->setZValue(1);
     }
 
-    SpriteWithValue(int x, int y, float value){
-        QPixmap enemySprite = QPixmap(":/images/resources/entities/smartball-2.png");
+    SpriteWithValue(std::shared_ptr<Tile> entity){
+    //SpriteWithValue(int x, int y, float value){
 
-        //if(dynamic_cast<PEnemy*>(entity))
-        //    enemySprite = QPixmap(":/images/resources/entities/tux.png");
-        //else
-        //enemySprite = QPixmap(":/images/resources/entities/smartball-2.png");
+        QPixmap spritePixmap;
 
-        enemySprite = enemySprite.scaled(TILE_SIZE, TILE_SIZE,
+        text = new QGraphicsTextItem(QString::number(entity->getValue()));
+
+        if(dynamic_cast<PEnemy*>(entity.get())){
+            spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
+        }else if(dynamic_cast<Enemy*>(entity.get())){
+            spritePixmap = QPixmap(":/images/resources/entities/smartball-2.png");
+        }else{
+            spritePixmap = QPixmap(":/images/resources/entities/platter.png");
+        }
+
+        spritePixmap = spritePixmap.scaled(TILE_SIZE, TILE_SIZE,
                                            Qt::KeepAspectRatio,
                                            Qt::SmoothTransformation); // facing
 
-        sprite = new QGraphicsPixmapItem(enemySprite);
-        text = new QGraphicsTextItem(QString::number(value));
+        sprite = new QGraphicsPixmapItem(spritePixmap);
 
-        setPosition(x, y);
+        setPosition(entity->getXPos(), entity->getYPos());
         sprite->setZValue(1);
         text->setZValue(1);
     }

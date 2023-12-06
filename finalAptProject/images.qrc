@@ -9,6 +9,10 @@
         <file>resources/entities/snowball-2.png</file>
         <file>resources/entities/smartball-2.png</file>
         <file>resources/entities/captain_left-2.png</file>
+        <file>resources/entities/platter.png</file>
+        <file>resources/entities/cpt-squished-left.png</file>
+        <file>resources/entities/mrs-squished-left.png</file>
+        <file>resources/entities/squished-left.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
