@@ -132,7 +132,7 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
         emit poisonSignal();
     }
     auto tiles = getWorldTiles();
-    auto protagonist = world->getProtagonist();
+    auto protagonist = getWorldProtagonist();
     int ex = enemy->getXPos();
     int ey = enemy->getYPos();
 
@@ -146,7 +146,7 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 void WorldDelegate::movedSlot(int x, int y)
 {
     std::cout << "movedslot called with x: " << x << " and y: " << y << std::endl;
-    auto protagonist = world->getProtagonist();
+    auto protagonist = getWorldProtagonist();
     int newX = protagonist->getXPos() + x;
     int newY = protagonist->getYPos() + y;
 
