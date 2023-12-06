@@ -30,10 +30,13 @@ public:
     void setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr<TextView> text);
     void setTextView(std::shared_ptr<TextView> tView);
     void setDelegate(std::shared_ptr<WorldDelegate> delegate);
+
     void connectSlots();
     void attack();//what is this for?
     void attackNearestEnemy(); //used in text view
     void takeNearestHealthPack();
+
+    std::shared_ptr<WorldDelegate> getDelegate() const;
 
 signals:
     void playerMovedSignal(int x, int y);

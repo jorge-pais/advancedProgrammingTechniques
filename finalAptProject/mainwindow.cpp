@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     world(std::make_shared<World>()),
     wView(std::make_shared<WorldView>(this)),
     worldDelegate(std::make_shared<WorldDelegate>(wView, world))
-///
+////////////////////////////////////////////////////////////////
 {
     ui->setupUi(this);
     srand(time(0));
@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Initialize GraphicalView
     QGraphicsScene * scene = new QGraphicsScene();
-    gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, worldDelegate);
+    gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, wView);
 
     //Initialize TextView
     tView = std::make_shared<TextView>(ui->textBrowser, wView);
