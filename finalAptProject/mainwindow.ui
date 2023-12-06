@@ -24,11 +24,11 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>Graphical</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -41,9 +41,53 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_4">
+       <property name="maximumSize">
+        <size>
+         <width>1258</width>
+         <height>867</height>
+        </size>
+       </property>
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>Text</string>
        </attribute>
+       <widget class="QWidget" name="horizontalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>3</y>
+          <width>1071</width>
+          <height>381</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QTextBrowser" name="textBrowser"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="geometry">
+         <rect>
+          <x>290</x>
+          <y>420</y>
+          <width>391</width>
+          <height>25</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>700</x>
+          <y>420</y>
+          <width>89</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Enter</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
