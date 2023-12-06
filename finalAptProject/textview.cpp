@@ -14,8 +14,42 @@ TextView::TextView(QTextBrowser* textView, std::shared_ptr<WorldView> view)
 
 void TextView::renderTiles()
 {
-    // Implement rendering logic for ASCII art-like representation
-    // Use worldview to get info about the world state from the model
+    qCDebug(textViewCat) << "renderTiles() called";
+    // get the game world data
+    std::shared_ptr<WorldDelegate> delegate = view->getDelegate();
+    std::vector<std::shared_ptr<Tile>> worldTiles = delegate->getWorldTiles();
+    std::vector<std::shared_ptr<Enemy>> worldEnemies = delegate->getWorldEnemies();
+    std::vector<std::shared_ptr<Tile>> worldHealthPacks = delegate->getWorldHealthPacks();
+    std::unique_ptr<Protagonist> protagonist = delegate->getWorldProtagonist();
+
+    textView->clear();
+    std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
+
+    for (const auto& enemy : worldEnemies) {
+        if (dynamic_cast<PEnemy*>(enemy.get())) {
+                   worldView[enemy->getYPos()][enemy->getXPos()] = 'Q';
+               } else {
+                   worldView[enemy->getYPos()][enemy->getXPos()] = 'E';
+               }
+    }
+
+    worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
+
+    for (const auto& healthPack : worldHealthPacks) {
+         worldView[healthPack->getYPos()][healthPack->getXPos()] = 'H';
+     }
+
+    // grid
+    for (const auto& row : worldView) {
+        QString line;
+        for (const auto& tile : row) {
+            line += tile;
+            line += " | "; // Add grid lines
+        }
+        // Append the line to the text view
+        textView->append(line);
+        textView->append(QString(line.size(), '-'));
+    }
 }
 
 void TextView::processCommand(const QString& command)
@@ -37,21 +71,30 @@ void TextView::processCommand(const QString& command)
                 printArgs();// invalid number of arguments
             }
         };
+        int dx = 0, dy = 0;
+        commandHandlers["up"] = [&](const QStringList& args) {
+                //emit playerMovedSignal with y++
+                dy++;
+                emit view->playerMovedSignal(dx,dy);
 
-        commandHandlers["up"] = [this](const QStringList& args) {
-                // emit playerMovedSignal with y++
         };
 
-        commandHandlers["right"] = [this](const QStringList& args) {
+        commandHandlers["right"] = [&](const QStringList& args) {
                  // emit playerMovedSignal with x++
+                dx++;
+                emit view->playerMovedSignal(dx,dy);
         };
 
-        commandHandlers["down"] = [this](const QStringList& args) {
+        commandHandlers["down"] = [&](const QStringList& args) {
                  // emit playerMovedSignal with y--
+                dy--;
+                emit view->playerMovedSignal(dx,dy);
         };
 
-        commandHandlers["left"] = [this](const QStringList& args) {
+        commandHandlers["left"] = [&](const QStringList& args) {
                  // emit playerMovedSignal with x--
+                dx--;
+                emit view->playerMovedSignal(dx,dy);
         };
 
         commandHandlers["attack"] = [this](const QStringList& args) {
@@ -98,6 +141,7 @@ void TextView::printMessage(const QString& message)
 {
     // Print a message to the text view
     textView->append(message);
+    qCDebug(textViewCat) << "print";
 }
 
 void TextView::printArgs()
@@ -126,7 +170,9 @@ void TextView::updateCommandSuggestions(const QString& partialCommand)
 
 void TextView::mainWindowEventSlot(QKeyEvent* event)
 {
+    qCDebug(textViewCat) << "event slot";
     if (event->key() == Qt::Key_Tab) {
+        qCDebug(textViewCat) << "tab";
         QString currentText = textView->toPlainText();
         QStringList lines = currentText.split("\n");
         QString lastLine = lines.last().simplified();
