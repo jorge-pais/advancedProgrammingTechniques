@@ -22,6 +22,8 @@ struct SpriteWithValue{
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
 
+    int x, y;
+
     SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
     void setPosition(int x, int y){
@@ -29,6 +31,8 @@ struct SpriteWithValue{
             sprite->setPos(x*TILE_SIZE, y*TILE_SIZE);
         if(text)
             text->setPos(x*TILE_SIZE, y*TILE_SIZE - TEXT_OFFSET);
+
+        this->x = x; this->y = y;
     }
 
     void setHealth(float health){
@@ -76,6 +80,9 @@ struct SpriteWithValue{
         sprite->setZValue(1);
         text->setZValue(1);
     }
+
+    //int getX() const { return x; }
+    //int getY() const { return y; }
 
     ~SpriteWithValue(){
         delete sprite;
