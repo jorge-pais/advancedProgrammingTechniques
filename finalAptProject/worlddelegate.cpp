@@ -175,6 +175,7 @@ void WorldDelegate::movedSlot(int x, int y)
     for(const auto& pack : healthpacks){
         if(pack->getXPos() == newX && pack->getYPos() == newY){
             protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+            pack->setValue(0);
         }
     }
 
