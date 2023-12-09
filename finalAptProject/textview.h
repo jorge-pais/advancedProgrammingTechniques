@@ -9,7 +9,9 @@
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QKeyEvent>
+#include <QLineEdit>
 #include <QTransform>
+#include <QCompleter>
 #include <ctime>
 #include <iostream>
 
@@ -25,24 +27,25 @@ class TextView: public QObject
 
 public:
     //TextView(QTextBrowser* textView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate);
-    TextView(QTextBrowser* textView, std::shared_ptr<WorldView> view);
+    TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view);
     void renderTiles();
     void processCommand(const QString& command);
+    std::vector<std::shared_ptr<Tile>> worldTiles;
+    std::vector<std::shared_ptr<Enemy>> worldEnemies;
+    std::vector<std::shared_ptr<Tile>> worldHealthPacks;
+    std::shared_ptr<Protagonist> protagonist;
 
     private:
         QTextBrowser* textView;
-        //QGraphicsScene* scene;
+        QCompleter* completer;
         std::shared_ptr<WorldView> view;
         QStringList availableCommands;
+        QLineEdit* lineEdit;
 
         void printHelp();
         void printMessage(const QString& message);
         void printArgs();
         void printUnknownCommand();
-        void updateCommandSuggestions(const QString& partialCommand);
-
-public slots:
-        void mainWindowEventSlot(QKeyEvent *event);
 };
 
 #endif // TEXTVIEW_H

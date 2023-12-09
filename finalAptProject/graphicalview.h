@@ -83,6 +83,7 @@ struct SpriteWithValue{
     }
 };
 
+class WorldView;
 class WorldDelegate;
 
 /// TODO: WE SHOULD REFACTOR THIS CLASS NAME INTO
@@ -90,7 +91,7 @@ class WorldDelegate;
 class GraphicalView
 {
 public:
-    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate);
+    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldView> worldView);
 
     SpriteWithValue * player;
     std::vector<SpriteWithValue *> entities;
@@ -105,7 +106,8 @@ public:
 
 private:
     QGraphicsScene* scene;
-    std::shared_ptr<WorldDelegate> delegate;
+    //std::shared_ptr<WorldDelegate> delegate;
+    std::shared_ptr<WorldView> worldView;
 };
 
 #endif // GRAPHICALVIEW_H

@@ -4,11 +4,14 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldViewCat("worldView");
 
+std::shared_ptr<WorldDelegate> WorldView::getDelegate() const
+{
+    return delegate;
+}
+
 WorldView::WorldView(MainWindow * mainWindow){
     window = mainWindow;
 }
-
-//WorldView::WorldView(WorldDelegate& delegate) : delegate(delegate){}
 
 void WorldView::connectSlots(){
     qCDebug(worldViewCat) << "connectSlots() called";
@@ -87,12 +90,14 @@ void WorldView::positionChangedSlot(int x, int y)
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->setPosition(x, y);
+    tView->renderTiles();
 }
 
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
     gView->player->setHealth(h);
+    //tView->protagonist->setHealth(h);
     // show the health bar changing on screen
 }
 

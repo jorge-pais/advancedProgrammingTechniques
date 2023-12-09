@@ -383,9 +383,13 @@ compiler_rcc_clean:
 qrc_images.cpp: images.qrc \
 		/usr/lib/qt5/bin/rcc \
 		resources/entities/tux.png \
+		resources/entities/mrs-squished-left.png \
+		resources/entities/squished-left.png \
+		resources/entities/cpt-squished-left.png \
 		resources/entities/smartball-2.png \
 		resources/entities/captain_left-2.png \
 		resources/entities/snowball-2.png \
+		resources/entities/platter.png \
 		resources/world_images/worldmap.png \
 		resources/world_images/maze3.png \
 		resources/world_images/maze2.png \

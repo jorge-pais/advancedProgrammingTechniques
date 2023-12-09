@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     world(std::make_shared<World>()),
     wView(std::make_shared<WorldView>(this)),
     worldDelegate(std::make_shared<WorldDelegate>(wView, world))
-///
+////////////////////////////////////////////////////////////////
 {
     ui->setupUi(this);
     srand(time(0));
@@ -26,13 +26,28 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Initialize GraphicalView
     QGraphicsScene * scene = new QGraphicsScene();
-    gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, worldDelegate);
+    gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, wView);
 
     //Initialize TextView
-    tView = std::make_shared<TextView>(ui->textBrowser, wView);
+    tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView);
+    QFont font;
+    font.setFamily("Courier");
+    font.setStyleHint(QFont::Monospace);
+    font.setFixedPitch(true);
+    font.setPointSize(10);
+    ui->textBrowser->setFont(font);
 
+    //autocomplete
+    QStringList availableCommands = {"up", "right", "down", "left", "goto", "attack", "take", "help"};
+    QCompleter* completer = new QCompleter(availableCommands, this);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    ui->lineEdit->setCompleter(completer);
+
+    //submit command
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::submitCommand);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
+    //connect slots and setup
     worldDelegate->connectSlots();
     wView->connectSlots();
     wView->setViews(gView, tView);
