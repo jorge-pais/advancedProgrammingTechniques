@@ -110,8 +110,14 @@ void WorldView::protagonistEnergyChangedSlot(int e)
 void WorldView::enemyDeadSlot()
 {
     qCDebug(worldViewCat) << "enemyDeadSlot() called";
-    for(auto& enemy : gView->entities){
-        //if(enemy->)
+    auto worldEnemies = this->delegate->getWorldEnemies();
+    for(auto& worldEnemy : worldEnemies){
+        for(auto& enemy : gView->entities){
+            if(enemy->x == worldEnemy->getXPos() && enemy->y == worldEnemy->getYPos() && worldEnemy->getDefeated()){
+                std::cout << "YEET" << std::endl;
+                enemy->setDead();
+            }
+        }
     }
     // show the enemy dying on screen
 }
