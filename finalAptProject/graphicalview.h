@@ -77,7 +77,7 @@ struct SpriteWithValue{
             spriteDeadPixmap = QPixmap(":/images/resources/entities/mrs-squished-left.png");
         }else{
             spritePixmap = QPixmap(":/images/resources/entities/platter.png");
-            spriteDeadPixmap = QPixmap(":/images/resources/entities/platter.png");
+            spriteDeadPixmap = QPixmap();
         }
 
         spritePixmap = spritePixmap.scaled(TILE_SIZE, TILE_SIZE,

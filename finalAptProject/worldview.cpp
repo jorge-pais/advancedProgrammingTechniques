@@ -97,6 +97,16 @@ void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
     gView->player->setHealth(h);
+    auto healthPacks = this->delegate->getWorldHealthPacks();
+    for(auto& pack : healthPacks){
+        if(pack->getValue() == 0){
+            for(auto& healthpack : gView->entities){
+                if(healthpack->x == pack->getXPos() && healthpack->y == pack->getYPos()){
+                    healthpack->setDead();
+                }
+            }
+        }
+    }
     //tView->protagonist->setHealth(h);
     // show the health bar changing on screen
 }
