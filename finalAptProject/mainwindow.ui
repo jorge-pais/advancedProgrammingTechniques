@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>960</height>
+    <height>973</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -34,59 +34,56 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QGraphicsView" name="graphicsView"/>
+           <widget class="QGraphicsView" name="graphicsView">
+            <property name="acceptDrops">
+             <bool>false</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_4">
-       <property name="maximumSize">
-        <size>
-         <width>1258</width>
-         <height>867</height>
-        </size>
-       </property>
        <attribute name="title">
         <string>Text</string>
        </attribute>
-       <widget class="QWidget" name="horizontalLayoutWidget">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>0</x>
-          <y>3</y>
-          <width>1161</width>
-          <height>471</height>
+          <x>8</x>
+          <y>6</y>
+          <width>1241</width>
+          <height>851</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QTextBrowser" name="textBrowser"/>
          </item>
+         <item>
+          <widget class="QFrame" name="frame">
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLineEdit" name="lineEdit"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton">
+              <property name="text">
+               <string>Enter</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
         </layout>
-       </widget>
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="geometry">
-         <rect>
-          <x>290</x>
-          <y>480</y>
-          <width>391</width>
-          <height>25</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton">
-        <property name="geometry">
-         <rect>
-          <x>700</x>
-          <y>480</y>
-          <width>89</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Enter</string>
-        </property>
        </widget>
       </widget>
      </widget>

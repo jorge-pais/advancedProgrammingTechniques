@@ -139,51 +139,128 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     }
 }
 
-void WorldDelegate::movedSlot(int x, int y)
-{
+void WorldDelegate::movedSlot(int x, int y) {
+    qCDebug(worldDelegateCat) << "movedSlot() called";
     auto protagonist = getWorldProtagonist();
+    auto enemies = getWorldEnemies();
+    auto tiles = getWorldTiles();
+
+    // Calculate new postition, check if it's valid
     int newX = protagonist->getXPos() + x;
     int newY = protagonist->getYPos() + y;
+    if((x == 0 && y==0) || newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)) return;
 
-    if(newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)){
-        return;
+    // If the difference in direction is more than 1, use the pathfinder
+    if (sqrt(x*x + y*y) > 1) {
+        // Fill the nodes vector with the tiles of your world
+        qCDebug(worldDelegateCat) << "using pathfinder";
+        moveOnPath(newX, newY);
     }
+    else{
+        qCDebug(worldDelegateCat) << "NOT using pathfinder";
+        float difference = 0;
 
-    auto tiles = getWorldTiles();
-    float difference = 0;
-    for(const auto& tile : tiles){
-        if(tile->getXPos() == x && tile->getYPos() == y){
-            difference += tile->getValue();
+        // There has to be a more efficient way to do this
+        for(const auto& tile : tiles){
+            if(tile->getXPos() == x && tile->getYPos() == y){
+                difference += tile->getValue();
+            }
+            if(tile->getXPos() == newX && tile->getYPos() == newY){
+                difference -= tile->getValue();
+            }
         }
-        if(tile->getXPos() == newX && tile->getYPos() == newY){
-            difference -= tile->getValue();
+        if(difference < 0){
+            difference = -difference;
         }
-    }
-    if(difference < 0){
-        difference = -difference;
-    }
-    if(protagonist->getEnergy() - difference < 0){
-        return;
-    }
-
-    auto enemies = getWorldEnemies();
-    for(const auto& enemy : enemies){
-        if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
-            attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
+        if(protagonist->getEnergy() - difference < 0){
             return;
         }
-    }
 
-    auto healthpacks = getWorldHealthPacks();
-    for(const auto& pack : healthpacks){
-        if(pack->getXPos() == newX && pack->getYPos() == newY){
-            float plusHealth = pack->getValue();
-            pack->setValue(0);
-            protagonist->setHealth(protagonist->getHealth() + plusHealth);
+        auto healthpacks = getWorldHealthPacks();
+        for(const auto& pack : healthpacks){
+            if(pack->getXPos() == newX && pack->getYPos() == newY){
+                pack->setValue(0);
+                protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+            }
+
+            for(const auto& pack : healthpacks){
+                if(pack->getXPos() == newX && pack->getYPos() == newY){
+                    protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+                }
+            }
+
+            protagonist->setPos(newX, newY);
+            protagonist->setEnergy(protagonist->getEnergy() - difference);
+            std::cout << protagonist->getEnergy() << std::endl;
         }
     }
+}
 
-    protagonist->setPos(newX, newY);
-    protagonist->setEnergy(protagonist->getEnergy() - difference);
-    std::cout << protagonist->getEnergy() << std::endl;
+void WorldDelegate::moveOnPath(int newX, int newY){
+    auto protagonist = getWorldProtagonist();
+    auto enemies = getWorldEnemies();
+    auto tiles = getWorldTiles();
+    auto healthpacks = getWorldHealthPacks();
+
+    std::vector<Node> nodes;
+    for (const auto& tile : getWorldTiles()) {
+        nodes.push_back(Node(tile->getXPos(), tile->getYPos(), tile->getValue()));
+    }
+
+    // Position object for the start and destination
+    Position start(protagonist->getXPos(), protagonist->getYPos());
+    Position destination(newX, newY);
+
+    //comparator definition
+    Comparator<Node> comp = [](const Node& a, const Node& b) {
+        return a.getValue() > b.getValue();
+    };
+
+    // width and heuristic weight
+    unsigned int width = world->getCols();
+    float heurWeight = 1.0f;
+
+    PathFinder<Node, Position> pathFinder(nodes, &start, &destination, comp, width, heurWeight);
+    std::vector<int> path = pathFinder.A_star();
+
+    // Define the moveX and moveY arrays
+    const int moveX[] = {0, 1, 1, 1, 0, -1, -1, -1};
+    const int moveY[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+
+    // Use the path to move the protagonist
+    for (int move : path) {
+        newX = protagonist->getXPos() + moveX[move];
+        newY = protagonist->getYPos() + moveY[move];
+
+        // Calculate the energy cost of the move
+        float energyCost = 0;
+        for(const auto& tile : tiles){
+            if(tile->getXPos() == newX && tile->getYPos() == newY){
+                energyCost += tile->getValue();
+            }
+        }
+
+        if (protagonist->getEnergy() < energyCost) return;
+        // If the protagonist's health is 0 or less, stop the loop and return
+        if (protagonist->getHealth() <= 0) return;
+
+        // Check if there's an enemy on the path
+        for(const auto& enemy : enemies){
+            if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
+                attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
+                return;
+            }
+        }
+
+        // Check if there's a health pack on the path
+        for(const auto& pack : healthpacks){
+            if(pack->getXPos() == newX && pack->getYPos() == newY){
+                protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+            }
+        }
+
+        // Move the protagonist and update the energy
+        protagonist->setPos(newX, newY);
+        protagonist->setEnergy(protagonist->getEnergy() - energyCost);
+    }
 }
