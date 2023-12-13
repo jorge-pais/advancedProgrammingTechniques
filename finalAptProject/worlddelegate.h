@@ -5,8 +5,30 @@
 #include <memory>
 #include "world.h"
 #include "worldview.h"
+#include "pathfinder_class.h"
 
 class WorldView;
+class Node : public Tile
+{
+public:
+    float f, g, h;
+    bool visited;
+    Node* prev;
+
+    Node(int xPosition, int yPosition, float tileWeight)
+        : Tile(xPosition, yPosition, tileWeight), f(0), g(0), h(0), visited(false), prev(nullptr)
+    {
+    }
+};
+
+class Position : public Tile
+{
+public:
+    Position(int xPosition, int yPosition)
+        : Tile(xPosition, yPosition, 0)
+    {
+    }
+};
 class WorldDelegate : public QObject
 {
     Q_OBJECT
