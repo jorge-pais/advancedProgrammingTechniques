@@ -31,6 +31,12 @@ void GraphicalView::renderTiles(){
     return;
 }
 
+void GraphicalView::poisonTile(int x, int y, int poisonLevel){
+    scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
+               QPen(Qt::NoPen),
+               QBrush(QColor(50,50, 255-poisonLevel)));
+}
+
 void GraphicalView::renderEntities(){
     qCDebug(graphicalViewCat) << "renderEntities() called";
 

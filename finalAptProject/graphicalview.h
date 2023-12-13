@@ -122,6 +122,7 @@ public:
     void renderTiles();
     void renderEntities();
     void renderPlayer();
+    void poisonTile(int x, int y, int poisonLevel);
 
     QGraphicsView * view;
 
