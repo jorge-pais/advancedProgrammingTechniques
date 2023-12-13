@@ -81,6 +81,31 @@ void WorldView::takeNearestHealthPack(){
 
 void WorldView::poisonLevelUpdatedSlot(int value)
 {
+
+    auto enemies = this->delegate->getWorldEnemies();
+
+    for(auto& enemy : enemies){
+        if(this->delegate->enemyStatus(*enemy) == "PEnemy"){
+            PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+            if(pEnemy->getPoisonLevel() == value){
+                float initialPoison = pEnemy->getValue();
+                float difference = (initialPoison - value)/10;
+
+                for(int i = -difference; i < difference; i++){
+                    for(int j = -difference; j < difference; j++){
+                        if( abs(i) + abs(j) == difference -1){
+                            int poisonX = pEnemy->getXPos() + i;
+                            int poisonY = pEnemy->getYPos() + j;
+                            if(poisonX < 0 || poisonY < 0 || (poisonX > this->delegate->getWorldColumns() - 1) || (poisonY > this->delegate->getWorldRows() - 1)){}
+                            else{
+                                this->gView->poisonTile(poisonX, poisonY, value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     qCDebug(worldViewCat) << "poisonLevelUpdatedSlot() called";
     // show the poision on screen
 }
@@ -97,6 +122,16 @@ void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
     gView->player->setHealth(h);
+    auto healthPacks = this->delegate->getWorldHealthPacks();
+    for(auto& pack : healthPacks){
+        if(pack->getValue() == 0){
+            for(auto& healthpack : gView->entities){
+                if(healthpack->x == pack->getXPos() && healthpack->y == pack->getYPos()){
+                    healthpack->setDead();
+                }
+            }
+        }
+    }
     //tView->protagonist->setHealth(h);
     // show the health bar changing on screen
 }
@@ -110,8 +145,13 @@ void WorldView::protagonistEnergyChangedSlot(int e)
 void WorldView::enemyDeadSlot()
 {
     qCDebug(worldViewCat) << "enemyDeadSlot() called";
-    for(auto& enemy : gView->entities){
-        //if(enemy->)
+    auto worldEnemies = this->delegate->getWorldEnemies();
+    for(auto& worldEnemy : worldEnemies){
+        for(auto& enemy : gView->entities){
+            if(enemy->x == worldEnemy->getXPos() && enemy->y == worldEnemy->getYPos() && worldEnemy->getDefeated()){
+                enemy->setDead();
+            }
+        }
     }
     // show the enemy dying on screen
 }

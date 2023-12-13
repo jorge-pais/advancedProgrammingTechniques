@@ -128,11 +128,14 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     auto protagonist = getWorldProtagonist();
     int ex = enemy->getXPos();
     int ey = enemy->getYPos();
+    float originalHealth = protagonist->getHealth();
 
-    protagonist->setHealth(protagonist->getHealth()-enemy->getValue());
-    if(enemy->getValue() < protagonist->getHealth()){
-        protagonist->setPos(ex, ey);
-        enemy->setDefeated(true);
+    protagonist->setHealth(originalHealth-enemy->getValue());
+    if(enemy->getValue() < originalHealth){
+        if(enemyType != "PEnemy"){
+            protagonist->setPos(ex, ey);
+            enemy->setDefeated(true);
+        }
     }
 }
 
@@ -174,7 +177,9 @@ void WorldDelegate::movedSlot(int x, int y)
     auto healthpacks = getWorldHealthPacks();
     for(const auto& pack : healthpacks){
         if(pack->getXPos() == newX && pack->getYPos() == newY){
-            protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+            float plusHealth = pack->getValue();
+            pack->setValue(0);
+            protagonist->setHealth(protagonist->getHealth() + plusHealth);
         }
     }
 

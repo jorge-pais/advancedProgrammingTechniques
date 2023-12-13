@@ -26,5 +26,11 @@
 ## Week 11 - Tasks
 
 - Jorge - 
-- Kris - 
+- Kris - Work on implementing signals in worldview + further fixing of the game logic
 - Hussain - Basic working textview and autocomplete
+
+## Week 12 - Tasks
+
+- Jorge - 
+- Kris - Work on further fixes for PEnemy
+- Hussain -
