@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <memory>
+#include <cmath>
 #include "world.h"
 #include "worldview.h"
 #include "pathfinder_class.h"
@@ -29,6 +30,7 @@ public:
     {
     }
 };
+
 class WorldDelegate : public QObject
 {
     Q_OBJECT
@@ -43,6 +45,8 @@ private:
     std::vector<std::shared_ptr<Tile>> healthPacks;
 
     std::shared_ptr<Protagonist> protagonist;
+
+    void moveOnPath(int newX, int newY);
 
 public:
     WorldDelegate();

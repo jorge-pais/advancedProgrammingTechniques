@@ -36,7 +36,6 @@ using pq = std::priority_queue<T, std::vector<T>, Comparator<T>>;
 
 template<typename U>
 concept validPosType = requires(U * u)
-
 {
   {u->getXPos()} -> std::same_as<int>;
   {u->getYPos()} -> std::same_as<int>;
