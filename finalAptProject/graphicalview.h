@@ -21,6 +21,9 @@
 struct SpriteWithValue{
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
+    QPixmap spriteDeadPixmap;
+
+    int x, y;
 
     SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
@@ -29,6 +32,14 @@ struct SpriteWithValue{
             sprite->setPos(x*TILE_SIZE, y*TILE_SIZE);
         if(text)
             text->setPos(x*TILE_SIZE, y*TILE_SIZE - TEXT_OFFSET);
+
+        this->x = x; this->y = y;
+    }
+
+    void setDead(){
+        sprite->setPixmap(spriteDeadPixmap);
+        sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + 25);
+        text->setPlainText("");
     }
 
     void setHealth(float health){
@@ -60,13 +71,20 @@ struct SpriteWithValue{
 
         if(dynamic_cast<PEnemy*>(entity.get())){
             spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
+            spriteDeadPixmap = QPixmap(":/images/resources/entities/cpt-squished-left.png");
         }else if(dynamic_cast<Enemy*>(entity.get())){
             spritePixmap = QPixmap(":/images/resources/entities/smartball-2.png");
+            spriteDeadPixmap = QPixmap(":/images/resources/entities/mrs-squished-left.png");
         }else{
             spritePixmap = QPixmap(":/images/resources/entities/platter.png");
+            spriteDeadPixmap = QPixmap();
         }
 
         spritePixmap = spritePixmap.scaled(TILE_SIZE, TILE_SIZE,
+                                           Qt::KeepAspectRatio,
+                                           Qt::SmoothTransformation); // facing
+
+        spriteDeadPixmap = spriteDeadPixmap.scaled(TILE_SIZE, TILE_SIZE,
                                            Qt::KeepAspectRatio,
                                            Qt::SmoothTransformation); // facing
 
@@ -76,6 +94,9 @@ struct SpriteWithValue{
         sprite->setZValue(1);
         text->setZValue(1);
     }
+
+    //int getX() const { return x; }
+    //int getY() const { return y; }
 
     ~SpriteWithValue(){
         delete sprite;
