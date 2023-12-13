@@ -128,11 +128,14 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     auto protagonist = getWorldProtagonist();
     int ex = enemy->getXPos();
     int ey = enemy->getYPos();
+    float originalHealth = protagonist->getHealth();
 
-    protagonist->setHealth(protagonist->getHealth()-enemy->getValue());
-    if(enemy->getValue() < protagonist->getHealth()){
-        protagonist->setPos(ex, ey);
-        enemy->setDefeated(true);
+    protagonist->setHealth(originalHealth-enemy->getValue());
+    if(enemy->getValue() < originalHealth){
+        if(enemyType != "PEnemy"){
+            protagonist->setPos(ex, ey);
+            enemy->setDefeated(true);
+        }
     }
 }
 
