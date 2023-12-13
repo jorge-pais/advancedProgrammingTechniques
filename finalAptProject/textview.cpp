@@ -11,8 +11,8 @@ TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<
     this->lineEdit = lineEdit;
 }
 
-void TextView::renderTiles()
-{
+void TextView::renderTiles() {
+
     qCDebug(textViewCat) << "renderTiles() called";
     // get the game world data
     std::shared_ptr<WorldDelegate> delegate = view->getDelegate();

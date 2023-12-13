@@ -145,7 +145,7 @@ void WorldDelegate::movedSlot(int x, int y) {
     // Calculate new postition, check if it's valid
     int newX = protagonist->getXPos() + x;
     int newY = protagonist->getYPos() + y;
-    if(newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)) return;
+    if((x == 0 && y==0) || newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)) return;
 
     // If the difference in direction is more than 1, use the pathfinder
     if (sqrt(x*x + y*y) > 1) {
@@ -221,8 +221,8 @@ void WorldDelegate::moveOnPath(int newX, int newY){
     std::vector<int> path = pathFinder.A_star();
 
     // Define the moveX and moveY arrays
-    int moveX[] = {0, 1, 1, 1, 0, -1, -1, -1};
-    int moveY[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+    const int moveX[] = {0, 1, 1, 1, 0, -1, -1, -1};
+    const int moveY[] = {-1, -1, 0, 1, 1, 1, 0, -1};
 
     // Use the path to move the protagonist
     for (int move : path) {
