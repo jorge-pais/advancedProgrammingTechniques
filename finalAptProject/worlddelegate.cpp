@@ -139,6 +139,11 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     }
 }
 
+void WorldDelegate::addPoisonTile(int x, int y, float value){
+    auto tile = std::make_shared<Tile>( x, y, value);
+    poisonTiles.push_back(tile);
+}
+
 void WorldDelegate::movedSlot(int x, int y)
 {
     auto protagonist = getWorldProtagonist();
@@ -164,6 +169,12 @@ void WorldDelegate::movedSlot(int x, int y)
     }
     if(protagonist->getEnergy() - difference < 0){
         return;
+    }
+
+    for(const auto& poisonTile : poisonTiles){
+        if(poisonTile->getXPos() == newX && poisonTile->getYPos() == newY){
+            protagonist->setHealth(protagonist->getHealth() - poisonTile->getValue());
+        }
     }
 
     auto enemies = getWorldEnemies();

@@ -19,6 +19,7 @@ private:
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Tile>> healthPacks;
+    std::vector<std::shared_ptr<Tile>> poisonTiles;
 
     std::shared_ptr<Protagonist> protagonist;
 
@@ -32,6 +33,7 @@ public:
     int getWorldRows() const;
     int getWorldColumns() const;
     std::shared_ptr<Protagonist> getWorldProtagonist() const;
+    void addPoisonTile(int x, int y, float value);
     void setProtagonistHealth(float healthValue);
     void setProtagonistPosition(int newWorldX, int newWorldY);
     void setProtagonistEnergy(float energyValue);
