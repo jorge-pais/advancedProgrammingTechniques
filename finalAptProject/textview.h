@@ -14,6 +14,7 @@
 #include <QCompleter>
 #include <ctime>
 #include <iostream>
+#include <QScrollBar>
 
 #include "worldview.h"
 
@@ -34,18 +35,20 @@ public:
     std::vector<std::shared_ptr<Enemy>> worldEnemies;
     std::vector<std::shared_ptr<Tile>> worldHealthPacks;
     std::shared_ptr<Protagonist> protagonist;
+    void centerPlayer();
 
-    private:
-        QTextBrowser* textView;
-        QCompleter* completer;
-        std::shared_ptr<WorldView> view;
-        QStringList availableCommands;
-        QLineEdit* lineEdit;
+private:
+    QTextBrowser* textView;
+    QCompleter* completer;
+    std::shared_ptr<WorldView> view;
+    QStringList availableCommands;
+    QLineEdit* lineEdit;
+    QTextCursor* protagonistCursor;
 
-        void printHelp();
-        void printMessage(const QString& message);
-        void printArgs();
-        void printUnknownCommand();
+    void printHelp();
+    void printMessage(const QString& message);
+    void printArgs();
+    void printUnknownCommand();
 };
 
 #endif // TEXTVIEW_H

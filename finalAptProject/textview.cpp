@@ -9,6 +9,9 @@ TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<
     this->textView = textView;
     this->view = view;
     this->lineEdit = lineEdit;
+    QTextCursor cursor(textView->document());
+
+    textView->setTextCursor(cursor);
 }
 
 void TextView::renderTiles() {
@@ -26,22 +29,24 @@ void TextView::renderTiles() {
 
     for (const auto& enemy : worldEnemies) {
         if (dynamic_cast<PEnemy*>(enemy.get())) {
-                   worldView[enemy->getYPos()][enemy->getXPos()] = 'Q';
-               } else {
-                   worldView[enemy->getYPos()][enemy->getXPos()] = 'E';
-               }
+            worldView[enemy->getYPos()][enemy->getXPos()] = 'Q';
+        } else {
+            worldView[enemy->getYPos()][enemy->getXPos()] = 'E';
+        }
     }
 
     worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
-    std::cout << protagonist->getYPos() << std::endl;
+    //protagonistCursor->setPosition();
+    //std::cout << protagonist->getYPos() << std::endl;
 
     for (const auto& healthPack : worldHealthPacks) {
          worldView[healthPack->getYPos()][healthPack->getXPos()] = 'H';
-     }
+    }
 
     // grid
     for (const auto& row : worldView) {
-        QString line;
+        QString line = "| ";
+        // line += ;
         for (const auto& tile : row) {
             line += tile;
             line += " | "; // Add grid lines
@@ -49,6 +54,29 @@ void TextView::renderTiles() {
         // Append the line to the text view
         textView->append(line);
         textView->append(QString(line.size(), '-'));
+    }
+    this->centerPlayer();
+}
+
+/// This doesnt' work yet, idk why it is not finding the P
+/// the solution to this is possibly not having this method at all
+/// and changing the render tiles to use a cursor, and ensurring there
+/// that the player is centered.
+void TextView::centerPlayer(){
+    if (textView->find("P", QTextDocument::FindWholeWords)) {
+        //std::cout << "centering player hopefully" << std::endl;
+        QTextCursor cursor = textView->textCursor();
+        QRect rect = textView->cursorRect(cursor);
+        QScrollBar *vbar = textView->verticalScrollBar();
+        QScrollBar *hbar = textView->horizontalScrollBar();
+
+        // Centering vertically
+        int newVValue = rect.y() - (textView->viewport()->height() / 2);
+        vbar->setValue(newVValue + vbar->pageStep() / 2);
+
+        // Centering horizontally (if needed)
+        int newHValue = rect.x() - (textView->viewport()->width() / 2);
+        hbar->setValue(newHValue + hbar->pageStep() / 2);
     }
 }
 
@@ -161,4 +189,3 @@ void TextView::printUnknownCommand()
 {
     printMessage("Unknown command. Type 'help' for a list of available commands.");
 }
-
