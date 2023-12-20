@@ -25,7 +25,7 @@
 
 ## Week 11 - Tasks
 
-- Jorge - 
+- Jorge - Debugging of movement issues and integration
 - Kris - Work on implementing signals in worldview + further fixing of the game logic
 - Hussain - Basic working textview and autocomplete
 

@@ -16,7 +16,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -std=c++20 -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -I../../worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
@@ -154,7 +154,9 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		finalAptProject.pro graphicalview.h \
 		mainwindow.h \
+		pathfinderfunction.h \
 		pathfinder.h \
+		pathfinder_class.h \
 		textview.h \
 		world.h \
 		world_global.h \
@@ -351,7 +353,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinder.h textview.h world.h world_global.h worlddelegate.h worldview.h $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinderfunction.h pathfinder.h pathfinder_class.h textview.h world.h world_global.h worlddelegate.h worldview.h $(DISTDIR)/
 	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp textview.cpp worlddelegate.cpp worldview.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
@@ -401,7 +403,7 @@ compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
-	g++ -pipe -g -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
+	g++ -pipe -std=c++20 -g -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all: moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 compiler_moc_header_clean:
@@ -414,6 +416,7 @@ moc_mainwindow.cpp: mainwindow.h \
 		graphicalview.h \
 		textview.h \
 		mainwindow.h \
+		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject -I/home/hussain/Documents/QtGame/worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
@@ -423,6 +426,7 @@ moc_textview.cpp: textview.h \
 		world.h \
 		world_global.h \
 		worlddelegate.h \
+		pathfinder_class.h \
 		graphicalview.h \
 		textview.h \
 		mainwindow.h \
@@ -441,6 +445,7 @@ moc_worlddelegate.cpp: worlddelegate.h \
 		world_global.h \
 		worldview.h \
 		worlddelegate.h \
+		pathfinder_class.h \
 		graphicalview.h \
 		textview.h \
 		mainwindow.h \
@@ -456,6 +461,7 @@ moc_worldview.cpp: worldview.h \
 		graphicalview.h \
 		textview.h \
 		mainwindow.h \
+		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/hussain/Documents/QtGame/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/hussain/Documents/QtGame/team-d6-fa/finalAptProject -I/home/hussain/Documents/QtGame/worldlib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worldview.h -o moc_worldview.cpp
@@ -487,7 +493,8 @@ graphicalview.o: graphicalview.cpp graphicalview.h \
 		world_global.h \
 		worldview.h \
 		textview.h \
-		mainwindow.h
+		mainwindow.h \
+		pathfinder_class.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o graphicalview.o graphicalview.cpp
 
 main.o: main.cpp mainwindow.h \
@@ -496,7 +503,8 @@ main.o: main.cpp mainwindow.h \
 		world_global.h \
 		worldview.h \
 		graphicalview.h \
-		textview.h
+		textview.h \
+		pathfinder_class.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -506,6 +514,7 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		worldview.h \
 		graphicalview.h \
 		textview.h \
+		pathfinder_class.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
@@ -514,6 +523,7 @@ textview.o: textview.cpp textview.h \
 		world.h \
 		world_global.h \
 		worlddelegate.h \
+		pathfinder_class.h \
 		graphicalview.h \
 		mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o textview.o textview.cpp
@@ -524,13 +534,15 @@ worlddelegate.o: worlddelegate.cpp worlddelegate.h \
 		worldview.h \
 		graphicalview.h \
 		textview.h \
-		mainwindow.h
+		mainwindow.h \
+		pathfinder_class.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worlddelegate.o worlddelegate.cpp
 
 worldview.o: worldview.cpp worldview.h \
 		world.h \
 		world_global.h \
 		worlddelegate.h \
+		pathfinder_class.h \
 		graphicalview.h \
 		textview.h \
 		mainwindow.h
