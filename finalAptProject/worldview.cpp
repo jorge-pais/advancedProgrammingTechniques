@@ -99,6 +99,7 @@ void WorldView::poisonLevelUpdatedSlot(int value)
                             if(poisonX < 0 || poisonY < 0 || (poisonX > this->delegate->getWorldColumns() - 1) || (poisonY > this->delegate->getWorldRows() - 1)){}
                             else{
                                 this->gView->poisonTile(poisonX, poisonY, value);
+                                this->delegate->addPoisonTile(poisonX, poisonY, value);
                             }
                         }
                     }
