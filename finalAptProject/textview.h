@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QGraphicsScene>
 #include <QBrush>
+#include <QTimer>
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QKeyEvent>
@@ -29,11 +30,13 @@ public:
     //TextView(QTextBrowser* textView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate);
     TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view);
     void renderTiles();
+    void resetColor();
     void processCommand(const QString& command);
     std::vector<std::shared_ptr<Tile>> worldTiles;
     std::vector<std::shared_ptr<Enemy>> worldEnemies;
     std::vector<std::shared_ptr<Tile>> worldHealthPacks;
     std::shared_ptr<Protagonist> protagonist;
+
 
     private:
         QTextBrowser* textView;
@@ -41,6 +44,8 @@ public:
         std::shared_ptr<WorldView> view;
         QStringList availableCommands;
         QLineEdit* lineEdit;
+        float previousHealth;
+        QTimer* colorResetTimer;
 
         void printHelp();
         void printMessage(const QString& message);
