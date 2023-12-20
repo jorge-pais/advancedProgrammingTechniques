@@ -1,4 +1,5 @@
 #include "worlddelegate.h"
+#include "xenemy.h"
 
 // QT Logging
 #include "qloggingcategory.h"
@@ -39,9 +40,20 @@ void WorldDelegate::initializeWDelegate(){
         tiles.push_back(sharedTile);
     }
 
+    bool xEnemyMade = false;
     for(auto & enemy : world->getEnemies()){
-        std::shared_ptr<Enemy> sharedEnemy= std::move(enemy);
-        enemies.push_back(sharedEnemy);
+        if(!xEnemyMade){
+            if(enemyStatus(*enemy) == "Regular"){
+                auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
+                enemies.push_back(std::dynamic_pointer_cast<Enemy, XEnemy>(xEnemy));
+                std::cout << enemy->getXPos() << " " << enemy->getYPos() << std::endl;
+                xEnemyMade = true;
+            }
+        }
+        else{
+            std::shared_ptr<Enemy> sharedEnemy= std::move(enemy);
+            enemies.push_back(sharedEnemy);
+        }
     }
 
     for(auto & healthPack : world->getHealthPacks()){
@@ -113,6 +125,8 @@ std::string WorldDelegate::enemyStatus(Enemy& enemy)
     qCDebug(worldDelegateCat) << "enemy() called";
     if (dynamic_cast<PEnemy*>(&enemy))
         return "PEnemy";
+    else if(dynamic_cast<XEnemy*>(&enemy))
+        return "XEnemy";
     else
         return "Regular";
 }
@@ -135,6 +149,14 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
         if(enemyType != "PEnemy"){
             protagonist->setPos(ex, ey);
             enemy->setDefeated(true);
+        }
+    }
+    if(enemyType == "XEnemy" && enemy->getDefeated()){
+        auto enemies = getWorldEnemies();
+        for(const auto& potentialDead : enemies){
+            if(potentialDead->getDefeated() && enemyStatus(*potentialDead) == "Regular"){
+                std::cout << "potential leech found" << std::endl;
+            }
         }
     }
 }
