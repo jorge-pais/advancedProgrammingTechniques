@@ -23,6 +23,7 @@ struct SpriteWithValue{
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
     QPixmap spriteDeadPixmap;
+    QPixmap spritePixmap;
 
     int x, y;
 
@@ -41,6 +42,16 @@ struct SpriteWithValue{
         sprite->setPixmap(spriteDeadPixmap);
         sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + 25);
         text->setPlainText("");
+    }
+
+    void setAlive(float health){
+        sprite->setPixmap(spritePixmap);
+        text->setPlainText(QString::number(health));
+        text->setZValue(1);
+    }
+
+    void setStolen(){
+        sprite->setPixmap(QPixmap());
     }
 
     void setHealth(float health){
@@ -65,8 +76,6 @@ struct SpriteWithValue{
 
     SpriteWithValue(std::shared_ptr<Tile> entity){
     //SpriteWithValue(int x, int y, float value){
-
-        QPixmap spritePixmap;
 
         text = new QGraphicsTextItem(QString::number(entity->getValue()));
 

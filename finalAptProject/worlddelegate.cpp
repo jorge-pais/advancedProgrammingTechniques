@@ -17,6 +17,7 @@ void WorldDelegate::connectSlots(){
     qCDebug(worldDelegateCat) << "connectSlots() called";
 
     QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+    QObject::connect(this, &WorldDelegate::xEnemyStoleSignal, this->view.get(), &WorldView::xEnemyStoleSlot);
 
     if(this->getWorldEnemies().size() != 0)
         for(auto& enemy : this->getWorldEnemies()){ // calling here world enemies makes it such that i can't get the enemies later on in the graphics views
@@ -46,7 +47,6 @@ void WorldDelegate::initializeWDelegate(){
             if(enemyStatus(*enemy) == "Regular"){
                 auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
                 enemies.push_back(std::dynamic_pointer_cast<Enemy, XEnemy>(xEnemy));
-                std::cout << enemy->getXPos() << " " << enemy->getYPos() << std::endl;
                 xEnemyMade = true;
             }
         }
@@ -155,7 +155,14 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
         auto enemies = getWorldEnemies();
         for(const auto& potentialDead : enemies){
             if(potentialDead->getDefeated() && enemyStatus(*potentialDead) == "Regular"){
-                std::cout << "potential leech found" << std::endl;
+                int oldX = enemy->getXPos();
+                int oldY = enemy->getYPos();
+                enemy->setDefeated(false);
+                enemy->setXPos(potentialDead->getXPos());
+                enemy->setYPos(potentialDead->getYPos());
+                enemy->setValue(potentialDead->getValue());
+                emit xEnemyStoleSignal(enemy->getXPos(), enemy->getYPos(), oldX, oldY, enemy->getValue());
+                return;
             }
         }
     }

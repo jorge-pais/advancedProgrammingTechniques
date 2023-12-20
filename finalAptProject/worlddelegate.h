@@ -69,6 +69,7 @@ public:
 
 signals:
     void poisonSignal();
+    void xEnemyStoleSignal(int x, int y, int oldX, int oldY, float health);
 public slots:
     void movedSlot(int x, int y);
 };

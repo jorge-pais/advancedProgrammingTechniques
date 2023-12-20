@@ -138,6 +138,17 @@ void WorldView::protagonistHealthChangedSlot(int h)
     // show the health bar changing on screen
 }
 
+void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
+    for(auto& enemy : gView->entities){
+        if(enemy->x == x && enemy->y == y){
+            enemy->setStolen();
+        }
+        if(enemy->x == oldX && enemy->y == oldY){
+            enemy->setAlive(health);
+            enemy->setPosition( x, y);
+        }
+    }
+}
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
