@@ -115,7 +115,7 @@ void WorldView::positionChangedSlot(int x, int y)
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->setPosition(x, y);
-    gView->view->centerOn(x, y);
+    gView->view->centerOn(gView->player->sprite);
     tView->renderTiles();
 }
 
