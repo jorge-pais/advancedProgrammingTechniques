@@ -12,6 +12,8 @@ TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<
     QTextCursor cursor(textView->document());
 
     textView->setTextCursor(cursor);
+
+    previousHealth = view->getDelegate()->getWorldProtagonist()->getHealth();
 }
 
 void TextView::renderTiles() {
@@ -23,6 +25,7 @@ void TextView::renderTiles() {
     worldEnemies = delegate->getWorldEnemies();
     worldHealthPacks = delegate->getWorldHealthPacks();
     protagonist = delegate->getWorldProtagonist();
+    float currentHealth = protagonist->getHealth();
 
     textView->clear();
     std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
@@ -44,6 +47,8 @@ void TextView::renderTiles() {
     }
 
     // grid
+    // grid
+    QString line;
     for (const auto& row : worldView) {
         QString line = "| ";
         // line += ;
@@ -78,6 +83,38 @@ void TextView::centerPlayer(){
         int newHValue = rect.x() - (textView->viewport()->width() / 2);
         hbar->setValue(newHValue + hbar->pageStep() / 2);
     }
+    for (const auto& tile : row) {
+       if (tile == 'P') {
+           if (currentHealth < previousHealth) {
+               // Player took damage. Set 'P' color to red.
+               textView->setTextColor(Qt::red);
+               line += QString(tile);
+               textView->setTextColor(Qt::black);
+           } else if (currentHealth > previousHealth) {
+               // Player healed. Set 'P' color to green.
+               textView->setTextColor(Qt::green);
+               line += QString(tile);
+               textView->setTextColor(Qt::black);
+           } else {
+               line += QString(tile);
+           }
+           previousHealth = currentHealth;
+       } else {
+           line += QString(tile);
+       }
+       line += " | "; // Add grid lines
+   }
+       // Append the line to the text view
+       textView->append(line);
+       textView->append(QString(line.size(), '-'));
+       line = ""; // Reset the line
+    }
+
+}
+
+void TextView::resetColor() {
+    textView->setTextColor(Qt::black);
+>>>>>>> 16e5623c29ad536442458629383f89efbb52baa1
 }
 
 void TextView::processCommand(const QString& command)

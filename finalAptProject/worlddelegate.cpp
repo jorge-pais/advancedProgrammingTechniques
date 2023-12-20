@@ -139,6 +139,11 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     }
 }
 
+void WorldDelegate::addPoisonTile(int x, int y, float value){
+    auto tile = std::make_shared<Tile>( x, y, value);
+    poisonTiles.push_back(tile);
+}
+
 void WorldDelegate::movedSlot(int x, int y) {
     qCDebug(worldDelegateCat) << "movedSlot() called";
     auto protagonist = getWorldProtagonist();
@@ -155,45 +160,56 @@ void WorldDelegate::movedSlot(int x, int y) {
         // Fill the nodes vector with the tiles of your world
         qCDebug(worldDelegateCat) << "using pathfinder";
         moveOnPath(newX, newY);
+        return;
     }
-    else{
-        qCDebug(worldDelegateCat) << "NOT using pathfinder";
-        float difference = 0;
+    qCDebug(worldDelegateCat) << "NOT using pathfinder";
+    float difference = 0;
 
-        // There has to be a more efficient way to do this
-        for(const auto& tile : tiles){
-            if(tile->getXPos() == x && tile->getYPos() == y){
-                difference += tile->getValue();
-            }
-            if(tile->getXPos() == newX && tile->getYPos() == newY){
-                difference -= tile->getValue();
-            }
+    // There has to be a more efficient way to do this
+    for(const auto& tile : tiles){
+        if(tile->getXPos() == x && tile->getYPos() == y){
+        difference += tile->getValue();
         }
-        if(difference < 0){
-            difference = -difference;
+        if(tile->getXPos() == newX && tile->getYPos() == newY){
+        difference -= tile->getValue();
         }
-        if(protagonist->getEnergy() - difference < 0){
+    }
+    if(difference < 0){
+        difference = -difference;
+    }
+    if(difference < 0){
+        difference = -difference;
+    }
+    if(protagonist->getEnergy() - difference < 0){
+        return;
+    }
+
+    for(const auto& poisonTile : poisonTiles){
+        if(poisonTile->getXPos() == newX && poisonTile->getYPos() == newY){
+            protagonist->setHealth(protagonist->getHealth() - poisonTile->getValue());
+        }
+    }
+
+    for(const auto& enemy : enemies){
+        if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
+            attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
             return;
         }
+    }
 
-        auto healthpacks = getWorldHealthPacks();
-        for(const auto& pack : healthpacks){
-            if(pack->getXPos() == newX && pack->getYPos() == newY){
-                pack->setValue(0);
-                protagonist->setHealth(protagonist->getHealth() + pack->getValue());
-            }
-
-            for(const auto& pack : healthpacks){
-                if(pack->getXPos() == newX && pack->getYPos() == newY){
-                    protagonist->setHealth(protagonist->getHealth() + pack->getValue());
-                }
-            }
-
-            protagonist->setPos(newX, newY);
-            protagonist->setEnergy(protagonist->getEnergy() - difference);
-            std::cout << protagonist->getEnergy() << std::endl;
+    auto healthpacks = getWorldHealthPacks();
+    for(const auto& pack : healthpacks){
+        if(pack->getXPos() == newX && pack->getYPos() == newY){
+            float plusHealth = pack->getValue();
+            pack->setValue(0);
+            protagonist->setHealth(protagonist->getHealth() + plusHealth);
         }
     }
+
+    protagonist->setPos(newX, newY);
+    protagonist->setEnergy(protagonist->getEnergy() - difference);
+    std::cout << protagonist->getEnergy() << std::endl;
+
 }
 
 void WorldDelegate::moveOnPath(int newX, int newY){
@@ -264,3 +280,4 @@ void WorldDelegate::moveOnPath(int newX, int newY){
         protagonist->setEnergy(protagonist->getEnergy() - energyCost);
     }
 }
+
