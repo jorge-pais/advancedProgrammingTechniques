@@ -176,11 +176,21 @@ void WorldDelegate::movedSlot(int x, int y) {
             return;
         }
 
+        auto enemies = getWorldEnemies();
+        for(const auto& enemy : enemies){
+            if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
+                attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
+                return;
+            }
+        }
+
+
         auto healthpacks = getWorldHealthPacks();
         for(const auto& pack : healthpacks){
             if(pack->getXPos() == newX && pack->getYPos() == newY){
                 pack->setValue(0);
                 protagonist->setHealth(protagonist->getHealth() + pack->getValue());
+
             }
 
             for(const auto& pack : healthpacks){
