@@ -12,6 +12,7 @@
 #include <ctime>
 #include <iostream>
 
+#include "xenemy.h"
 #include "worlddelegate.h"
 
 #define TILE_SIZE 40
@@ -69,12 +70,15 @@ struct SpriteWithValue{
 
         text = new QGraphicsTextItem(QString::number(entity->getValue()));
 
-        if(dynamic_cast<PEnemy*>(entity.get())){
+        if(dynamic_cast<XEnemy*>(entity.get())){
             spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
             spriteDeadPixmap = QPixmap(":/images/resources/entities/cpt-squished-left.png");
-        }else if(dynamic_cast<Enemy*>(entity.get())){
+        }else if(dynamic_cast<PEnemy*>(entity.get())){
             spritePixmap = QPixmap(":/images/resources/entities/smartball-2.png");
             spriteDeadPixmap = QPixmap(":/images/resources/entities/mrs-squished-left.png");
+        }else if(dynamic_cast<Enemy*>(entity.get())){
+            spritePixmap = QPixmap(":/images/resources/entities/snowball-2.png");
+            spriteDeadPixmap = QPixmap(":/images/resources/entities/squished-left.png");
         }else{
             spritePixmap = QPixmap(":/images/resources/entities/platter.png");
             spriteDeadPixmap = QPixmap();
