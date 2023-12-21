@@ -50,10 +50,6 @@ struct SpriteWithValue{
         text->setZValue(1);
     }
 
-    void setStolen(){
-        sprite->setPixmap(QPixmap());
-    }
-
     void setHealth(float health){
         if(text){
             text->setPlainText(QString::number(health));

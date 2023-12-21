@@ -141,9 +141,10 @@ void WorldView::protagonistHealthChangedSlot(int h)
 void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     for(auto& enemy : gView->entities){
         if(enemy->x == x && enemy->y == y){
-            enemy->setStolen();
+            enemy->setPosition(oldX, oldY);
+            enemy->setDead();
         }
-        if(enemy->x == oldX && enemy->y == oldY){
+        else if(enemy->x == oldX && enemy->y == oldY){
             enemy->setAlive(health);
             enemy->setPosition( x, y);
         }

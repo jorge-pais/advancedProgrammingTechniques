@@ -152,16 +152,27 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
         }
     }
     if(enemyType == "XEnemy" && enemy->getDefeated()){
+        XEnemy* xEnemy = dynamic_cast<XEnemy*>(enemy.get());
         auto enemies = getWorldEnemies();
+        auto alreadyStolen = xEnemy->getEnemies();
         for(const auto& potentialDead : enemies){
-            if(potentialDead->getDefeated() && enemyStatus(*potentialDead) == "Regular"){
-                int oldX = enemy->getXPos();
-                int oldY = enemy->getYPos();
-                enemy->setDefeated(false);
-                enemy->setXPos(potentialDead->getXPos());
-                enemy->setYPos(potentialDead->getYPos());
-                enemy->setValue(potentialDead->getValue());
-                emit xEnemyStoleSignal(enemy->getXPos(), enemy->getYPos(), oldX, oldY, enemy->getValue());
+            bool found = false;
+            for(const auto& stolen : alreadyStolen){
+                if(stolen->getXPos() == potentialDead->getXPos() && stolen->getYPos() == potentialDead->getYPos()){
+                    found = true;
+                }
+            }
+            if(potentialDead->getDefeated() && enemyStatus(*potentialDead) == "Regular" && !found){
+                int oldX = xEnemy->getXPos();
+                int oldY = xEnemy->getYPos();
+                xEnemy->setDefeated(false);
+                xEnemy->setXPos(potentialDead->getXPos());
+                xEnemy->setYPos(potentialDead->getYPos());
+                xEnemy->setValue(potentialDead->getValue());
+                emit xEnemyStoleSignal(xEnemy->getXPos(), xEnemy->getYPos(), oldX, oldY, xEnemy->getValue());
+                potentialDead->setXPos(oldX);
+                potentialDead->setYPos(oldY);
+                xEnemy->addEnemy(potentialDead);
                 return;
             }
         }
