@@ -53,6 +53,7 @@ public:
     WorldDelegate();
     WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
     void initializeWDelegate();
+    std::shared_ptr<Tile> getTile(int x, int y);
     std::vector<std::shared_ptr<Tile>> getWorldTiles();
     std::vector<std::shared_ptr<Enemy>> getWorldEnemies();
     std::vector<std::shared_ptr<Tile>> getWorldHealthPacks();

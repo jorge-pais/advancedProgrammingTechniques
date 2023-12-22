@@ -63,10 +63,11 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     case Qt::Key_D:
         dx++;
         break;
+    default:
+        return; //prevent other keystrokes from sending the signal?
     }
     //handle the events and then emit these signals with appropriate parameters
     emit playerMovedSignal(dx, dy);
-    //emit attackSignal(nullptr);
 }
 
 void WorldView::attackNearestEnemy(){
@@ -117,6 +118,8 @@ void WorldView::positionChangedSlot(int x, int y)
     // show the protagonist moving on screen
     gView->player->setPosition(x, y);
     gView->view->centerOn(gView->player->sprite);
+
+    // re-render everything on textView
     tView->renderTiles();
 }
 

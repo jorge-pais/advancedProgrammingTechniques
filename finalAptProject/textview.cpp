@@ -16,7 +16,7 @@ TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<
     previousHealth = view->getDelegate()->getWorldProtagonist()->getHealth();
 }
 
-void TextView::renderTiles() {
+/*void TextView::renderTiles() {
 
     qCDebug(textViewCat) << "renderTiles() called";
     // get the game world data
@@ -59,12 +59,52 @@ void TextView::renderTiles() {
         textView->append(QString(line.size(), '-'));
     }
     this->centerPlayer();
+}*/
+
+void TextView::renderTiles() {
+    qCDebug(textViewCat) << "renderTiles() called";
+
+    // get the game world data
+    std::shared_ptr<WorldDelegate> delegate = view->getDelegate();
+    worldTiles = delegate->getWorldTiles();
+    worldEnemies = delegate->getWorldEnemies();
+    worldHealthPacks = delegate->getWorldHealthPacks();
+    protagonist = delegate->getWorldProtagonist();
+    float currentHealth = protagonist->getHealth();
+
+    textView->clear();
+    std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
+
+    // Defeated enemies show up as lower case
+    for (const auto& enemy : worldEnemies) {
+        if (dynamic_cast<PEnemy*>(enemy.get())) {
+            worldView[enemy->getYPos()][enemy->getXPos()] = enemy->getDefeated() ? 'q' : 'Q' ;
+        } else {
+            worldView[enemy->getYPos()][enemy->getXPos()] = enemy->getDefeated() ? 'e' : 'E';
+        }
+    }
+
+    for (const auto& healthPack : worldHealthPacks) {
+        worldView[healthPack->getYPos()][healthPack->getXPos()] = healthPack->getValue() ? 'H' : ' ';
+    }
+
+    worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
+
+    // grid
+    QString line;
+    for (const auto& row : worldView) {
+        QString line = "| ";
+        for (const auto& tile : row) {
+            line += tile;
+            line += " | "; // Add grid lines
+        }
+        // Append the line to the text view
+        textView->append(line);
+        textView->append(QString(line.size(), '-'));
+    }
+    this->centerPlayer();
 }
 
-/// This doesnt' work yet, idk why it is not finding the P
-/// the solution to this is possibly not having this method at all
-/// and changing the render tiles to use a cursor, and ensurring there
-/// that the player is centered.
 void TextView::centerPlayer(){
     std::cout << "this got called!" << std::endl;
     QApplication::processEvents(); // lets see if this works
