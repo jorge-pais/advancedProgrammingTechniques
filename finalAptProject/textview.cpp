@@ -47,11 +47,9 @@ void TextView::renderTiles() {
     }
 
     // grid
-    // grid
     QString line;
     for (const auto& row : worldView) {
         QString line = "| ";
-        // line += ;
         for (const auto& tile : row) {
             line += tile;
             line += " | "; // Add grid lines
@@ -68,7 +66,11 @@ void TextView::renderTiles() {
 /// and changing the render tiles to use a cursor, and ensurring there
 /// that the player is centered.
 void TextView::centerPlayer(){
-    if (textView->find("P", QTextDocument::FindWholeWords)) {
+    std::cout << "this got called!" << std::endl;
+    QApplication::processEvents(); // lets see if this works
+
+    if (textView->find("P")) {
+        std::cout << "got here!!!!" << std::endl;
         //std::cout << "centering player hopefully" << std::endl;
         QTextCursor cursor = textView->textCursor();
         QRect rect = textView->cursorRect(cursor);
@@ -83,115 +85,87 @@ void TextView::centerPlayer(){
         int newHValue = rect.x() - (textView->viewport()->width() / 2);
         hbar->setValue(newHValue + hbar->pageStep() / 2);
     }
-    for (const auto& tile : row) {
-       if (tile == 'P') {
-           if (currentHealth < previousHealth) {
-               // Player took damage. Set 'P' color to red.
-               textView->setTextColor(Qt::red);
-               line += QString(tile);
-               textView->setTextColor(Qt::black);
-           } else if (currentHealth > previousHealth) {
-               // Player healed. Set 'P' color to green.
-               textView->setTextColor(Qt::green);
-               line += QString(tile);
-               textView->setTextColor(Qt::black);
-           } else {
-               line += QString(tile);
-           }
-           previousHealth = currentHealth;
-       } else {
-           line += QString(tile);
-       }
-       line += " | "; // Add grid lines
-   }
-       // Append the line to the text view
-       textView->append(line);
-       textView->append(QString(line.size(), '-'));
-       line = ""; // Reset the line
-    }
-
 }
 
 void TextView::resetColor() {
     textView->setTextColor(Qt::black);
->>>>>>> 16e5623c29ad536442458629383f89efbb52baa1
 }
 
 void TextView::processCommand(const QString& command)
 {
-        QString lowerCommand = command.toLower();
-        QStringList commandParts = lowerCommand.split(" ", Qt::SkipEmptyParts);
-        QString mainCommand = commandParts.value(0);//first word in command for recognition
+    QString lowerCommand = command.toLower();
+    QStringList commandParts = lowerCommand.split(" ", Qt::SkipEmptyParts);
+    QString mainCommand = commandParts.value(0);//first word in command for recognition
 
-        // Map of commands to corresponding functions
-        QMap<QString, std::function<void(const QStringList&)>> commandHandlers;
+    // Map of commands to corresponding functions
+    QMap<QString, std::function<void(const QStringList&)>> commandHandlers;
 
-        commandHandlers["goto"] = [this](const QStringList& args) {
-            qCDebug(textViewCat) << "goto";
-            // handle "goto x y"
-            if (args.size() == 3) {
-                int x = args[1].toInt();
-                int y = args[2].toInt();
-                emit view->playerMovedSignal(x,y);
-            } else {
-                printArgs();// invalid number of arguments
-            }
-        };
-        int dx = 0, dy = 0;
-        commandHandlers["up"] = [&](const QStringList& args) {
-            //emit playerMovedSignal with y++
-            qCDebug(textViewCat) << "up";
-            dy--;
-            emit view->playerMovedSignal(dx,dy);
-
-        };
-
-        commandHandlers["right"] = [&](const QStringList& args) {
-            // emit playerMovedSignal with x++
-            qCDebug(textViewCat) << "right";
-            dx++;
-            emit view->playerMovedSignal(dx,dy);
-        };
-
-        commandHandlers["down"] = [&](const QStringList& args) {
-           // emit playerMovedSignal with y--
-           qCDebug(textViewCat) << "down";
-           dy++;
-           emit view->playerMovedSignal(dx,dy);
-        };
-
-        commandHandlers["left"] = [&](const QStringList& args) {
-            // emit playerMovedSignal with x--
-           qCDebug(textViewCat) << "left";
-           dx--;
-           emit view->playerMovedSignal(dx,dy);
-        };
-
-        commandHandlers["attack"] = [this](const QStringList& args) {
-            qCDebug(textViewCat) << "attack";
-            view->attackNearestEnemy();
-        };
-
-        commandHandlers["take"] = [this](const QStringList& args) {
-            qCDebug(textViewCat) << "take";
-            view->takeNearestHealthPack();
-        };
-
-        commandHandlers["help"] = [this](const QStringList& args) {
-            qCDebug(textViewCat) << "help";
-            printHelp();// print list of available commands
-        };
-
-        // Add additional command handlers as needed
-
-        // Check if the main command is in the map
-        if (commandHandlers.contains(mainCommand)) {
-            // Call the corresponding handler function
-            commandHandlers[mainCommand](commandParts);
+    commandHandlers["goto"] = [this](const QStringList& args) {
+        qCDebug(textViewCat) << "goto";
+        // handle "goto x y"
+        if (args.size() == 3) {
+            int x = args[1].toInt();
+            int y = args[2].toInt();
+            emit view->playerMovedSignal(x,y);
         } else {
-            // Unknown command
-            printUnknownCommand();
+            printArgs();// invalid number of arguments
         }
+    };
+    int dx = 0, dy = 0;
+    commandHandlers["up"] = [&](const QStringList& args) {
+        //emit playerMovedSignal with y++
+        qCDebug(textViewCat) << "up";
+        dy--;
+        emit view->playerMovedSignal(dx,dy);
+
+    };
+
+    commandHandlers["right"] = [&](const QStringList& args) {
+        // emit playerMovedSignal with x++
+        qCDebug(textViewCat) << "right";
+        dx++;
+        emit view->playerMovedSignal(dx,dy);
+    };
+
+    commandHandlers["down"] = [&](const QStringList& args) {
+       // emit playerMovedSignal with y--
+       qCDebug(textViewCat) << "down";
+       dy++;
+       emit view->playerMovedSignal(dx,dy);
+    };
+
+    commandHandlers["left"] = [&](const QStringList& args) {
+        // emit playerMovedSignal with x--
+       qCDebug(textViewCat) << "left";
+       dx--;
+       emit view->playerMovedSignal(dx,dy);
+    };
+
+    commandHandlers["attack"] = [this](const QStringList& args) {
+        qCDebug(textViewCat) << "attack";
+        view->attackNearestEnemy();
+    };
+
+    commandHandlers["take"] = [this](const QStringList& args) {
+        qCDebug(textViewCat) << "take";
+        view->takeNearestHealthPack();
+    };
+
+    commandHandlers["help"] = [this](const QStringList& args) {
+        qCDebug(textViewCat) << "help";
+        printHelp();// print list of available commands
+    };
+
+    // Add additional command handlers as needed
+
+    // Check if the main command is in the map
+    if (commandHandlers.contains(mainCommand)) {
+        // Call the corresponding handler function
+        commandHandlers[mainCommand](commandParts);
+    } else {
+        // Unknown command
+        printUnknownCommand();
+    }
 }
 
 void TextView::printHelp()

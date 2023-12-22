@@ -16,6 +16,7 @@
 #include <ctime>
 #include <iostream>
 #include <QScrollBar>
+#include <QApplication>
 
 #include "worldview.h"
 
@@ -39,25 +40,15 @@ public:
     std::shared_ptr<Protagonist> protagonist;
     void centerPlayer();
 
-<<<<<<< HEAD
 private:
     QTextBrowser* textView;
     QCompleter* completer;
     std::shared_ptr<WorldView> view;
     QStringList availableCommands;
     QLineEdit* lineEdit;
-    QTextCursor* protagonistCursor;
-=======
+    float previousHealth;
+    QTimer* colorResetTimer;
 
-    private:
-        QTextBrowser* textView;
-        QCompleter* completer;
-        std::shared_ptr<WorldView> view;
-        QStringList availableCommands;
-        QLineEdit* lineEdit;
-        float previousHealth;
-        QTimer* colorResetTimer;
->>>>>>> 16e5623c29ad536442458629383f89efbb52baa1
 
     void printHelp();
     void printMessage(const QString& message);
