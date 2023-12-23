@@ -16,51 +16,6 @@ TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<
     previousHealth = view->getDelegate()->getWorldProtagonist()->getHealth();
 }
 
-/*void TextView::renderTiles() {
-
-    qCDebug(textViewCat) << "renderTiles() called";
-    // get the game world data
-    std::shared_ptr<WorldDelegate> delegate = view->getDelegate();
-    worldTiles = delegate->getWorldTiles();
-    worldEnemies = delegate->getWorldEnemies();
-    worldHealthPacks = delegate->getWorldHealthPacks();
-    protagonist = delegate->getWorldProtagonist();
-    float currentHealth = protagonist->getHealth();
-
-    textView->clear();
-    std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
-
-    for (const auto& enemy : worldEnemies) {
-        if (dynamic_cast<PEnemy*>(enemy.get())) {
-            worldView[enemy->getYPos()][enemy->getXPos()] = 'Q';
-        } else {
-            worldView[enemy->getYPos()][enemy->getXPos()] = 'E';
-        }
-    }
-
-    worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
-    //protagonistCursor->setPosition();
-    //std::cout << protagonist->getYPos() << std::endl;
-
-    for (const auto& healthPack : worldHealthPacks) {
-         worldView[healthPack->getYPos()][healthPack->getXPos()] = 'H';
-    }
-
-    // grid
-    QString line;
-    for (const auto& row : worldView) {
-        QString line = "| ";
-        for (const auto& tile : row) {
-            line += tile;
-            line += " | "; // Add grid lines
-        }
-        // Append the line to the text view
-        textView->append(line);
-        textView->append(QString(line.size(), '-'));
-    }
-    this->centerPlayer();
-}*/
-
 void TextView::renderTiles() {
     qCDebug(textViewCat) << "renderTiles() called";
 
@@ -70,7 +25,7 @@ void TextView::renderTiles() {
     worldEnemies = delegate->getWorldEnemies();
     worldHealthPacks = delegate->getWorldHealthPacks();
     protagonist = delegate->getWorldProtagonist();
-    float currentHealth = protagonist->getHealth();
+    //float currentHealth = protagonist->getHealth();
 
     textView->clear();
     std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
