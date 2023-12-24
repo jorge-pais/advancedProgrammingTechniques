@@ -17,7 +17,8 @@ SOURCES += \
     spritewithvalue.cpp \
     textview.cpp \
     worlddelegate.cpp \
-    worldview.cpp
+    worldview.cpp \
+    xenemy.cpp
 
 HEADERS += \
     graphicalview.h \
@@ -30,7 +31,8 @@ HEADERS += \
     world.h \
     world_global.h \
     worlddelegate.h \
-    worldview.h
+    worldview.h \
+    xenemy.h
 
 FORMS += \
     mainwindow.ui

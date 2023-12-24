@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     wView->setDelegate(worldDelegate);
 
     QString worldPath{":/images/resources/world_images/worldmap.png"};
-    world->createWorld(worldPath, 2, 2, 0.0);
+    world->createWorld(worldPath, 5, 6, 0.0);
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();

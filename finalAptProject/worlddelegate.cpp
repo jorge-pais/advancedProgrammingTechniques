@@ -1,4 +1,5 @@
 #include "worlddelegate.h"
+#include "xenemy.h"
 
 // QT Logging
 #include "qloggingcategory.h"
@@ -16,6 +17,7 @@ void WorldDelegate::connectSlots(){
     qCDebug(worldDelegateCat) << "connectSlots() called";
 
     QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+    QObject::connect(this, &WorldDelegate::xEnemyStoleSignal, this->view.get(), &WorldView::xEnemyStoleSlot);
 
     if(this->getWorldEnemies().size() != 0)
         for(auto& enemy : this->getWorldEnemies()){ // calling here world enemies makes it such that i can't get the enemies later on in the graphics views
@@ -37,9 +39,19 @@ void WorldDelegate::initializeWDelegate(){
         tiles.push_back(sharedTile);
     }
 
+    bool xEnemyMade = false;
     for(auto & enemy : world->getEnemies()){
-        std::shared_ptr<Enemy> sharedEnemy= std::move(enemy);
-        enemies.push_back(sharedEnemy);
+        if(!xEnemyMade){
+            if(enemyStatus(*enemy) == "Regular"){
+                auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
+                enemies.push_back(std::dynamic_pointer_cast<Enemy, XEnemy>(xEnemy));
+                xEnemyMade = true;
+            }
+        }
+        else{
+            std::shared_ptr<Enemy> sharedEnemy= std::move(enemy);
+            enemies.push_back(sharedEnemy);
+        }
     }
 
     for(auto & healthPack : world->getHealthPacks()){
@@ -116,6 +128,8 @@ std::string WorldDelegate::enemyStatus(Enemy& enemy)
     qCDebug(worldDelegateCat) << "enemyStatus() called";
     if (dynamic_cast<PEnemy*>(&enemy))
         return "PEnemy";
+    else if(dynamic_cast<XEnemy*>(&enemy))
+        return "XEnemy";
     else
         return "Regular";
 }
@@ -138,6 +152,32 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
         if(enemyType != "PEnemy"){
             protagonist->setPos(ex, ey);
             enemy->setDefeated(true);
+        }
+    }
+    if(enemyType == "XEnemy" && enemy->getDefeated()){
+        XEnemy* xEnemy = dynamic_cast<XEnemy*>(enemy.get());
+        auto enemies = getWorldEnemies();
+        auto alreadyStolen = xEnemy->getEnemies();
+        for(const auto& potentialDead : enemies){
+            bool found = false;
+            for(const auto& stolen : alreadyStolen){
+                if(stolen->getXPos() == potentialDead->getXPos() && stolen->getYPos() == potentialDead->getYPos()){
+                    found = true;
+                }
+            }
+            if(potentialDead->getDefeated() && enemyStatus(*potentialDead) == "Regular" && !found){
+                int oldX = xEnemy->getXPos();
+                int oldY = xEnemy->getYPos();
+                xEnemy->setDefeated(false);
+                xEnemy->setXPos(potentialDead->getXPos());
+                xEnemy->setYPos(potentialDead->getYPos());
+                xEnemy->setValue(potentialDead->getValue());
+                emit xEnemyStoleSignal(xEnemy->getXPos(), xEnemy->getYPos(), oldX, oldY, xEnemy->getValue());
+                potentialDead->setXPos(oldX);
+                potentialDead->setYPos(oldY);
+                xEnemy->addEnemy(potentialDead);
+                return;
+            }
         }
     }
 }
