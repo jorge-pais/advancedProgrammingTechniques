@@ -1,4 +1,5 @@
 #include "spritewithvalue.h"
+#include "xenemy.h"
 
 SpriteWithValue::SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
