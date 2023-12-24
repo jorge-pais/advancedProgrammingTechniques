@@ -47,6 +47,15 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
 
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
+    case Qt::Key_Plus:  // Ctrl + +
+        if(event->modifiers() & Qt::ControlModifier)
+            gView->zoom(true);
+        return;
+    case Qt::Key_Minus: // Ctrl + +
+        if(event->modifiers() & Qt::ControlModifier)
+            gView->zoom(false);
+        return;
+
     case Qt::Key_Up:
     case Qt::Key_W:
         dy--;
@@ -63,10 +72,11 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     case Qt::Key_D:
         dx++;
         break;
+    default:
+        return; //prevent other keystrokes from sending the signal?
     }
     //handle the events and then emit these signals with appropriate parameters
     emit playerMovedSignal(dx, dy);
-    //emit attackSignal(nullptr);
 }
 
 void WorldView::attackNearestEnemy(){
@@ -117,6 +127,8 @@ void WorldView::positionChangedSlot(int x, int y)
     // show the protagonist moving on screen
     gView->player->setPosition(x, y);
     gView->view->centerOn(gView->player->sprite);
+
+    // re-render everything on textView
     tView->renderTiles();
 }
 
@@ -138,6 +150,18 @@ void WorldView::protagonistHealthChangedSlot(int h)
     // show the health bar changing on screen
 }
 
+void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
+    for(auto& enemy : gView->entities){
+        if(enemy->x == x && enemy->y == y){
+            enemy->setPosition(oldX, oldY);
+            enemy->setDead();
+        }
+        else if(enemy->x == oldX && enemy->y == oldY){
+            enemy->setAlive(health);
+            enemy->setPosition( x, y);
+        }
+    }
+}
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
