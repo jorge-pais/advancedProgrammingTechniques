@@ -26,11 +26,13 @@ public:
 
     void setHealth(float health);
     void setDead();
+    void setAlive(float health);
     void setPosition(int x, int y);
 
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
     QPixmap spriteDeadPixmap;
+    QPixmap spritePixmap;
     int x, y;
 };
 
