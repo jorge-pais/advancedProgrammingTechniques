@@ -12,7 +12,9 @@
 #include <ctime>
 #include <iostream>
 #include <unordered_map>
+
 #include "world.h"
+#include "xenemy.h"
 
 #define TILE_SIZE 40
 #define TEXT_OFFSET 15
@@ -28,6 +30,7 @@ public:
 
     void setHealth(float health);
     void setDead();
+    void setAlive(float health);
     void setPosition(int x, int y);
 
     //std::unordered_map<std::string, QPixmap> sprites;
@@ -35,6 +38,7 @@ public:
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
     QPixmap spriteDeadPixmap;
+    QPixmap spritePixmap;
     int x, y;
 };
 

@@ -19,30 +19,29 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Protagonist> prog){
 SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
     //SpriteWithValue(int x, int y, float value){
 
-    QPixmap spritePixmap;
-
     text = new QGraphicsTextItem(QString::number(entity->getValue()));
 
-    if(dynamic_cast<PEnemy*>(entity.get())){
+    if(dynamic_cast<XEnemy*>(entity.get())){
         spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
         spriteDeadPixmap = QPixmap(":/images/resources/entities/cpt-squished-left.png");
-    }
-    else if(dynamic_cast<Enemy*>(entity.get())){
+    }else if(dynamic_cast<PEnemy*>(entity.get())){
         spritePixmap = QPixmap(":/images/resources/entities/smartball-2.png");
         spriteDeadPixmap = QPixmap(":/images/resources/entities/mrs-squished-left.png");
-    }
-    else{ // Healthpack
+    }else if(dynamic_cast<Enemy*>(entity.get())){
+        spritePixmap = QPixmap(":/images/resources/entities/snowball-2.png");
+        spriteDeadPixmap = QPixmap(":/images/resources/entities/squished-left.png");
+    }else{
         spritePixmap = QPixmap(":/images/resources/entities/platter.png");
         spriteDeadPixmap = QPixmap();
     }
 
     spritePixmap = spritePixmap.scaled(TILE_SIZE, TILE_SIZE,
-                                       Qt::KeepAspectRatio,
-                                       Qt::SmoothTransformation); // facing
+                                        Qt::KeepAspectRatio,
+                                        Qt::SmoothTransformation); // facing
 
     spriteDeadPixmap = spriteDeadPixmap.scaled(TILE_SIZE, TILE_SIZE,
-                                               Qt::KeepAspectRatio,
-                                               Qt::SmoothTransformation); // facing
+                                        Qt::KeepAspectRatio,
+                                        Qt::SmoothTransformation); // facing
 
     sprite = new QGraphicsPixmapItem(spritePixmap);
 
@@ -72,6 +71,12 @@ void SpriteWithValue::setDead(){
     sprite->setPixmap(spriteDeadPixmap);
     sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + 25);
     text->setPlainText("");
+}
+
+void SpriteWithValue::setAlive(float health){
+    sprite->setPixmap(spritePixmap);
+    text->setPlainText(QString::number(health));
+    text->setZValue(1);
 }
 
 void SpriteWithValue::setHealth(float health){
