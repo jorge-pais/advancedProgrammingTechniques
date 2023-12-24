@@ -23,6 +23,9 @@ void GraphicalView::renderTiles(){
         y = tilePtr->getYPos();
         value = tilePtr->getValue();
         //std::cout << value << " ";
+
+        /// This prints all tiles in grey scale,
+        /// there should be an option to configure a tile set from different ranges
         scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
                        QPen(Qt::NoPen),
                        QBrush(QColor(255*value, 255*value, 255*value)));
@@ -66,6 +69,7 @@ void GraphicalView::renderPlayer(){
 }
 
 /// true for zoom in; false for zooming out
+//void GraphicalView::zoom(bool in, float scale = SCALE_FACTOR){
 void GraphicalView::zoom(bool in){
     const float factor = in ? SCALE_FACTOR : 1/SCALE_FACTOR;
     this->view->scale(factor, factor);
