@@ -8,6 +8,7 @@
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QKeyEvent>
+#include <QWheelEvent>
 #include <QTransform>
 #include <ctime>
 #include <iostream>
@@ -15,8 +16,9 @@
 #include "worlddelegate.h"
 #include "spritewithvalue.h"
 
-#define TILE_SIZE 40
-#define TEXT_OFFSET 25
+#define TILE_SIZE 20
+#define TEXT_OFFSET 15
+#define SCALE_FACTOR 1.15
 
 class WorldView;
 class WorldDelegate;
@@ -32,11 +34,13 @@ public:
     std::vector<SpriteWithValue *> entities;
     std::vector<SpriteWithValue *> healthPack;
 
-    // THESE METHODS ALL SAY READ, BUT ARE IN FACT JUST TO ADD THE SPRITES
     void renderTiles();
     void renderEntities();
     void renderPlayer();
     void poisonTile(int x, int y, int poisonLevel);
+
+    void zoomIn();
+    void zoomOut();
 
     QGraphicsView * view;
 
@@ -44,6 +48,7 @@ private:
     QGraphicsScene* scene;
     //std::shared_ptr<WorldDelegate> delegate;
     std::shared_ptr<WorldView> worldView;
+
 };
 
 #endif // GRAPHICALVIEW_H

@@ -26,9 +26,7 @@ class Position : public Tile
 {
 public:
     Position(int xPosition, int yPosition)
-        : Tile(xPosition, yPosition, 0)
-    {
-    }
+        : Tile(xPosition, yPosition, 0) {}
 };
 
 class WorldDelegate : public QObject

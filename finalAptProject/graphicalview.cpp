@@ -11,7 +11,7 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
     graphicsView->setScene(scene);
 }
 
-/// THIS function should be called only when loading the map i guess...
+
 void GraphicalView::renderTiles(){
     qCDebug(graphicalViewCat) << "renderTiles() called";
 
@@ -63,4 +63,12 @@ void GraphicalView::renderPlayer(){
     player = new SpriteWithValue(worldView->getDelegate()->getWorldProtagonist());
     scene->addItem(player->sprite);
     scene->addItem(player->text);
+}
+
+void GraphicalView::zoomIn(){
+    this->view->scale(SCALE_FACTOR, SCALE_FACTOR);
+}
+
+void GraphicalView::zoomOut(){
+    this->view->scale(1/SCALE_FACTOR, 1/SCALE_FACTOR);
 }

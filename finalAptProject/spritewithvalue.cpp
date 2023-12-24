@@ -26,10 +26,12 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
     if(dynamic_cast<PEnemy*>(entity.get())){
         spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
         spriteDeadPixmap = QPixmap(":/images/resources/entities/cpt-squished-left.png");
-    }else if(dynamic_cast<Enemy*>(entity.get())){
+    }
+    else if(dynamic_cast<Enemy*>(entity.get())){
         spritePixmap = QPixmap(":/images/resources/entities/smartball-2.png");
         spriteDeadPixmap = QPixmap(":/images/resources/entities/mrs-squished-left.png");
-    }else{
+    }
+    else{ // Healthpack
         spritePixmap = QPixmap(":/images/resources/entities/platter.png");
         spriteDeadPixmap = QPixmap();
     }

@@ -13,8 +13,8 @@
 #include <iostream>
 #include "world.h"
 
-#define TILE_SIZE 40
-#define TEXT_OFFSET 25
+#define TILE_SIZE 20
+#define TEXT_OFFSET 15
 
 class SpriteWithValue
 {

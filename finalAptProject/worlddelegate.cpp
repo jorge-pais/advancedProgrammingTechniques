@@ -26,6 +26,9 @@ void WorldDelegate::connectSlots(){
         }
 }
 
+/// TODO we should change this to spawn the player on a low energy tile
+/// in the case of the maze images, the player is put at (0,0)
+/// which is a tile that takes infinite energy
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
     //if (tiles == nullptr && healthPacks != nullptr && enemies != nullptr) return

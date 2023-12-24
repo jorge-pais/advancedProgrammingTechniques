@@ -47,6 +47,15 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
 
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
+    case Qt::Key_Plus:  // Ctrl + +
+        if(event->modifiers() & Qt::ControlModifier)
+            1;
+        return;
+    case Qt::Key_Minus: // Ctrl + +
+        if(event->modifiers() & Qt::ControlModifier)
+            1;
+        return;
+
     case Qt::Key_Up:
     case Qt::Key_W:
         dy--;
