@@ -28,11 +28,9 @@ void WorldDelegate::connectSlots(){
         }
 }
 
-/// I believe this function is very necessary, since there is no way
-/// easy way to move the unique_ptr back to the world vector, surprisingly
-///
-/// For now we're only copying the vectors, perhaps the protagonist
-/// also needs to be copied.
+/// TODO we should change this to spawn the player on a low energy tile
+/// in the case of the maze images, the player is put at (0,0)
+/// which is a tile that takes infinite energy
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
     //if (tiles == nullptr && healthPacks != nullptr && enemies != nullptr) return
@@ -61,6 +59,11 @@ void WorldDelegate::initializeWDelegate(){
         healthPacks.push_back(sharedHealthPack);
     }
     this->protagonist = std::move(world->getProtagonist());
+}
+
+std::shared_ptr<Tile> WorldDelegate::getTile(int x, int y){
+    int rows = getWorldRows();
+    return this->tiles[rows*y + x];
 }
 
 std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldTiles()
@@ -122,7 +125,7 @@ void WorldDelegate::setProtagonistEnergy(float energyValue)
 
 std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
-    qCDebug(worldDelegateCat) << "enemy() called";
+    qCDebug(worldDelegateCat) << "enemyStatus() called";
     if (dynamic_cast<PEnemy*>(&enemy))
         return "PEnemy";
     else if(dynamic_cast<XEnemy*>(&enemy))
@@ -184,42 +187,38 @@ void WorldDelegate::addPoisonTile(int x, int y, float value){
     poisonTiles.push_back(tile);
 }
 
-void WorldDelegate::movedSlot(int x, int y) {
+void WorldDelegate::movedSlot(int dx, int dy) {
     qCDebug(worldDelegateCat) << "movedSlot() called";
-    auto protagonist = getWorldProtagonist();
-    auto enemies = getWorldEnemies();
-    auto tiles = getWorldTiles();
 
     // Calculate new postition, check if it's valid
-    int newX = protagonist->getXPos() + x;
-    int newY = protagonist->getYPos() + y;
-    if((x == 0 && y==0) || newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)) return;
+    int newX = protagonist->getXPos() + dx;
+    int newY = protagonist->getYPos() + dy;
 
+    if((dx == 0 && dy==0) || newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)) return;
+    
     // If the difference in direction is more than 1, use the pathfinder
-    if (sqrt(x*x + y*y) > 1) {
+    if (sqrt(dx*dx + dy*dy) > 1) {
         // Fill the nodes vector with the tiles of your world
         qCDebug(worldDelegateCat) << "using pathfinder";
         moveOnPath(newX, newY);
         return;
     }
+    
+    auto protagonist = getWorldProtagonist();
+    auto enemies = getWorldEnemies();
+    auto tiles = getWorldTiles();
+
     qCDebug(worldDelegateCat) << "NOT using pathfinder";
     float difference = 0;
 
     // There has to be a more efficient way to do this
-    for(const auto& tile : tiles){
-        if(tile->getXPos() == x && tile->getYPos() == y){
-        difference += tile->getValue();
-        }
-        if(tile->getXPos() == newX && tile->getYPos() == newY){
-        difference -= tile->getValue();
-        }
-    }
+    difference += getTile(newX, newY)->getValue();
+
+    // Moving in the world will take energy defined by the value of the tile you are moving to
     if(difference < 0){
         difference = -difference;
     }
-    if(difference < 0){
-        difference = -difference;
-    }
+
     if(protagonist->getEnergy() - difference < 0){
         return;
     }
@@ -285,20 +284,14 @@ void WorldDelegate::moveOnPath(int newX, int newY){
 
     // Use the path to move the protagonist
     for (int move : path) {
-        newX = protagonist->getXPos() + moveX[move];
-        newY = protagonist->getYPos() + moveY[move];
+        int newX = protagonist->getXPos() + moveX[move];
+        int newY = protagonist->getYPos() + moveY[move];
 
         // Calculate the energy cost of the move
-        float energyCost = 0;
-        for(const auto& tile : tiles){
-            if(tile->getXPos() == newX && tile->getYPos() == newY){
-                energyCost += tile->getValue();
-            }
-        }
-
-        if (protagonist->getEnergy() < energyCost) return;
+        float energyCost = getTile(newX, newY)->getValue();
+        
         // If the protagonist's health is 0 or less, stop the loop and return
-        if (protagonist->getHealth() <= 0) return;
+        if (protagonist->getEnergy() < energyCost && protagonist->getEnergy() <= 0) return;
 
         // Check if there's an enemy on the path
         for(const auto& enemy : enemies){
@@ -320,4 +313,3 @@ void WorldDelegate::moveOnPath(int newX, int newY){
         protagonist->setEnergy(protagonist->getEnergy() - energyCost);
     }
 }
-
