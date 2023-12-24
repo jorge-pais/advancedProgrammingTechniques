@@ -65,10 +65,8 @@ void GraphicalView::renderPlayer(){
     scene->addItem(player->text);
 }
 
-void GraphicalView::zoomIn(){
-    this->view->scale(SCALE_FACTOR, SCALE_FACTOR);
-}
-
-void GraphicalView::zoomOut(){
-    this->view->scale(1/SCALE_FACTOR, 1/SCALE_FACTOR);
+/// true for zoom in; false for zooming out
+void GraphicalView::zoom(bool in){
+    const float factor = in ? SCALE_FACTOR : 1/SCALE_FACTOR;
+    this->view->scale(factor, factor);
 }

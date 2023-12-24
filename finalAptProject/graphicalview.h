@@ -16,7 +16,7 @@
 #include "worlddelegate.h"
 #include "spritewithvalue.h"
 
-#define TILE_SIZE 20
+#define TILE_SIZE 40
 #define TEXT_OFFSET 15
 #define SCALE_FACTOR 1.15
 
@@ -39,8 +39,7 @@ public:
     void renderPlayer();
     void poisonTile(int x, int y, int poisonLevel);
 
-    void zoomIn();
-    void zoomOut();
+    void zoom(bool in);
 
     QGraphicsView * view;
 

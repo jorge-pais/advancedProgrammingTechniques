@@ -49,11 +49,11 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     switch(event->key()){
     case Qt::Key_Plus:  // Ctrl + +
         if(event->modifiers() & Qt::ControlModifier)
-            1;
+            gView->zoom(true);
         return;
     case Qt::Key_Minus: // Ctrl + +
         if(event->modifiers() & Qt::ControlModifier)
-            1;
+            gView->zoom(false);
         return;
 
     case Qt::Key_Up:
