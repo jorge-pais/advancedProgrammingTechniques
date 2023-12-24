@@ -11,6 +11,7 @@
 #include <QTransform>
 #include <ctime>
 #include <iostream>
+#include <unordered_map>
 #include "world.h"
 
 #define TILE_SIZE 40
@@ -20,6 +21,7 @@ class SpriteWithValue
 {
 public:
     SpriteWithValue();
+
     SpriteWithValue(std::shared_ptr<Protagonist> prog);
     SpriteWithValue(std::shared_ptr<Tile> entity);
     ~SpriteWithValue();
@@ -27,6 +29,8 @@ public:
     void setHealth(float health);
     void setDead();
     void setPosition(int x, int y);
+
+    //std::unordered_map<std::string, QPixmap> sprites;
 
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
