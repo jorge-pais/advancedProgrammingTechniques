@@ -3,12 +3,13 @@
 SpriteWithValue::SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
 SpriteWithValue::SpriteWithValue(std::shared_ptr<Protagonist> prog){
-    QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");
-    playerSprite = playerSprite.scaled(TILE_SIZE, TILE_SIZE,
-                                       Qt::KeepAspectRatio,
-                                       Qt::SmoothTransformation); // facing
+    spriteSet["alive"] = QPixmap(":/images/resources/entities/tux.png");
+    spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
 
-    sprite = new QGraphicsPixmapItem(playerSprite);
+    spriteSet["move"] = QPixmap(":/images/resources/entities/tux2.png");
+    spriteSet["move"] = scaleSprite(spriteSet["move"]);
+
+    sprite = new QGraphicsPixmapItem(spriteSet["alive"]);
     text = new QGraphicsTextItem(QString::number(prog->getHealth()));
 
     setPosition(prog->getXPos(), prog->getYPos());
@@ -17,41 +18,35 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Protagonist> prog){
 }
 
 SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
-    //SpriteWithValue(int x, int y, float value){
 
     text = new QGraphicsTextItem(QString::number(entity->getValue()));
 
     if(dynamic_cast<XEnemy*>(entity.get())){
-        spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
-        spriteDeadPixmap = QPixmap(":/images/resources/entities/cpt-squished-left.png");
+        spriteSet["alive"] = QPixmap(":/images/resources/entities/captain_left-2.png");
+        spriteSet["dead"] = QPixmap(":/images/resources/entities/cpt-squished-left.png");
     }else if(dynamic_cast<PEnemy*>(entity.get())){
-        spritePixmap = QPixmap(":/images/resources/entities/smartball-2.png");
-        spriteDeadPixmap = QPixmap(":/images/resources/entities/mrs-squished-left.png");
+        spriteSet["alive"] = QPixmap(":/images/resources/entities/smartball-2.png");
+        spriteSet["dead"] = QPixmap(":/images/resources/entities/mrs-squished-left.png");
     }else if(dynamic_cast<Enemy*>(entity.get())){
-        spritePixmap = QPixmap(":/images/resources/entities/snowball-2.png");
-        spriteDeadPixmap = QPixmap(":/images/resources/entities/squished-left.png");
+        spriteSet["alive"] = QPixmap(":/images/resources/entities/snowball-2.png");
+        spriteSet["dead"] = QPixmap(":/images/resources/entities/squished-left.png");
     }else{
-        spritePixmap = QPixmap(":/images/resources/entities/platter.png");
-        spriteDeadPixmap = QPixmap();
+        spriteSet["alive"] = QPixmap(":/images/resources/entities/platter.png");
+        spriteSet["dead"] = QPixmap();
     }
 
-    spritePixmap = spritePixmap.scaled(TILE_SIZE, TILE_SIZE,
-                                        Qt::KeepAspectRatio,
-                                        Qt::SmoothTransformation); // facing
+    spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
+    spriteSet["dead"] = scaleSprite(spriteSet["dead"]);
 
-    spriteDeadPixmap = spriteDeadPixmap.scaled(TILE_SIZE, TILE_SIZE,
-                                        Qt::KeepAspectRatio,
-                                        Qt::SmoothTransformation); // facing
-
-    sprite = new QGraphicsPixmapItem(spritePixmap);
+    sprite = new QGraphicsPixmapItem(spriteSet["alive"]);
 
     setPosition(entity->getXPos(), entity->getYPos());
     sprite->setZValue(1);
     text->setZValue(1);
 }
 
-//int getX() const { return x; }
-//int getY() const { return y; }
+int SpriteWithValue::getX() const { return x; }
+int SpriteWithValue::getY() const { return y; }
 
 SpriteWithValue::~SpriteWithValue(){
     delete sprite;
@@ -68,19 +63,30 @@ void SpriteWithValue::setPosition(int x, int y){
 }
 
 void SpriteWithValue::setDead(){
-    sprite->setPixmap(spriteDeadPixmap);
+    sprite->setPixmap(spriteSet["dead"]);
     sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + 25);
     text->setPlainText("");
 }
 
 void SpriteWithValue::setAlive(float health){
-    sprite->setPixmap(spritePixmap);
+    sprite->setPixmap(spriteSet["alive"]);
     text->setPlainText(QString::number(health));
     text->setZValue(1);
 }
 
 void SpriteWithValue::setHealth(float health){
-    if(text){
-        text->setPlainText(QString::number(health));
-    }
+    if(text) text->setPlainText(QString::number(health));
+}
+
+void SpriteWithValue::animate(QPixmap start, QPixmap end, float time){
+    sprite->setPixmap(start);
+
+    QTimer *timer = new QTimer(this);
+
+    connect(timer, &QTimer::timeout, [this, end, timer](){
+        sprite->setPixmap(end);
+        timer->deleteLater();
+    });
+
+    timer->start(time*1000);
 }

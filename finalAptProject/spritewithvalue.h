@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QKeyEvent>
 #include <QTransform>
+#include <QTimer>
 #include <ctime>
 #include <iostream>
 #include <unordered_map>
@@ -20,7 +21,7 @@
 #define TEXT_OFFSET 15
 
 class SpriteWithValue
-{
+: QObject{
 public:
     SpriteWithValue();
 
@@ -32,13 +33,17 @@ public:
     void setDead();
     void setAlive(float health);
     void setPosition(int x, int y);
-
-    //std::unordered_map<std::string, QPixmap> sprites;
+    void animate(QPixmap start, QPixmap end, float time);
+    int getX() const;
+    int getY() const;
 
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
-    QPixmap spriteDeadPixmap;
-    QPixmap spritePixmap;
+    std::unordered_map<std::string, QPixmap> spriteSet = {};
+
+private:
+    std::function<QPixmap(QPixmap)> scaleSprite = [](QPixmap sprite) { return sprite.scaled(TILE_SIZE, TILE_SIZE, Qt::KeepAspectRatio,Qt::SmoothTransformation); };
+
     int x, y;
 };
 

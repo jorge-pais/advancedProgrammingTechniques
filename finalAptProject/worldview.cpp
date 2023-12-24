@@ -125,6 +125,7 @@ void WorldView::positionChangedSlot(int x, int y)
 {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
+    gView->player->animate(gView->player->spriteSet["move"], gView->player->spriteSet["alive"], 0.1);
     gView->player->setPosition(x, y);
     gView->view->centerOn(gView->player->sprite);
 
@@ -140,7 +141,7 @@ void WorldView::protagonistHealthChangedSlot(int h)
     for(auto& pack : healthPacks){
         if(pack->getValue() == 0){
             for(auto& healthpack : gView->entities){
-                if(healthpack->x == pack->getXPos() && healthpack->y == pack->getYPos()){
+                if(healthpack->getX() == pack->getXPos() && healthpack->getY() == pack->getYPos()){
                     healthpack->setDead();
                 }
             }
@@ -152,11 +153,11 @@ void WorldView::protagonistHealthChangedSlot(int h)
 
 void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     for(auto& enemy : gView->entities){
-        if(enemy->x == x && enemy->y == y){
+        if(enemy->getX() == x && enemy->getY() == y){
             enemy->setPosition(oldX, oldY);
             enemy->setDead();
         }
-        else if(enemy->x == oldX && enemy->y == oldY){
+        else if(enemy->getX() == oldX && enemy->getY() == oldY){
             enemy->setAlive(health);
             enemy->setPosition( x, y);
         }
@@ -165,6 +166,7 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
+    
     // show the energy level changing on screen
 }
 
@@ -174,7 +176,7 @@ void WorldView::enemyDeadSlot()
     auto worldEnemies = this->delegate->getWorldEnemies();
     for(auto& worldEnemy : worldEnemies){
         for(auto& enemy : gView->entities){
-            if(enemy->x == worldEnemy->getXPos() && enemy->y == worldEnemy->getYPos() && worldEnemy->getDefeated()){
+            if(enemy->getX() == worldEnemy->getXPos() && enemy->getY() == worldEnemy->getYPos() && worldEnemy->getDefeated()){
                 enemy->setDead();
             }
         }
