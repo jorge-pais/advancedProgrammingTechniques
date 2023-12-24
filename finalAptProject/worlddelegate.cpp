@@ -58,7 +58,11 @@ void WorldDelegate::initializeWDelegate(){
         std::shared_ptr<Tile> sharedHealthPack= std::move(healthPack);
         healthPacks.push_back(sharedHealthPack);
     }
+
     this->protagonist = std::move(world->getProtagonist());
+
+    /// TODO: we should check if the protagonist is in a infinite energy 
+    /// tile and move it to another (random ?) position
 }
 
 std::shared_ptr<Tile> WorldDelegate::getTile(int x, int y){

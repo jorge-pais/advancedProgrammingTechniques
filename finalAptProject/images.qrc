@@ -13,6 +13,7 @@
         <file>resources/entities/cpt-squished-left.png</file>
         <file>resources/entities/mrs-squished-left.png</file>
         <file>resources/entities/squished-left.png</file>
+        <file>resources/entities/tux2.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

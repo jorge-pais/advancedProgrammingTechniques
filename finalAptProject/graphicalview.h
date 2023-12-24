@@ -17,9 +17,9 @@
 #include "worlddelegate.h"
 #include "spritewithvalue.h"
 
-#define TILE_SIZE 40
-#define TEXT_OFFSET 15
-#define SCALE_FACTOR 1.15
+//#define TILE_SIZE 40
+//#define TEXT_OFFSET 15
+#define SCALE_FACTOR 1.25
 
 class WorldView;
 class WorldDelegate;
