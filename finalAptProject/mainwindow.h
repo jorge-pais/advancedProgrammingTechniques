@@ -12,10 +12,11 @@
 #include <QTransform>
 #include <ctime>
 #include <memory>
-
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <QMenu>
+#include <QToolBar>
 
 #include "worlddelegate.h"
 #include "world.h"
@@ -45,6 +46,10 @@ signals:
 private slots:
     void submitCommand();
 
+public slots:
+    void doAction1();
+    void doAction2();
+
 private:
     Ui::MainWindow *ui;
 
@@ -54,7 +59,12 @@ private:
     std::shared_ptr<GraphicalView> gView; // Pointer, as GraphicalView needs a QGraphicsView
     std::shared_ptr<TextView> tView;
 
+    void toolbarConfig();
+
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
+    //#ifndef QT_NO_CONTEXTMENU
+    //    void contextMenuEvent(QContextMenuEvent *event) override;
+    //#endif //QT_NO_CONTEXTMENU
 };
 #endif // MAINWINDOW_H

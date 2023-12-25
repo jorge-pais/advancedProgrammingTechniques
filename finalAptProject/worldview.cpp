@@ -42,7 +42,6 @@ void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {
-    //qCDebug(worldViewCat) << "window event SLOT called";
     int dx = 0, dy = 0;
 
     /// TODO Figure out why the arrow keys aren't working
