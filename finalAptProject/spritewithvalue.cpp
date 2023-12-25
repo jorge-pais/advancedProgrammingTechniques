@@ -1,5 +1,4 @@
 #include "spritewithvalue.h"
-#include "xenemy.h"
 
 SpriteWithValue::SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
@@ -33,7 +32,7 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
         spriteSet["dead"] = QPixmap(":/images/resources/entities/squished-left.png");
     }else{
         spriteSet["alive"] = QPixmap(":/images/resources/entities/platter.png");
-        spriteSet["dead"] = QPixmap();
+        spriteSet["dead"] = QPixmap(); // disappear!
     }
 
     spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
@@ -49,6 +48,7 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
 int SpriteWithValue::getX() const { return x; }
 int SpriteWithValue::getY() const { return y; }
 
+/// TODO remove this and every other dumb pointer
 SpriteWithValue::~SpriteWithValue(){
     delete sprite;
     delete text;
@@ -79,6 +79,8 @@ void SpriteWithValue::setHealth(float health){
     if(text) text->setPlainText(QString::number(health));
 }
 
+/// these classes are only called in the protagonist
+/// perhaps we should do some inheritance ??
 void SpriteWithValue::animate(QPixmap start, QPixmap end, float time){
     sprite->setPixmap(start);
 
@@ -90,4 +92,18 @@ void SpriteWithValue::animate(QPixmap start, QPixmap end, float time){
     });
 
     timer->start(time*1000);
+}
+
+void SpriteWithValue::tint(bool poisoned){
+    QGraphicsColorizeEffect * colourEffect = dynamic_cast<QGraphicsColorizeEffect*>(sprite->graphicsEffect());
+    
+    if(!poisoned){
+        this->sprite->setGraphicsEffect(nullptr);
+        //delete colourEffect; // this crashes the program (?) 
+    }else{
+        colourEffect = new QGraphicsColorizeEffect();
+        colourEffect->setColor(Qt::green);
+        colourEffect->setStrength(0.5);
+        sprite->setGraphicsEffect(colourEffect);
+    }
 }

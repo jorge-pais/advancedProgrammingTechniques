@@ -227,11 +227,15 @@ void WorldDelegate::movedSlot(int dx, int dy) {
         return;
     }
 
+    /// TODO: maybe there should be a way to address the poisonTiles directly
+    bool isPoisoned = false;
     for(const auto& poisonTile : poisonTiles){
         if(poisonTile->getXPos() == newX && poisonTile->getYPos() == newY){
             protagonist->setHealth(protagonist->getHealth() - poisonTile->getValue());
+            isPoisoned = true;
         }
     }
+    view->playerPoisoned(isPoisoned);
 
     for(const auto& enemy : enemies){
         if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){

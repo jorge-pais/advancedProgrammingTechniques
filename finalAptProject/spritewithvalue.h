@@ -10,6 +10,7 @@
 #include <QKeyEvent>
 #include <QTransform>
 #include <QTimer>
+#include <QGraphicsColorizeEffect>
 #include <ctime>
 #include <iostream>
 #include <unordered_map>
@@ -33,9 +34,10 @@ public:
     void setDead();
     void setAlive(float health);
     void setPosition(int x, int y);
-    void animate(QPixmap start, QPixmap end, float time);
     int getX() const;
     int getY() const;
+    void animate(QPixmap start, QPixmap end, float time);
+    void tint(bool poisoned);
 
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;

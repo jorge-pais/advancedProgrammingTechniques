@@ -91,7 +91,6 @@ void WorldView::takeNearestHealthPack(){
 
 void WorldView::poisonLevelUpdatedSlot(int value)
 {
-
     auto enemies = this->delegate->getWorldEnemies();
 
     for(auto& enemy : enemies){
@@ -182,4 +181,8 @@ void WorldView::enemyDeadSlot()
         }
     }
     // show the enemy dying on screen
+}
+
+void WorldView::playerPoisoned(bool val){
+    this->gView->player->tint(val);
 }
