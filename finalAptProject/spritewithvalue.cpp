@@ -80,7 +80,7 @@ void SpriteWithValue::setHealth(float health){
 }
 
 /// these classes are only called in the protagonist
-/// perhaps we should do some inheritance ??
+/// perhaps we should do some inheritance right??
 void SpriteWithValue::animate(QPixmap start, QPixmap end, float time){
     sprite->setPixmap(start);
 
@@ -98,8 +98,7 @@ void SpriteWithValue::tint(bool poisoned){
     QGraphicsColorizeEffect * colourEffect = dynamic_cast<QGraphicsColorizeEffect*>(sprite->graphicsEffect());
     
     if(!poisoned){
-        this->sprite->setGraphicsEffect(nullptr);
-        //delete colourEffect; // this crashes the program (?) 
+        this->sprite->setGraphicsEffect(nullptr); 
     }else{
         colourEffect = new QGraphicsColorizeEffect();
         colourEffect->setColor(Qt::green);

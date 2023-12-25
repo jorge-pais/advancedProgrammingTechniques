@@ -68,9 +68,16 @@ void GraphicalView::renderPlayer(){
     scene->addItem(player->text);
 }
 
+void GraphicalView::centerView(){
+    qCDebug(graphicalViewCat) << "centerView() called";
+    this->view->centerOn(this->player->sprite);
+}
+
 /// true for zoom in; false for zooming out
 //void GraphicalView::zoom(bool in, float scale = SCALE_FACTOR){
 void GraphicalView::zoom(bool in){
+    qCDebug(graphicalViewCat) << "zoom() called";
     const float factor = in ? SCALE_FACTOR : 1/SCALE_FACTOR;
     this->view->scale(factor, factor);
+    centerView();
 }

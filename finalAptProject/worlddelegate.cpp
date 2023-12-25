@@ -127,6 +127,8 @@ void WorldDelegate::setProtagonistEnergy(float energyValue)
     protagonist->setEnergy(energyValue);
 }
 
+/// TODO: this could be an aux function associated with some enum
+/// this would make it easier reuse between the different 
 std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
     qCDebug(worldDelegateCat) << "enemyStatus() called";

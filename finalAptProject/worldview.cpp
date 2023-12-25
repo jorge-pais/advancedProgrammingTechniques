@@ -126,7 +126,7 @@ void WorldView::positionChangedSlot(int x, int y)
     // show the protagonist moving on screen
     gView->player->animate(gView->player->spriteSet["move"], gView->player->spriteSet["alive"], 0.1);
     gView->player->setPosition(x, y);
-    gView->view->centerOn(gView->player->sprite);
+    gView->centerView();
 
     // re-render everything on textView
     tView->renderTiles();

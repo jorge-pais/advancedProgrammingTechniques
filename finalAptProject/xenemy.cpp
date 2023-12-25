@@ -7,3 +7,14 @@ void XEnemy::addEnemy(std::shared_ptr<Enemy> enemy){
 }
 
 std::vector<std::shared_ptr<Enemy>> XEnemy::getEnemies(){return alreadyRevived;}
+
+
+std::string XEnemy::serialize(){
+    std::stringstream strS;
+
+    strS << Enemy::serialize();
+    for (std::shared_ptr<Enemy> enemy : alreadyRevived)
+        strS << ';' << enemy->serialize();
+
+    return strS.str();
+}

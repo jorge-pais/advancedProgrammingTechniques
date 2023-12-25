@@ -38,13 +38,13 @@ public:
     void renderTiles();
     void renderEntities();
     void renderPlayer();
+    void centerView();
     void poisonTile(int x, int y, int poisonLevel);
 
     void zoom(bool in);
 
-    QGraphicsView * view;
-
 private:
+    QGraphicsView * view;
     QGraphicsScene* scene;
     //std::shared_ptr<WorldDelegate> delegate;
     std::shared_ptr<WorldView> worldView;
