@@ -55,16 +55,16 @@ private:
 
     std::shared_ptr<World> world;
     std::shared_ptr<WorldView> wView;
-    std::shared_ptr<WorldDelegate> worldDelegate; // Changed to non-pointer
-    std::shared_ptr<GraphicalView> gView; // Pointer, as GraphicalView needs a QGraphicsView
+    std::shared_ptr<WorldDelegate> worldDelegate;
+    std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
 
     void toolbarConfig();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
-    //#ifndef QT_NO_CONTEXTMENU
-    //    void contextMenuEvent(QContextMenuEvent *event) override;
-    //#endif //QT_NO_CONTEXTMENU
+    /* #ifndef QT_NO_CONTEXTMENU
+        void contextMenuEvent(QContextMenuEvent *event) override;
+    #endif //QT_NO_CONTEXTMENU */
 };
 #endif // MAINWINDOW_H
