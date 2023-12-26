@@ -22,7 +22,7 @@
 #define TEXT_OFFSET 15
 
 class SpriteWithValue
-: QObject{
+: public QObject{ // public inheritance !!
 public:
     SpriteWithValue();
 
@@ -33,20 +33,18 @@ public:
     void setHealth(float health);
     void setDead();
     void setAlive(float health);
-    void setPosition(int x, int y);
+    virtual void setPosition(int x, int y);
     int getX() const;
     int getY() const;
-    void animate(QPixmap start, QPixmap end, float time);
-    void tint(bool poisoned);
+    QPixmap scaleSprite(QPixmap sprite);
 
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
     std::unordered_map<std::string, QPixmap> spriteSet = {};
 
-private:
-    std::function<QPixmap(QPixmap)> scaleSprite = [](QPixmap sprite) { return sprite.scaled(TILE_SIZE, TILE_SIZE, Qt::KeepAspectRatio,Qt::SmoothTransformation); };
-
-    int x, y;
+protected:
+    int x;
+    int y;
 };
 
 #endif // SPRITEWITHVALUE_H

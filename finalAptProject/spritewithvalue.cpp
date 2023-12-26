@@ -2,21 +2,6 @@
 
 SpriteWithValue::SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
-SpriteWithValue::SpriteWithValue(std::shared_ptr<Protagonist> prog){
-    spriteSet["alive"] = QPixmap(":/images/resources/entities/tux.png");
-    spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
-
-    spriteSet["move"] = QPixmap(":/images/resources/entities/tux2.png");
-    spriteSet["move"] = scaleSprite(spriteSet["move"]);
-
-    sprite = new QGraphicsPixmapItem(spriteSet["alive"]);
-    text = new QGraphicsTextItem(QString::number(prog->getHealth()));
-
-    setPosition(prog->getXPos(), prog->getYPos());
-    sprite->setZValue(1);
-    text->setZValue(1);
-}
-
 SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
 
     text = new QGraphicsTextItem(QString::number(entity->getValue()));
@@ -33,16 +18,24 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
     }else{
         spriteSet["alive"] = QPixmap(":/images/resources/entities/platter.png");
         spriteSet["dead"] = QPixmap(); // disappear!
-    }
+    }   
 
     spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
     spriteSet["dead"] = scaleSprite(spriteSet["dead"]);
 
-    sprite = new QGraphicsPixmapItem(spriteSet["alive"]);
+    // This will come in handy when loading the map from a serialized version and some entities might already be dead
+    Enemy* aux = dynamic_cast<Enemy*>(entity.get());
+    bool dead;
+    if(aux)
+        dead = aux->getDefeated();
+    else
+        dead = !(entity.get()->getValue());
+
+    sprite = new QGraphicsPixmapItem(dead ? spriteSet["dead"] : spriteSet["alive"]);
 
     setPosition(entity->getXPos(), entity->getYPos());
-    sprite->setZValue(1);
-    text->setZValue(1);
+    sprite->setZValue(2);
+    text->setZValue(2);
 }
 
 int SpriteWithValue::getX() const { return x; }
@@ -72,37 +65,13 @@ void SpriteWithValue::setDead(){
 void SpriteWithValue::setAlive(float health){
     sprite->setPixmap(spriteSet["alive"]);
     text->setPlainText(QString::number(health));
-    text->setZValue(1);
+    text->setZValue(2);
 }
 
 void SpriteWithValue::setHealth(float health){
     if(text) text->setPlainText(QString::number(health));
 }
 
-/// these classes are only called in the protagonist
-/// perhaps we should do some inheritance right??
-void SpriteWithValue::animate(QPixmap start, QPixmap end, float time){
-    sprite->setPixmap(start);
-
-    QTimer *timer = new QTimer(this);
-
-    connect(timer, &QTimer::timeout, [this, end, timer](){
-        sprite->setPixmap(end);
-        timer->deleteLater();
-    });
-
-    timer->start(time*1000);
-}
-
-void SpriteWithValue::tint(bool poisoned){
-    QGraphicsColorizeEffect * colourEffect = dynamic_cast<QGraphicsColorizeEffect*>(sprite->graphicsEffect());
-    
-    if(!poisoned){
-        this->sprite->setGraphicsEffect(nullptr); 
-    }else{
-        colourEffect = new QGraphicsColorizeEffect();
-        colourEffect->setColor(Qt::green);
-        colourEffect->setStrength(0.5);
-        sprite->setGraphicsEffect(colourEffect);
-    }
+QPixmap SpriteWithValue::scaleSprite(QPixmap sprite){
+    return sprite.scaled(TILE_SIZE, TILE_SIZE, Qt::KeepAspectRatio,Qt::SmoothTransformation);
 }

@@ -131,6 +131,8 @@ void WorldView::positionChangedSlot(int x, int y)
     tView->renderTiles();
 }
 
+/// is this even connected to something other than the protagonist?
+/// there is a pretty similar loop in world delegate
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
@@ -138,9 +140,9 @@ void WorldView::protagonistHealthChangedSlot(int h)
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
         if(pack->getValue() == 0){
-            for(auto& healthpack : gView->entities){
-                if(healthpack->getX() == pack->getXPos() && healthpack->getY() == pack->getYPos()){
-                    healthpack->setDead();
+            for(auto& healthPack : gView->entities){
+                if(healthPack->getX() == pack->getXPos() && healthPack->getY() == pack->getYPos()){
+                    healthPack->setDead();
                 }
             }
         }
@@ -161,11 +163,14 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
         }
     }
 }
+
+/// Only for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
     
     // show the energy level changing on screen
+    gView->player->setEnergy(e);
 }
 
 void WorldView::enemyDeadSlot()

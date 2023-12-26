@@ -64,7 +64,8 @@ SOURCES       = graphicalview.cpp \
 		moc_textview.cpp \
 		moc_world.cpp \
 		moc_worlddelegate.cpp \
-		moc_worldview.cpp
+		moc_worldview.cpp \
+		moc_xenemy.cpp
 OBJECTS       = graphicalview.o \
 		main.o \
 		mainwindow.o \
@@ -78,7 +79,8 @@ OBJECTS       = graphicalview.o \
 		moc_textview.o \
 		moc_world.o \
 		moc_worlddelegate.o \
-		moc_worldview.o
+		moc_worldview.o \
+		moc_xenemy.o
 DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
 		/usr/lib/qt/mkspecs/common/linux.conf \
@@ -841,6 +843,7 @@ qrc_images.cpp: images.qrc \
 		resources/entities/squished-left.png \
 		resources/entities/cpt-squished-left.png \
 		resources/entities/smartball-2.png \
+		resources/entities/tux3.png \
 		resources/entities/captain_left-2.png \
 		resources/entities/tux2.png \
 		resources/entities/snowball-2.png \
@@ -858,9 +861,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
 	g++ -pipe -std=c++20 -O2 -flto -fno-fat-lto-objects -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp moc_xenemy.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp moc_xenemy.cpp
 moc_mainwindow.cpp: mainwindow.h \
 		worlddelegate.h \
 		world.h \
@@ -926,6 +929,13 @@ moc_worldview.cpp: worldview.h \
 		moc_predefs.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worldview.h -o moc_worldview.cpp
+
+moc_xenemy.cpp: xenemy.h \
+		world.h \
+		world_global.h \
+		moc_predefs.h \
+		/usr/bin/moc
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include xenemy.h -o moc_xenemy.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1049,6 +1059,9 @@ moc_worlddelegate.o: moc_worlddelegate.cpp
 
 moc_worldview.o: moc_worldview.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_worldview.o moc_worldview.cpp
+
+moc_xenemy.o: moc_xenemy.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_xenemy.o moc_xenemy.cpp
 
 ####### Install
 
