@@ -37,7 +37,6 @@ private:
     std::shared_ptr<WorldView> view;
     std::shared_ptr<World> world;
 
-    // Copied from world possibly
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Tile>> healthPacks;

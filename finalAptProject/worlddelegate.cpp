@@ -62,6 +62,15 @@ void WorldDelegate::initializeWDelegate(){
 
     /// TODO: we should check if the protagonist is in a infinite energy 
     /// tile and move it to another (random ?) position
+    //qDebug(worldDelegateCat) << "the protagonist is on a tile with energy" << getTile(protagonist->getXPos(), protagonist->getYPos())->getValue();
+    if(std::isinf(getTile(protagonist->getXPos(), protagonist->getYPos())->getValue())){
+        for(auto & tile : tiles){
+            if(!std::isinf(tile->getValue())){
+                this->protagonist->setPos(tile->getXPos(), tile->getYPos());
+                break;
+            }
+        }
+    }
 }
 
 std::shared_ptr<Tile> WorldDelegate::getTile(int x, int y){

@@ -26,7 +26,7 @@ void GraphicalView::renderTiles(bool useTile){
     std::vector<std::shared_ptr<Tile>> worldTiles = worldView->getDelegate()->getWorldTiles();
 
     float value; int x, y;
-    for(auto& tilePtr : worldTiles){ // This is how you pass the tiles by referece!
+    for(auto& tilePtr : worldTiles){ 
         x = tilePtr->getXPos();
         y = tilePtr->getYPos();
         value = tilePtr->getValue();
@@ -47,6 +47,12 @@ void GraphicalView::renderTiles(bool useTile){
     }
 
     return;
+}
+
+void GraphicalView::clearTiles(){
+    for(auto tile : tiles)
+        scene->removeItem(tile);
+    tiles.clear(); 
 }
 
 void GraphicalView::poisonTile(int x, int y, int poisonLevel){

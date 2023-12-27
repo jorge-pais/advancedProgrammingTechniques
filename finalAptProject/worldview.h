@@ -28,7 +28,6 @@ public:
     WorldView(MainWindow * mainWindow);
     //WorldView(WorldDelegate& delegate);
     void setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr<TextView> text);
-    void setTextView(std::shared_ptr<TextView> tView);
     void setDelegate(std::shared_ptr<WorldDelegate> delegate);
     std::shared_ptr<WorldDelegate> getDelegate() const;
     void connectSlots();
