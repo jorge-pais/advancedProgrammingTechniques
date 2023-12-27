@@ -17,6 +17,7 @@
 #include <string>
 #include <QMenu>
 #include <QToolBar>
+#include <QMessageBox>
 
 #include "worlddelegate.h"
 #include "world.h"
@@ -40,6 +41,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 signals:
     void mainWindowEventSignal(QKeyEvent *event);
 

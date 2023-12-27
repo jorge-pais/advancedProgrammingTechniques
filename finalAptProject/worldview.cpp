@@ -147,6 +147,8 @@ void WorldView::protagonistHealthChangedSlot(int h)
             }
         }
     }
+    if(h <= 0)
+        deathScreen();
     //tView->protagonist->setHealth(h);
     // show the health bar changing on screen
 }
@@ -189,4 +191,13 @@ void WorldView::enemyDeadSlot()
 
 void WorldView::playerPoisoned(bool val){
     this->gView->player->tint(val);
+}
+
+void WorldView::deathScreen(){
+    qCDebug(worldViewCat) << "deathScreenSlot() called!";
+
+    QMessageBox::information(
+        nullptr, 
+        "You died!", 
+        "You just died, maybe it's the devs' fault, maybe it's a skill issue");
 }

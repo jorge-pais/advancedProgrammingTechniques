@@ -21,8 +21,6 @@ private:
     std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
 
-    MainWindow * window;
-
 public:
     //WorldView();
     WorldView(MainWindow * mainWindow);
@@ -36,8 +34,13 @@ public:
     void takeNearestHealthPack();
     void playerPoisoned(bool val);
 
+    void deathScreen();
+
+    MainWindow * window;
+
 signals:
     void playerMovedSignal(int x, int y);
+    void playerGotoSignal(int x, int y);
 
 public slots:
     void poisonLevelUpdatedSlot(int value);

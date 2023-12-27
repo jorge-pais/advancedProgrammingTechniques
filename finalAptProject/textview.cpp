@@ -101,7 +101,7 @@ void TextView::processCommand(const QString& command)
         if (args.size() == 3) {
             int x = args[1].toInt();
             int y = args[2].toInt();
-            emit view->playerMovedSignal(x,y);
+            emit view->playerGotoSignal(x,y);
         } else {
             printArgs();// invalid number of arguments
         }
