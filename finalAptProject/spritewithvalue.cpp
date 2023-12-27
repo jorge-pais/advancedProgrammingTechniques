@@ -6,6 +6,8 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
 
     text = new QGraphicsTextItem(QString::number(entity->getValue()));
 
+    // If we could modify the world classes, this would be more efficient,
+    // as a tile method could be implemented and then overloaded by each entity class
     if(dynamic_cast<XEnemy*>(entity.get())){
         spriteSet["alive"] = QPixmap(":/images/resources/entities/captain_left-2.png");
         spriteSet["dead"] = QPixmap(":/images/resources/entities/cpt-squished-left.png");
@@ -17,7 +19,7 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
         spriteSet["dead"] = QPixmap(":/images/resources/entities/squished-left.png");
     }else{
         spriteSet["alive"] = QPixmap(":/images/resources/entities/platter.png");
-        spriteSet["dead"] = QPixmap(); // disappear!
+        spriteSet["dead"] = QPixmap(); // puff! disappear!
     }   
 
     spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
@@ -25,11 +27,8 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
 
     // This will come in handy when loading the map from a serialized version and some entities might already be dead
     Enemy* aux = dynamic_cast<Enemy*>(entity.get());
-    bool dead;
-    if(aux)
-        dead = aux->getDefeated();
-    else
-        dead = !(entity.get()->getValue());
+
+    bool dead = aux ? aux->getDefeated() : !(entity.get()->getValue());
 
     sprite = new QGraphicsPixmapItem(dead ? spriteSet["dead"] : spriteSet["alive"]);
 

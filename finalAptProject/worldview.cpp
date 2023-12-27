@@ -54,7 +54,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(false);
         return;
-
+        
     case Qt::Key_Up:
     case Qt::Key_W:
         dy--;

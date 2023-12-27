@@ -88,23 +88,23 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 void MainWindow::toolbarConfig(){
     QToolBar *toolbar = this->addToolBar("My Toolbar");
 
-    QAction *action1 = new QAction("Action 1", this);
-    connect(action1, &QAction::triggered, this, &MainWindow::doAction1);
-    toolbar->addAction(action1);
+    QAction *settingsAction = new QAction("Settings", this);
+    connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
+    toolbar->addAction(settingsAction);
 
-    QAction *action2 = new QAction("Action 2", this);
-    connect(action2, &QAction::triggered, this, &MainWindow::doAction2);
-    toolbar->addAction(action2);
+    QAction *helpAction = new QAction("Help", this);
+    connect(helpAction, &QAction::triggered, this, &MainWindow::openHelp);
+    toolbar->addAction(helpAction);
 
     //contextMenu.exec(event->globalPos());
 }
 
-void MainWindow::doAction1(){
-    std::cout << "doAction1() man!" << std::endl;
+void MainWindow::openSettings(){
+    std::cout << "openSettings() man!" << std::endl;
 }
 
-void MainWindow::doAction2(){
-    std::cout << "doAction2() man!" << std::endl;
+void MainWindow::openHelp(){
+    std::cout << "openHelp() man!" << std::endl;
 }
 
 MainWindow::~MainWindow()

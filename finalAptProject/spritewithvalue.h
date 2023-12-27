@@ -43,8 +43,7 @@ public:
     std::unordered_map<std::string, QPixmap> spriteSet = {};
 
 protected:
-    int x;
-    int y;
+    int x, y;
 };
 
 #endif // SPRITEWITHVALUE_H

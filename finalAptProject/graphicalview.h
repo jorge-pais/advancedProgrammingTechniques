@@ -21,7 +21,14 @@
 #define SCALE_FACTOR 1.25
 
 class WorldView;
-//class WorldDelegate;
+
+// Custom comparator for the tile values
+/// perhaps change this to a lambda 
+struct CompareFirstVal{
+    bool operator()(const std::pair<float, float> & op1, const std::pair<float, float> & op2) const{
+        return op1.first < op2.first;
+    }
+};
 
 class GraphicalView
 {
@@ -37,16 +44,18 @@ public:
     void renderPlayer();
     void centerView();
     void poisonTile(int x, int y, int poisonLevel);
-    void zoom(bool in);
-    void addOverlay(QPixmap image);
+    void zoom(bool in, float factor = SCALE_FACTOR);
+    void setOverlay(QPixmap image);
+    QPixmap getTile(float value);
+    void addTileSet(float low, float high, QPixmap tile);
 
 private:
     QGraphicsView * view;
-    QGraphicsScene* scene;
-    //std::shared_ptr<WorldDelegate> delegate;
+    QGraphicsScene * scene;
     std::shared_ptr<WorldView> worldView;
     QGraphicsPixmapItem * overlay = nullptr;
 
+    std::map<std::pair<float, float>, QPixmap, CompareFirstVal> tileSet = {};
 };
 
 #endif // GRAPHICALVIEW_H

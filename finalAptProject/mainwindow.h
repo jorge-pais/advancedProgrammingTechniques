@@ -47,8 +47,8 @@ private slots:
     void submitCommand();
 
 public slots:
-    void doAction1();
-    void doAction2();
+    void openSettings();
+    void openHelp();
 
 private:
     Ui::MainWindow *ui;

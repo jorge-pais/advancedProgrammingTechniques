@@ -55,6 +55,7 @@ OBJECTS_DIR   = ./
 SOURCES       = graphicalview.cpp \
 		main.cpp \
 		mainwindow.cpp \
+		protagonistsprite.cpp \
 		spritewithvalue.cpp \
 		textview.cpp \
 		worlddelegate.cpp \
@@ -64,11 +65,11 @@ SOURCES       = graphicalview.cpp \
 		moc_textview.cpp \
 		moc_world.cpp \
 		moc_worlddelegate.cpp \
-		moc_worldview.cpp \
-		moc_xenemy.cpp
+		moc_worldview.cpp
 OBJECTS       = graphicalview.o \
 		main.o \
 		mainwindow.o \
+		protagonistsprite.o \
 		spritewithvalue.o \
 		textview.o \
 		worlddelegate.o \
@@ -79,8 +80,7 @@ OBJECTS       = graphicalview.o \
 		moc_textview.o \
 		moc_world.o \
 		moc_worlddelegate.o \
-		moc_worldview.o \
-		moc_xenemy.o
+		moc_worldview.o
 DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
 		/usr/lib/qt/mkspecs/common/linux.conf \
@@ -311,6 +311,7 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		pathfinderfunction.h \
 		pathfinder.h \
 		pathfinder_class.h \
+		protagonistsprite.h \
 		spritewithvalue.h \
 		textview.h \
 		world.h \
@@ -320,6 +321,7 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		xenemy.h graphicalview.cpp \
 		main.cpp \
 		mainwindow.cpp \
+		protagonistsprite.cpp \
 		spritewithvalue.cpp \
 		textview.cpp \
 		worlddelegate.cpp \
@@ -807,8 +809,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinderfunction.h pathfinder.h pathfinder_class.h spritewithvalue.h textview.h world.h world_global.h worlddelegate.h worldview.h xenemy.h $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp spritewithvalue.cpp textview.cpp worlddelegate.cpp worldview.cpp xenemy.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinderfunction.h pathfinder.h pathfinder_class.h protagonistsprite.h spritewithvalue.h textview.h world.h world_global.h worlddelegate.h worldview.h xenemy.h $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp protagonistsprite.cpp spritewithvalue.cpp textview.cpp worlddelegate.cpp worldview.cpp xenemy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -861,9 +863,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
 	g++ -pipe -std=c++20 -O2 -flto -fno-fat-lto-objects -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp moc_xenemy.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp moc_xenemy.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 moc_mainwindow.cpp: mainwindow.h \
 		worlddelegate.h \
 		world.h \
@@ -872,6 +874,7 @@ moc_mainwindow.cpp: mainwindow.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
 		pathfinder_class.h \
@@ -888,6 +891,7 @@ moc_textview.cpp: textview.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
 		moc_predefs.h \
@@ -909,6 +913,7 @@ moc_worlddelegate.cpp: worlddelegate.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
 		moc_predefs.h \
@@ -923,19 +928,13 @@ moc_worldview.cpp: worldview.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
 		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worldview.h -o moc_worldview.cpp
-
-moc_xenemy.cpp: xenemy.h \
-		world.h \
-		world_global.h \
-		moc_predefs.h \
-		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include xenemy.h -o moc_xenemy.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -967,7 +966,8 @@ graphicalview.o: graphicalview.cpp graphicalview.h \
 		textview.h \
 		mainwindow.h \
 		pathfinder_class.h \
-		spritewithvalue.h
+		spritewithvalue.h \
+		protagonistsprite.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o graphicalview.o graphicalview.cpp
 
 main.o: main.cpp mainwindow.h \
@@ -978,6 +978,7 @@ main.o: main.cpp mainwindow.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		textview.h \
 		pathfinder_class.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
@@ -990,10 +991,18 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		textview.h \
 		pathfinder_class.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
+
+protagonistsprite.o: protagonistsprite.cpp protagonistsprite.h \
+		spritewithvalue.h \
+		world.h \
+		world_global.h \
+		xenemy.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o protagonistsprite.o protagonistsprite.cpp
 
 spritewithvalue.o: spritewithvalue.cpp spritewithvalue.h \
 		world.h \
@@ -1010,6 +1019,7 @@ textview.o: textview.cpp textview.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o textview.o textview.cpp
 
@@ -1020,6 +1030,7 @@ worlddelegate.o: worlddelegate.cpp worlddelegate.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
 		pathfinder_class.h
@@ -1033,6 +1044,7 @@ worldview.o: worldview.cpp worldview.h \
 		graphicalview.h \
 		xenemy.h \
 		spritewithvalue.h \
+		protagonistsprite.h \
 		textview.h \
 		mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worldview.o worldview.cpp
@@ -1059,9 +1071,6 @@ moc_worlddelegate.o: moc_worlddelegate.cpp
 
 moc_worldview.o: moc_worldview.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_worldview.o moc_worldview.cpp
-
-moc_xenemy.o: moc_xenemy.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_xenemy.o moc_xenemy.cpp
 
 ####### Install
 

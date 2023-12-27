@@ -35,6 +35,7 @@ void GraphicalView::renderTiles(){
                        QBrush(QColor(255*value, 255*value, 255*value)));
     }
 
+    //setOverlay(QPixmap("/home/jorgep/Pictures/a.jpg"));
     return;
 }
 
@@ -78,18 +79,37 @@ void GraphicalView::centerView(){
     this->view->centerOn(this->player->sprite);
 }
 
-void GraphicalView::zoom(bool in){
+void GraphicalView::zoom(bool in, float factor){
 /// true for zoom in; false for zooming out
-/// void GraphicalView::zoom(bool in, float scale = SCALE_FACTOR){
     qCDebug(graphicalViewCat) << "zoom() called";
-    const float factor = in ? SCALE_FACTOR : 1/SCALE_FACTOR;
-    this->view->scale(factor, factor);
+    const float f = in ? factor : 1 / factor;
+    this->view->scale(f, f);
     centerView();
 }
 
-void GraphicalView::addOverlay(QPixmap image){
-    if(!overlay && !(!image)){
-        overlay = new QGraphicsPixmapItem(image);
-        return;
+/// TODO: so this overlay is pretty basic, we should probably do some checks
+void GraphicalView::setOverlay(QPixmap image){
+    qCDebug(graphicalViewCat) << "setOverlay() called";
+    if(overlay) // remove the current overlay
+        scene->removeItem(overlay);
+
+    overlay = new QGraphicsPixmapItem(image);
+    overlay->setZValue(2); //above the tiles, below the entity sprites
+
+    scene->addItem(overlay);
+}
+
+void GraphicalView::addTileSet(float low, float high, QPixmap tile){
+    // tuple notation from C++11
+    qCDebug(graphicalViewCat) << "addTileSet() called";
+
+    for(const auto& tile : tileSet){
+        if((low > tile.first.first && low < tile.first.second) ||
+        (high > tile.first.first && high > tile.first.second)){
+            qCWarning(graphicalViewCat) << "addTileSet() - range provided for tile overlaps with existing";
+            return;
+        }
     }
+
+    tileSet[{low, high}] = tile; // add the tile if successful
 }
