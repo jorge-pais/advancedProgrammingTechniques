@@ -39,7 +39,7 @@ public:
     std::vector<SpriteWithValue *> entities;
     std::vector<SpriteWithValue *> healthPack;
 
-    void renderTiles();
+    void renderTiles(bool useTile = false);
     void renderEntities();
     void renderPlayer();
     void centerView();
@@ -54,6 +54,8 @@ private:
     QGraphicsScene * scene;
     std::shared_ptr<WorldView> worldView;
     QGraphicsPixmapItem * overlay = nullptr;
+
+    std::vector<QGraphicsItem *> tiles;
 
     std::map<std::pair<float, float>, QPixmap, CompareFirstVal> tileSet = {};
 };

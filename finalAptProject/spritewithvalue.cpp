@@ -71,6 +71,9 @@ void SpriteWithValue::setHealth(float health){
     if(text) text->setPlainText(QString::number(health));
 }
 
-QPixmap SpriteWithValue::scaleSprite(QPixmap sprite){
-    return sprite.scaled(TILE_SIZE, TILE_SIZE, Qt::KeepAspectRatio,Qt::SmoothTransformation);
+QPixmap SpriteWithValue::scaleSprite(QPixmap sprite, bool stretch) {
+    return sprite.scaled(
+            TILE_SIZE, TILE_SIZE, 
+            (stretch ? Qt::IgnoreAspectRatio : Qt::KeepAspectRatio), 
+            Qt::SmoothTransformation);
 }

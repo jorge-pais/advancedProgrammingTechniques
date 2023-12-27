@@ -61,7 +61,7 @@ void TextView::renderTiles() {
 }
 
 void TextView::centerPlayer(){
-    std::cout << "this got called!" << std::endl;
+    //std::cout << "this got called!" << std::endl;
     QApplication::processEvents(); // lets see if this works
 
     if (textView->find("P")) {

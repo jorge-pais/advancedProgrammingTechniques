@@ -36,7 +36,8 @@ public:
     virtual void setPosition(int x, int y);
     int getX() const;
     int getY() const;
-    QPixmap scaleSprite(QPixmap sprite);
+
+    static QPixmap scaleSprite(QPixmap sprite, bool stretch = false);
 
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;

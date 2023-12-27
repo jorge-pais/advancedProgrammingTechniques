@@ -14,9 +14,13 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
 {   
     // Create the scene
     graphicsView->setScene(scene);
+
+    /// Tile testing
+    addTileSet(0, 0.5, QPixmap("/home/jorgep/Documents/brownBrick.png"));
+    addTileSet(0.5, 1.0, QPixmap("/home/jorgep/Documents/blueStone.png"));
 }
 
-void GraphicalView::renderTiles(){
+void GraphicalView::renderTiles(bool useTile){
     qCDebug(graphicalViewCat) << "renderTiles() called";
 
     std::vector<std::shared_ptr<Tile>> worldTiles = worldView->getDelegate()->getWorldTiles();
@@ -26,16 +30,22 @@ void GraphicalView::renderTiles(){
         x = tilePtr->getXPos();
         y = tilePtr->getYPos();
         value = tilePtr->getValue();
-        //std::cout << value << " ";
 
-        /// This prints all tiles in grey scale,
-        /// there should be an option to configure a tile set from different ranges
-        scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
-                       QPen(Qt::NoPen),
-                       QBrush(QColor(255*value, 255*value, 255*value)));
+        /// TODO: this is untested, it might break
+        if(useTile){
+            auto pixTile = scene->addPixmap(getTile(value));
+            pixTile->setPos(x*TILE_SIZE, y*TILE_SIZE);
+            tiles.push_back(pixTile);
+        }
+        else{ // print background tiles in greyscale
+            auto rect = scene->addRect(
+                    x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
+                    QPen(Qt::NoPen),
+                    QBrush(QColor(255*value, 255*value, 255*value)));
+            tiles.push_back(rect);
+        }
     }
 
-    //setOverlay(QPixmap("/home/jorgep/Pictures/a.jpg"));
     return;
 }
 
@@ -87,7 +97,8 @@ void GraphicalView::zoom(bool in, float factor){
     centerView();
 }
 
-/// TODO: so this overlay is pretty basic, we should probably do some checks
+/// TODO: so this overlay is pretty basic, we should probably 
+/// do some checks regarding the size and what not
 void GraphicalView::setOverlay(QPixmap image){
     qCDebug(graphicalViewCat) << "setOverlay() called";
     if(overlay) // remove the current overlay
@@ -105,11 +116,22 @@ void GraphicalView::addTileSet(float low, float high, QPixmap tile){
 
     for(const auto& tile : tileSet){
         if((low > tile.first.first && low < tile.first.second) ||
-        (high > tile.first.first && high > tile.first.second)){
+        (high > tile.first.first && high < tile.first.second)){
             qCWarning(graphicalViewCat) << "addTileSet() - range provided for tile overlaps with existing";
             return;
         }
     }
 
-    tileSet[{low, high}] = tile; // add the tile if successful
+    QPixmap newTile = tile.scaled(TILE_SIZE, TILE_SIZE);
+
+    tileSet[{low, high}] = newTile; // add the tile if successful
+}
+
+QPixmap GraphicalView::getTile(float value){
+    qDebug(graphicalViewCat) << value;
+    for(const auto & sprite: tileSet) // determine the tile
+        if (value >= sprite.first.first && value < sprite.first.second)
+            return sprite.second;
+
+    return QPixmap("");
 }
