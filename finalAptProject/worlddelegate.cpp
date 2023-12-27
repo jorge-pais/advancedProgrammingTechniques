@@ -5,8 +5,6 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldDelegateCat("worldDelegate");
 
-//QLoggingCategory worldDelegateCategory("worlddelegate");
-
 WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world)
 {
     this->view = view;
@@ -19,13 +17,14 @@ void WorldDelegate::connectSlots(){
     QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
     QObject::connect(this, &WorldDelegate::xEnemyStoleSignal, this->view.get(), &WorldView::xEnemyStoleSlot);
 
-    if(this->getWorldEnemies().size() != 0)
+    if(this->getWorldEnemies().size() != 0){
         for(auto& enemy : this->getWorldEnemies()){ // calling here world enemies makes it such that i can't get the enemies later on in the graphics views
             PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
             if(pEnemy){
                 QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
             }
         }
+    }
 }
 
 /// TODO we should change this to spawn the player on a low energy tile
@@ -70,63 +69,26 @@ std::shared_ptr<Tile> WorldDelegate::getTile(int x, int y){
     return this->tiles[rows*y + x];
 }
 
-std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldTiles()
-{
-    qCDebug(worldDelegateCat) << "getWorldTiles() called";
-    return this->tiles;
-}
+std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldTiles(){ return this->tiles; }
 
-std::vector<std::shared_ptr<Enemy>> WorldDelegate::getWorldEnemies()
-{
-    qCDebug(worldDelegateCat) << "getWorldEnemies() called";
-    return this->enemies;
-}
+std::vector<std::shared_ptr<Enemy>> WorldDelegate::getWorldEnemies(){ return this->enemies; }
 
-std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldHealthPacks()
-{
-    qCDebug(worldDelegateCat) << "getWorldHealthPacks() called";
-    return this->healthPacks;
-}
+std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldHealthPacks(){ return this->healthPacks; }
 
-int WorldDelegate::getWorldRows() const
-{
-    qCDebug(worldDelegateCat) << "getWorldRows() called";
-    return world->getRows();
-}
+int WorldDelegate::getWorldRows() const { return world->getRows(); }
 
-int WorldDelegate::getWorldColumns() const
-{
-    qCDebug(worldDelegateCat) << "getWorldColumns() called";
-    return world->getCols();
-}
+int WorldDelegate::getWorldColumns() const { return world->getCols(); }
 
-std::shared_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const
-{
-    qCDebug(worldDelegateCat) << "getWorldProtagonist() called";
-    return this->protagonist;
-}
+std::shared_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const { return this->protagonist; }
 
-void WorldDelegate::setProtagonistHealth(float healthValue)
-{
-    qCDebug(worldDelegateCat) << "setProtagonistHealth() called";
-    auto protagonist = world->getProtagonist();
-    protagonist->setHealth(healthValue);
-}
+void WorldDelegate::setProtagonistHealth(float healthValue) { this->protagonist->setHealth(healthValue >= 100 ? 100 : healthValue); }
 
-void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY)
-{
-    qCDebug(worldDelegateCat) << "setProtagonistPosition() called";
-    auto protagonist = world->getProtagonist();
-    protagonist->setPos(newWorldX, newWorldY);
-}
+void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { this->protagonist->setPos(newWorldX, newWorldY); }
 
-void WorldDelegate::setProtagonistEnergy(float energyValue)
-{
-    qCDebug(worldDelegateCat) << "setProtagonistEnergy() called";
-    auto protagonist = world->getProtagonist();
-    protagonist->setEnergy(energyValue);
-}
+void WorldDelegate::setProtagonistEnergy(float energyValue){ this->protagonist->setEnergy(energyValue >= 100 ? 100 : energyValue); }
 
+/// TODO: this could be an aux function associated with some enum
+/// this would make it easier reuse between the different 
 std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
     qCDebug(worldDelegateCat) << "enemyStatus() called";
@@ -151,7 +113,7 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     int ey = enemy->getYPos();
     float originalHealth = protagonist->getHealth();
 
-    protagonist->setHealth(originalHealth-enemy->getValue());
+    protagonist->setHealth(originalHealth - enemy->getValue());
     if(enemy->getValue() < originalHealth){
         if(enemyType != "PEnemy"){
             protagonist->setPos(ex, ey);
@@ -227,11 +189,15 @@ void WorldDelegate::movedSlot(int dx, int dy) {
         return;
     }
 
+    /// TODO: maybe there should be a way to address the poisonTiles directly
+    bool isPoisoned = false;
     for(const auto& poisonTile : poisonTiles){
         if(poisonTile->getXPos() == newX && poisonTile->getYPos() == newY){
-            protagonist->setHealth(protagonist->getHealth() - poisonTile->getValue());
+            setProtagonistHealth(protagonist->getHealth() - poisonTile->getValue());
+            isPoisoned = true;
         }
     }
+    view->playerPoisoned(isPoisoned);
 
     for(const auto& enemy : enemies){
         if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
@@ -240,19 +206,17 @@ void WorldDelegate::movedSlot(int dx, int dy) {
         }
     }
 
-    auto healthpacks = getWorldHealthPacks();
-    for(const auto& pack : healthpacks){
+    for(const auto& pack : getWorldHealthPacks()){
         if(pack->getXPos() == newX && pack->getYPos() == newY){
             float plusHealth = pack->getValue();
             pack->setValue(0);
-            protagonist->setHealth(protagonist->getHealth() + plusHealth);
+            setProtagonistHealth(protagonist->getHealth() + plusHealth);
         }
     }
 
     protagonist->setPos(newX, newY);
-    protagonist->setEnergy(protagonist->getEnergy() - difference);
+    setProtagonistEnergy(protagonist->getEnergy() - difference);
     std::cout << protagonist->getEnergy() << std::endl;
-
 }
 
 void WorldDelegate::moveOnPath(int newX, int newY){

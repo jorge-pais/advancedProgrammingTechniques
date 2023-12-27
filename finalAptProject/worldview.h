@@ -35,6 +35,7 @@ public:
     void attack();//what is this for?
     void attackNearestEnemy(); //used in text view
     void takeNearestHealthPack();
+    void playerPoisoned(bool val);
 
 signals:
     void playerMovedSignal(int x, int y);

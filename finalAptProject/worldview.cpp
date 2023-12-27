@@ -42,7 +42,6 @@ void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
 {
-    //qCDebug(worldViewCat) << "window event SLOT called";
     int dx = 0, dy = 0;
 
     /// TODO Figure out why the arrow keys aren't working
@@ -55,7 +54,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(false);
         return;
-
+        
     case Qt::Key_Up:
     case Qt::Key_W:
         dy--;
@@ -91,7 +90,6 @@ void WorldView::takeNearestHealthPack(){
 
 void WorldView::poisonLevelUpdatedSlot(int value)
 {
-
     auto enemies = this->delegate->getWorldEnemies();
 
     for(auto& enemy : enemies){
@@ -127,12 +125,14 @@ void WorldView::positionChangedSlot(int x, int y)
     // show the protagonist moving on screen
     gView->player->animate(gView->player->spriteSet["move"], gView->player->spriteSet["alive"], 0.1);
     gView->player->setPosition(x, y);
-    gView->view->centerOn(gView->player->sprite);
+    gView->centerView();
 
     // re-render everything on textView
     tView->renderTiles();
 }
 
+/// is this even connected to something other than the protagonist?
+/// there is a pretty similar loop in world delegate
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
@@ -140,9 +140,9 @@ void WorldView::protagonistHealthChangedSlot(int h)
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
         if(pack->getValue() == 0){
-            for(auto& healthpack : gView->entities){
-                if(healthpack->getX() == pack->getXPos() && healthpack->getY() == pack->getYPos()){
-                    healthpack->setDead();
+            for(auto& healthPack : gView->entities){
+                if(healthPack->getX() == pack->getXPos() && healthPack->getY() == pack->getYPos()){
+                    healthPack->setDead();
                 }
             }
         }
@@ -163,11 +163,14 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
         }
     }
 }
+
+/// Only for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
     
     // show the energy level changing on screen
+    gView->player->setEnergy(e);
 }
 
 void WorldView::enemyDeadSlot()
@@ -182,4 +185,8 @@ void WorldView::enemyDeadSlot()
         }
     }
     // show the enemy dying on screen
+}
+
+void WorldView::playerPoisoned(bool val){
+    this->gView->player->tint(val);
 }
