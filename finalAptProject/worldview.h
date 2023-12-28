@@ -13,6 +13,7 @@
 class WorldDelegate;
 class MainWindow;
 
+/// TODO: for now we're handling our inputs here
 class WorldView : public QObject
 {
     Q_OBJECT

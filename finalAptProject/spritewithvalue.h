@@ -18,8 +18,9 @@
 #include "world.h"
 #include "xenemy.h"
 
-#define TILE_SIZE 40
 #define TEXT_OFFSET 15
+#define TILE_SIZE 40
+#define DEAD_OFFSET 25
 
 class SpriteWithValue
 : public QObject{ // public inheritance !!
@@ -31,7 +32,7 @@ public:
     ~SpriteWithValue();
 
     void setHealth(float health);
-    void setDead();
+    void setDead(int spriteOffset = DEAD_OFFSET);
     void setAlive(float health);
     virtual void setPosition(int x, int y);
     int getX() const;

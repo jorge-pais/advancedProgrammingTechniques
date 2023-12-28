@@ -843,6 +843,7 @@ qrc_images.cpp: images.qrc \
 		resources/entities/tux.png \
 		resources/entities/mrs-squished-left.png \
 		resources/entities/squished-left.png \
+		resources/entities/tux4.png \
 		resources/entities/cpt-squished-left.png \
 		resources/entities/smartball-2.png \
 		resources/entities/tux3.png \

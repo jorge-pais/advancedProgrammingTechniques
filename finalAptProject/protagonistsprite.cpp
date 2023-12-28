@@ -10,6 +10,9 @@ ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     spriteSet["attack"] = QPixmap(":/images/resources/entities/tux3.png");
     spriteSet["attack"] = scaleSprite(spriteSet["attack"]);
 
+    spriteSet["dead"] = QPixmap(":/images/resources/entities/tux4.png");
+    spriteSet["dead"] = scaleSprite(spriteSet["dead"]);
+
     sprite = new QGraphicsPixmapItem(spriteSet["alive"]);
     text = new QGraphicsTextItem(QString::number(prog->getHealth()));
     

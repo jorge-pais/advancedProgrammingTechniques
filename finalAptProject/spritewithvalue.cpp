@@ -55,9 +55,9 @@ void SpriteWithValue::setPosition(int x, int y){
     this->x = x; this->y = y;
 }
 
-void SpriteWithValue::setDead(){
+void SpriteWithValue::setDead(int spriteOffset){
     sprite->setPixmap(spriteSet["dead"]);
-    sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + 25);
+    sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + spriteOffset);
     text->setPlainText("");
 }
 

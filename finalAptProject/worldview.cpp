@@ -104,7 +104,8 @@ void WorldView::poisonLevelUpdatedSlot(int value)
                         if( abs(i) + abs(j) == difference -1){
                             int poisonX = pEnemy->getXPos() + i;
                             int poisonY = pEnemy->getYPos() + j;
-                            if(poisonX < 0 || poisonY < 0 || (poisonX > this->delegate->getWorldColumns() - 1) || (poisonY > this->delegate->getWorldRows() - 1)){}
+                            if(poisonX < 0 || poisonY < 0 || (poisonX > this->delegate->getWorldColumns() - 1) || (poisonY > this->delegate->getWorldRows() - 1))
+                            {} // change the condition
                             else{
                                 this->gView->poisonTile(poisonX, poisonY, value);
                                 this->delegate->addPoisonTile(poisonX, poisonY, value);
@@ -136,7 +137,8 @@ void WorldView::positionChangedSlot(int x, int y)
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
-    gView->player->setHealth(h);
+    gView->player->setHealth(h <= 0 ? 0 : h);
+
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
         if(pack->getValue() == 0){
@@ -147,10 +149,9 @@ void WorldView::protagonistHealthChangedSlot(int h)
             }
         }
     }
+
     if(h <= 0)
         deathScreen();
-    //tView->protagonist->setHealth(h);
-    // show the health bar changing on screen
 }
 
 void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
@@ -196,8 +197,23 @@ void WorldView::playerPoisoned(bool val){
 void WorldView::deathScreen(){
     qCDebug(worldViewCat) << "deathScreenSlot() called!";
 
-    QMessageBox::information(
-        nullptr, 
-        "You died!", 
-        "You just died, maybe it's the devs' fault, maybe it's a skill issue");
+    gView->player->setDead(0);
+
+    QMessageBox deadBox;
+    //deadBox
+    deadBox.setText("You just died, maybe it's the devs' fault, maybe it's a skill issue");
+    deadBox.setWindowTitle("You died!");
+    
+    QAbstractButton * buttonRetry = deadBox.addButton("Retry", QMessageBox::YesRole);
+    QAbstractButton * buttonQuit = deadBox.addButton("Quit", QMessageBox::NoRole);
+
+    int ret = deadBox.exec();
+
+    if(deadBox.clickedButton() == buttonRetry){
+        qCDebug(worldViewCat) << "retry!";
+    }
+    else if(deadBox.clickedButton() == buttonQuit){
+        qCDebug(worldViewCat) << "quit!";
+    }
+        
 }

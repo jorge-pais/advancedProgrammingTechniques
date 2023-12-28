@@ -5,8 +5,6 @@
 QLoggingCategory graphicalViewCat("graphicalView");
 
 /// TODO:
-///  - Create a load tileset method
-///  - modify render tiles to use a tile a set also
 ///  - load overlay and toggle it (perhaps a keybind!)
 
 GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldView> worldView) :
@@ -31,13 +29,12 @@ void GraphicalView::renderTiles(bool useTile){
         y = tilePtr->getYPos();
         value = tilePtr->getValue();
 
-        /// TODO: this is untested, it might break
         if(useTile){
             auto pixTile = scene->addPixmap(getTile(value));
             pixTile->setPos(x*TILE_SIZE, y*TILE_SIZE);
             tiles.push_back(pixTile);
         }
-        else{ // print background tiles in greyscale
+        else{ // print background tiles in greyscale squares
             auto rect = scene->addRect(
                     x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
                     QPen(Qt::NoPen),
@@ -103,19 +100,6 @@ void GraphicalView::zoom(bool in, float factor){
     centerView();
 }
 
-/// TODO: so this overlay is pretty basic, we should probably 
-/// do some checks regarding the size and what not
-void GraphicalView::setOverlay(QPixmap image){
-    qCDebug(graphicalViewCat) << "setOverlay() called";
-    if(overlay) // remove the current overlay
-        scene->removeItem(overlay);
-
-    overlay = new QGraphicsPixmapItem(image);
-    overlay->setZValue(2); //above the tiles, below the entity sprites
-
-    scene->addItem(overlay);
-}
-
 void GraphicalView::addTileSet(float low, float high, QPixmap tile){
     // tuple notation from C++11
     qCDebug(graphicalViewCat) << "addTileSet() called";
@@ -140,4 +124,17 @@ QPixmap GraphicalView::getTile(float value){
             return sprite.second;
 
     return QPixmap("");
+}
+
+/// TODO: so this overlay is pretty basic, we should probably 
+/// do some checks regarding the overlay size and wtv
+void GraphicalView::setOverlay(QPixmap image){
+    qCDebug(graphicalViewCat) << "setOverlay() called";
+    if(overlay) // remove the current overlay
+        scene->removeItem(overlay);
+
+    overlay = new QGraphicsPixmapItem(image);
+    overlay->setZValue(2); //above the tiles, below the entity sprites
+
+    scene->addItem(overlay);
 }
