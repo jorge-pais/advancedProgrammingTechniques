@@ -199,15 +199,14 @@ void WorldView::deathScreen(){
 
     gView->player->setDead(0);
 
-    QMessageBox deadBox;
-    //deadBox
-    deadBox.setText("You just died, maybe it's the devs' fault, maybe it's a skill issue");
-    deadBox.setWindowTitle("You died!");
+    QMessageBox deadBox(QMessageBox::NoIcon, 
+            "You died!",
+            "You just died, maybe it's the devs' fault, maybe it's a skill issue");
     
     QAbstractButton * buttonRetry = deadBox.addButton("Retry", QMessageBox::YesRole);
     QAbstractButton * buttonQuit = deadBox.addButton("Quit", QMessageBox::NoRole);
 
-    int ret = deadBox.exec();
+    deadBox.exec();
 
     if(deadBox.clickedButton() == buttonRetry){
         qCDebug(worldViewCat) << "retry!";
@@ -215,5 +214,4 @@ void WorldView::deathScreen(){
     else if(deadBox.clickedButton() == buttonQuit){
         qCDebug(worldViewCat) << "quit!";
     }
-        
 }

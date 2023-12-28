@@ -69,7 +69,7 @@ signals:
     void poisonSignal();
     void xEnemyStoleSignal(int x, int y, int oldX, int oldY, float health);
     void playerDiedSignal();
-    
+
 public slots:
     void movedSlot(int x, int y);
     void gotoSlot(int newX, int newY);

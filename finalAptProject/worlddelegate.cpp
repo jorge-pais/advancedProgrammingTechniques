@@ -165,6 +165,13 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 void WorldDelegate::addPoisonTile(int x, int y, float value){
     auto tile = std::make_shared<Tile>( x, y, value);
     poisonTiles.push_back(tile);
+    
+    // check for player poison and that the player is still alive, otherwise
+    // it will proc more than once
+    if(protagonist->getXPos() == x && protagonist->getYPos() == y && protagonist->getHealth() > 0){
+        setProtagonistHealth(protagonist->getHealth() - value);
+        view->playerPoisoned(true);
+    }
 }
 
 void WorldDelegate::movedSlot(int dx, int dy) {
@@ -191,8 +198,8 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     if(protagonist->getEnergy() - difference < 0){
         return;
     }
-    
-    // maybe pass this to a separate function
+
+    // check to see if new tile is poison
     bool isPoisoned = false;
     for(const auto& poisonTile : poisonTiles){
         if(poisonTile->getXPos() == newX && poisonTile->getYPos() == newY){
