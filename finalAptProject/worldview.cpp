@@ -145,7 +145,6 @@ void WorldView::protagonistHealthChangedSlot(int h)
                 if(healthPack->getX() == pack->getXPos() && healthPack->getY() == pack->getYPos()){
                     healthPack->setDead();
                     gView->player->animate(ProtagonistSprite::HEAL, 0.50);
-                    std::cout << "heal animation proc'd" << std::endl;
                 }
             }
         }
@@ -184,11 +183,11 @@ void WorldView::enemyDeadSlot()
     for(auto& worldEnemy : worldEnemies){
         for(auto& enemy : gView->entities){
             if(enemy->getX() == worldEnemy->getXPos() && enemy->getY() == worldEnemy->getYPos() && worldEnemy->getDefeated()){
+                // show the enemy dying on screen
                 enemy->setDead();
             }
         }
     }
-    // show the enemy dying on screen
 
     // protagonist animation
     gView->player->animate(ProtagonistSprite::ATTACK, 0.4);

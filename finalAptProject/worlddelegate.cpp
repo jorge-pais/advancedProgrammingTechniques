@@ -224,7 +224,8 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     std::cout << protagonist->getEnergy() << std::endl;
 }
 
-/// TODO: there could be some timing function to move the protagonists
+/// TODO: there could be some timing function to move the protagonist
+/// step by step
 void WorldDelegate::gotoSlot(int newX, int newY){
     /// idk why, but the command "goto 0 0", isn't working
     /// while debugging, it simply returns an empty path 
@@ -270,7 +271,7 @@ void WorldDelegate::gotoSlot(int newX, int newY){
         for(const auto& enemy : getWorldEnemies()){
             if(enemy->getXPos() == nextX && enemy->getYPos() == nextY && !enemy->getDefeated()){
                 attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
-                return;
+                return; /// TODO: is this necessary?  
             }
         }
 
