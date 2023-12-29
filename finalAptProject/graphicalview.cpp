@@ -14,7 +14,7 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
     // Create the scene
     graphicsView->setScene(scene);
 
-    /// Tile testing
+    // Tile testing
     addTileSet(0, 0.5, QPixmap("/home/jorgep/Documents/brownBrick.png"));
     addTileSet(0.5, 1.0, QPixmap("/home/jorgep/Documents/blueStone.png"));
 }
@@ -81,7 +81,7 @@ void GraphicalView::renderEntities(){
     for(const auto & healthPtr : worldView->getDelegate()->getWorldHealthPacks()){
         //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
         SpriteWithValue* a = new SpriteWithValue(healthPtr);
-        entities.push_back(a);
+        healthPacks.push_back(a);
         scene->addItem(a->sprite);
         scene->addItem(a->text);
     }

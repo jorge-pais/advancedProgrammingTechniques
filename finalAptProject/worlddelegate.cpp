@@ -224,9 +224,10 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     std::cout << protagonist->getEnergy() << std::endl;
 }
 
-/// currently broken my bad hihi - jorge
-//void WorldDelegate::moveOnPath(int newX, int newY){
+/// TODO: there could be some timing function to move the protagonists
 void WorldDelegate::gotoSlot(int newX, int newY){
+    /// idk why, but the command "goto 0 0", isn't working
+    /// while debugging, it simply returns an empty path 
     qCDebug(worldDelegateCat) << "gotoSlot() called";
 
     std::vector<Node> nodes;
@@ -250,8 +251,8 @@ void WorldDelegate::gotoSlot(int newX, int newY){
     std::vector<int> path = pathFinder.A_star();
 
     // Define the moveX and moveY arrays
-    const int moveX[] = {0, 1, 1, 1, 0, -1, -1, -1};
-    const int moveY[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+    const int moveX[] = {+0, -1, -1, -1, +0, +1, +1, +1}; // x here is flipped for some bizarre, unknown reason
+    const int moveY[] = {-1, -1, +0, +1, +1, +1, +0, -1};
 
     int nextX, nextY;
     // Use the path to move the protagonist

@@ -37,7 +37,7 @@ public:
 
     ProtagonistSprite * player;
     std::vector<SpriteWithValue *> entities;
-    std::vector<SpriteWithValue *> healthPack;
+    std::vector<SpriteWithValue *> healthPacks;
 
     void renderTiles(bool useTile = false);
     void renderEntities();

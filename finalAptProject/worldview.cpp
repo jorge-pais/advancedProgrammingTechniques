@@ -141,10 +141,11 @@ void WorldView::protagonistHealthChangedSlot(int h)
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
         if(pack->getValue() == 0){
-            for(auto& healthPack : gView->entities){
+            for(auto& healthPack : gView->healthPacks){
                 if(healthPack->getX() == pack->getXPos() && healthPack->getY() == pack->getYPos()){
                     healthPack->setDead();
                     gView->player->animate(ProtagonistSprite::HEAL, 0.50);
+                    std::cout << "heal animation proc'd" << std::endl;
                 }
             }
         }
