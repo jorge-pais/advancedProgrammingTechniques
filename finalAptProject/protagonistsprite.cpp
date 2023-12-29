@@ -1,5 +1,7 @@
 #include "protagonistsprite.h"
 
+//#include "qloggingcategory.h"
+
 ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     spriteSet["alive"] = QPixmap(":/images/resources/entities/tux.png");
     spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
@@ -13,7 +15,12 @@ ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     spriteSet["dead"] = QPixmap(":/images/resources/entities/tux4.png");
     spriteSet["dead"] = scaleSprite(spriteSet["dead"]);
 
-    sprite = new QGraphicsPixmapItem(spriteSet["alive"]);
+    spriteSet["heal"] = QPixmap(":/images/resources/entities/tux5.png");
+    spriteSet["heal"] = scaleSprite(spriteSet["heal"]);
+
+    sprite = new QGraphicsPixmapItem(spriteSet["alive"]); 
+    animationState = IDLE;
+    
     text = new QGraphicsTextItem(QString::number(prog->getHealth()));
     
     energyBar = new QGraphicsRectItem(0, 0, TILE_SIZE/5, TILE_SIZE);
@@ -42,17 +49,44 @@ void ProtagonistSprite::setPosition(int x, int y){
     this->x = x; this->y = y;
 };
 
-void ProtagonistSprite::animate(QPixmap start, QPixmap end, float time){
-    sprite->setPixmap(start);
+void ProtagonistSprite::animate(aState nextState, float time){
+    QPixmap start, end = spriteSet["alive"];
 
-    QTimer *timer = new QTimer(this);
+    if(nextState < animationState)
+        return;
+    
+    if(animationTimer != nullptr)
+        animationTimer->stop();
+    else
+        animationTimer = new QTimer(this);
+    
+    animationState = nextState;
 
-    connect(timer, &QTimer::timeout, [this, end, timer](){
+    switch (nextState){
+    case MOVE:
+        start = spriteSet["move"];
+        break;
+    case ATTACK:
+        start = spriteSet["attack"];
+        break;
+    case HEAL:
+        start = spriteSet["heal"];
+        break;
+    default:
+        start = spriteSet["idle"];
+        break;
+    }
+
+    sprite->setPixmap(start);    
+
+    connect(animationTimer, &QTimer::timeout, [this, end](){
         sprite->setPixmap(end);
-        timer->deleteLater();
+        animationTimer->deleteLater();
+        animationTimer = nullptr;
+        animationState = IDLE;
     });
 
-    timer->start(time*1000);
+    animationTimer->start(time*1000);
 }
 
 void ProtagonistSprite::tint(bool poisoned){

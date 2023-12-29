@@ -4,9 +4,10 @@
 #include "qloggingcategory.h"
 QLoggingCategory graphicalViewCat("graphicalView");
 
-/// TODO:
-///  - load overlay and toggle it (perhaps a keybind!)
-
+/// @brief Constructor for the GraphicalView class.
+/// @param graphicsView The QGraphicsView object to be used.
+/// @param scene The QGraphicsScene object to be used.
+/// @param worldView The WorldView object to be used.
 GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldView> worldView) :
     view(graphicsView), scene(scene), worldView(worldView)
 {   
@@ -18,6 +19,8 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
     addTileSet(0.5, 1.0, QPixmap("/home/jorgep/Documents/blueStone.png"));
 }
 
+/// @brief Renders the tiles of the game world.
+/// @param useTile If true, uses the tileset for rendering. If false, uses grayscale squares.
 void GraphicalView::renderTiles(bool useTile){
     qCDebug(graphicalViewCat) << "renderTiles() called";
 
@@ -46,18 +49,24 @@ void GraphicalView::renderTiles(bool useTile){
     return;
 }
 
+/// @brief Clears all tiles from the scene.
 void GraphicalView::clearTiles(){
     for(auto tile : tiles)
         scene->removeItem(tile);
     tiles.clear(); 
 }
 
+/// @brief Applies a "poison" effect to a tile.
+/// @param x The x-coordinate of the tile.
+/// @param y The y-coordinate of the tile.
+/// @param poisonLevel The intensity of the poison effect.
 void GraphicalView::poisonTile(int x, int y, int poisonLevel){
     scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
                QPen(Qt::NoPen),
                QBrush(QColor(255-poisonLevel,80, 80)));
 }
 
+/// @brief Renders the entities in the game world.
 void GraphicalView::renderEntities(){
     qCDebug(graphicalViewCat) << "renderEntities() called";
 
@@ -78,6 +87,7 @@ void GraphicalView::renderEntities(){
     }
 }
 
+/// @brief Renders the player character.
 void GraphicalView::renderPlayer(){
     // Initialize the player, after this the render/update method should be called
     qCDebug(graphicalViewCat) << "renderPlayer() called";
@@ -87,11 +97,15 @@ void GraphicalView::renderPlayer(){
     scene->addItem(player->energyBar);
 }
 
+/// @brief Centers the view on the player character.
 void GraphicalView::centerView(){
     qCDebug(graphicalViewCat) << "centerView() called";
     this->view->centerOn(this->player->sprite);
 }
 
+/// @brief Zooms the view in or out.
+/// @param in If true, zooms in. If false, zooms out.
+/// @param factor The zoom factor.
 void GraphicalView::zoom(bool in, float factor){
 /// true for zoom in; false for zooming out
     qCDebug(graphicalViewCat) << "zoom() called";
@@ -100,6 +114,10 @@ void GraphicalView::zoom(bool in, float factor){
     centerView();
 }
 
+/// @brief Adds a tile to the tilesetThe QPixmap object representing the overlay image of the view.
+/// @param low The lower bound of the tile's range.
+/// @param high The upper bound of the tile's range.
+/// @param tile The QPixmap object representing the tile
 void GraphicalView::addTileSet(float low, float high, QPixmap tile){
     // tuple notation from C++11
     qCDebug(graphicalViewCat) << "addTileSet() called";
@@ -117,6 +135,9 @@ void GraphicalView::addTileSet(float low, float high, QPixmap tile){
     tileSet[{low, high}] = newTile; // add the tile if successful
 }
 
+/// @brief Returns the tile corresponding to a given value.
+/// @param value The value to be used for determining the tile.
+/// @return QPixmap object representing the tile.
 QPixmap GraphicalView::getTile(float value){
     qDebug(graphicalViewCat) << value;
     for(const auto & sprite: tileSet) // determine the tile
@@ -126,9 +147,11 @@ QPixmap GraphicalView::getTile(float value){
     return QPixmap("");
 }
 
-/// TODO: so this overlay is pretty basic, we should probably 
-/// do some checks regarding the overlay size and wtv
+/// @brief Sets an overlay image for the game world.
+/// @param image The QPixmap object representing the overlay image.
 void GraphicalView::setOverlay(QPixmap image){
+    /// TODO: so this overlay is pretty basic, we should probably 
+    /// do some checks regarding the overlay size and wtv
     qCDebug(graphicalViewCat) << "setOverlay() called";
     if(overlay) // remove the current overlay
         scene->removeItem(overlay);

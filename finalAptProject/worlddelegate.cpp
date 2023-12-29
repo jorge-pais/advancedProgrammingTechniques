@@ -28,12 +28,9 @@ void WorldDelegate::connectSlots(){
     }
 }
 
-/// TODO: we should change this to spawn the player on a low energy tile
-/// in the case of the maze images, the player is put at (0,0)
-/// which is a tile that takes infinite energy
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
-    //if (tiles == nullptr && healthPacks != nullptr && enemies != nullptr) return
+    //if (tiles != nullptr && healthPacks != nullptr && enemies != nullptr) return
     for(auto & tile : world->getTiles()){
         std::shared_ptr<Tile> sharedTile= std::move(tile);
         tiles.push_back(sharedTile);
@@ -61,9 +58,7 @@ void WorldDelegate::initializeWDelegate(){
 
     this->protagonist = std::move(world->getProtagonist());
 
-    /// TODO: we should check if the protagonist is in a infinite energy 
-    /// tile and move it to another (random ?) position
-    //qDebug(worldDelegateCat) << "the protagonist is on a tile with energy" << getTile(protagonist->getXPos(), protagonist->getYPos())->getValue();
+    /// check if the protagonist is in a infinite energy tile
     if(std::isinf(getTile(protagonist->getXPos(), protagonist->getYPos())->getValue())){
         for(auto & tile : tiles){
             if(!std::isinf(tile->getValue())){

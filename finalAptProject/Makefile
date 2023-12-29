@@ -840,6 +840,7 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_images.cpp
 qrc_images.cpp: images.qrc \
 		/usr/bin/rcc \
+		resources/entities/tux5.png \
 		resources/entities/tux.png \
 		resources/entities/mrs-squished-left.png \
 		resources/entities/squished-left.png \

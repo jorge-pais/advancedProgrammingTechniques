@@ -117,14 +117,13 @@ void WorldView::poisonLevelUpdatedSlot(int value)
         }
     }
     qCDebug(worldViewCat) << "poisonLevelUpdatedSlot() called";
-    // show the poision on screen
 }
 
 void WorldView::positionChangedSlot(int x, int y)
 {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
-    gView->player->animate(gView->player->spriteSet["move"], gView->player->spriteSet["alive"], 0.1);
+    gView->player->animate(ProtagonistSprite::MOVE);
     gView->player->setPosition(x, y);
     gView->centerView();
 
@@ -145,6 +144,7 @@ void WorldView::protagonistHealthChangedSlot(int h)
             for(auto& healthPack : gView->entities){
                 if(healthPack->getX() == pack->getXPos() && healthPack->getY() == pack->getYPos()){
                     healthPack->setDead();
+                    gView->player->animate(ProtagonistSprite::HEAL, 0.50);
                 }
             }
         }
@@ -188,6 +188,9 @@ void WorldView::enemyDeadSlot()
         }
     }
     // show the enemy dying on screen
+
+    // protagonist animation
+    gView->player->animate(ProtagonistSprite::ATTACK, 0.4);
 }
 
 void WorldView::playerPoisoned(bool val){
