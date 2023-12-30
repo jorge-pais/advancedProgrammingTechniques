@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     QStringList availableCommands = {"up", "right", "down", "left", "goto", "attack", "take", "help"};
     QCompleter* completer = new QCompleter(availableCommands, this);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setCompletionMode(QCompleter::InlineCompletion);
     ui->lineEdit->setCompleter(completer);
 
     //submit command
