@@ -1,62 +1,46 @@
 #include "spritewithvalue.h"
-#include "xenemy.h"
 
 SpriteWithValue::SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
-SpriteWithValue::SpriteWithValue(std::shared_ptr<Protagonist> prog){
-    QPixmap playerSprite = QPixmap(":/images/resources/entities/tux.png");
-    playerSprite = playerSprite.scaled(TILE_SIZE, TILE_SIZE,
-                                       Qt::KeepAspectRatio,
-                                       Qt::SmoothTransformation); // facing
-
-    sprite = new QGraphicsPixmapItem(playerSprite);
-    text = new QGraphicsTextItem(QString::number(prog->getHealth()));
-
-    setPosition(prog->getXPos(), prog->getYPos());
-    sprite->setZValue(1);
-    text->setZValue(1);
-}
-
 SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
-    //SpriteWithValue(int x, int y, float value){
 
     text = new QGraphicsTextItem(QString::number(entity->getValue()));
 
+    // If we could modify the world classes, this would be more efficient,
+    // as a tile method could be implemented and then overloaded by each entity class
     if(dynamic_cast<XEnemy*>(entity.get())){
-        spritePixmap = QPixmap(":/images/resources/entities/captain_left-2.png");
-        spriteDeadPixmap = QPixmap(":/images/resources/entities/cpt-squished-left.png");
-    }
-    else if(dynamic_cast<PEnemy*>(entity.get())){
-        spritePixmap = QPixmap(":/images/resources/entities/smartball-2.png");
-        spriteDeadPixmap = QPixmap(":/images/resources/entities/mrs-squished-left.png");
-    }
-    else if(dynamic_cast<Enemy*>(entity.get())){
-        spritePixmap = QPixmap(":/images/resources/entities/snowball-2.png");
-        spriteDeadPixmap = QPixmap(":/images/resources/entities/squished-left.png");
-    }
-    else{ // Healthpack
-        spritePixmap = QPixmap(":/images/resources/entities/platter.png");
-        spriteDeadPixmap = QPixmap();
-    }
+        spriteSet["alive"] = QPixmap(":/images/resources/entities/captain_left-2.png");
+        spriteSet["dead"] = QPixmap(":/images/resources/entities/cpt-squished-left.png");
+    }else if(dynamic_cast<PEnemy*>(entity.get())){
+        spriteSet["alive"] = QPixmap(":/images/resources/entities/smartball-2.png");
+        spriteSet["dead"] = QPixmap(":/images/resources/entities/mrs-squished-left.png");
+    }else if(dynamic_cast<Enemy*>(entity.get())){
+        spriteSet["alive"] = QPixmap(":/images/resources/entities/snowball-2.png");
+        spriteSet["dead"] = QPixmap(":/images/resources/entities/squished-left.png");
+    }else{
+        spriteSet["alive"] = QPixmap(":/images/resources/entities/platter.png");
+        spriteSet["dead"] = QPixmap(); // puff! disappear!
+    }   
 
-    spritePixmap = spritePixmap.scaled(TILE_SIZE, TILE_SIZE,
-                                       Qt::KeepAspectRatio,
-                                       Qt::SmoothTransformation); // facing
+    spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
+    spriteSet["dead"] = scaleSprite(spriteSet["dead"]);
 
-    spriteDeadPixmap = spriteDeadPixmap.scaled(TILE_SIZE, TILE_SIZE,
-                                               Qt::KeepAspectRatio,
-                                               Qt::SmoothTransformation); // facing
+    // This will come in handy when loading the map from a serialized version and some entities might already be dead
+    Enemy* aux = dynamic_cast<Enemy*>(entity.get());
 
-    sprite = new QGraphicsPixmapItem(spritePixmap);
+    bool dead = aux ? aux->getDefeated() : !(entity.get()->getValue());
+
+    sprite = new QGraphicsPixmapItem(dead ? spriteSet["dead"] : spriteSet["alive"]);
 
     setPosition(entity->getXPos(), entity->getYPos());
-    sprite->setZValue(1);
-    text->setZValue(1);
+    sprite->setZValue(2);
+    text->setZValue(2);
 }
 
-//int getX() const { return x; }
-//int getY() const { return y; }
+int SpriteWithValue::getX() const { return x; }
+int SpriteWithValue::getY() const { return y; }
 
+/// TODO remove this and every other dumb pointer
 SpriteWithValue::~SpriteWithValue(){
     delete sprite;
     delete text;
@@ -71,20 +55,25 @@ void SpriteWithValue::setPosition(int x, int y){
     this->x = x; this->y = y;
 }
 
-void SpriteWithValue::setDead(){
-    sprite->setPixmap(spriteDeadPixmap);
-    sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + 25);
+void SpriteWithValue::setDead(int spriteOffset){
+    sprite->setPixmap(spriteSet["dead"]);
+    sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + spriteOffset);
     text->setPlainText("");
 }
 
 void SpriteWithValue::setAlive(float health){
-    sprite->setPixmap(spritePixmap);
+    sprite->setPixmap(spriteSet["alive"]);
     text->setPlainText(QString::number(health));
-    text->setZValue(1);
+    text->setZValue(2);
 }
 
 void SpriteWithValue::setHealth(float health){
-    if(text){
-        text->setPlainText(QString::number(health));
-    }
+    if(text) text->setPlainText(QString::number(health));
+}
+
+QPixmap SpriteWithValue::scaleSprite(QPixmap sprite, bool stretch) {
+    return sprite.scaled(
+            TILE_SIZE, TILE_SIZE, 
+            (stretch ? Qt::IgnoreAspectRatio : Qt::KeepAspectRatio), 
+            Qt::SmoothTransformation);
 }

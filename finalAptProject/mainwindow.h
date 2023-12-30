@@ -12,10 +12,12 @@
 #include <QTransform>
 #include <ctime>
 #include <memory>
-
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <QMenu>
+#include <QToolBar>
+#include <QMessageBox>
 
 #include "worlddelegate.h"
 #include "world.h"
@@ -39,22 +41,32 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 signals:
     void mainWindowEventSignal(QKeyEvent *event);
 
 private slots:
     void submitCommand();
 
+public slots:
+    void openSettings();
+    void openHelp();
+
 private:
     Ui::MainWindow *ui;
 
     std::shared_ptr<World> world;
     std::shared_ptr<WorldView> wView;
-    std::shared_ptr<WorldDelegate> worldDelegate; // Changed to non-pointer
-    std::shared_ptr<GraphicalView> gView; // Pointer, as GraphicalView needs a QGraphicsView
+    std::shared_ptr<WorldDelegate> worldDelegate;
+    std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
+
+    void toolbarConfig();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
+    /* #ifndef QT_NO_CONTEXTMENU
+        void contextMenuEvent(QContextMenuEvent *event) override;
+    #endif //QT_NO_CONTEXTMENU */
 };
 #endif // MAINWINDOW_H

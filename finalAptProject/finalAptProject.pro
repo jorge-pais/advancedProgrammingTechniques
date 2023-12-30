@@ -14,6 +14,7 @@ SOURCES += \
     graphicalview.cpp \
     main.cpp \
     mainwindow.cpp \
+    protagonistsprite.cpp \
     spritewithvalue.cpp \
     textview.cpp \
     worlddelegate.cpp \
@@ -26,6 +27,7 @@ HEADERS += \
     pathfinderfunction.h \
     pathfinder.h \
     pathfinder_class.h \
+    protagonistsprite.h \
     spritewithvalue.h \
     textview.h \
     world.h \

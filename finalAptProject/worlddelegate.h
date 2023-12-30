@@ -9,6 +9,8 @@
 #include "pathfinder_class.h"
 
 class WorldView;
+
+/// for pathfinding!
 class Node : public Tile
 {
 public:
@@ -18,10 +20,8 @@ public:
 
     Node(int xPosition, int yPosition, float tileWeight)
         : Tile(xPosition, yPosition, tileWeight), f(0), g(0), h(0), visited(false), prev(nullptr)
-    {
-    }
+    {}
 };
-
 class Position : public Tile
 {
 public:
@@ -37,7 +37,6 @@ private:
     std::shared_ptr<WorldView> view;
     std::shared_ptr<World> world;
 
-    // Copied from world possibly
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Tile>> healthPacks;
@@ -45,7 +44,7 @@ private:
 
     std::shared_ptr<Protagonist> protagonist;
 
-    void moveOnPath(int newX, int newY);
+    int deadEnemies;
 
 public:
     WorldDelegate();
@@ -69,8 +68,11 @@ public:
 signals:
     void poisonSignal();
     void xEnemyStoleSignal(int x, int y, int oldX, int oldY, float health);
+    void playerDiedSignal();
+
 public slots:
     void movedSlot(int x, int y);
+    void gotoSlot(int newX, int newY);
 };
 
 #endif // WORLDDELEGATE_H

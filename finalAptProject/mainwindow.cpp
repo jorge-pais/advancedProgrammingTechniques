@@ -58,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
     gView->renderPlayer();
 
     tView->renderTiles();
+
+    toolbarConfig();
 }
 
 void MainWindow::submitCommand(){
@@ -78,6 +80,31 @@ void MainWindow::submitCommand(){
 /// view then gives these values to text or graphical view to render in appropriate way
 void MainWindow::keyPressEvent(QKeyEvent *event){
     emit mainWindowEventSignal(event);
+}
+
+//////////////////////////
+/// Toolbar menu stuff ///
+//////////////////////////
+void MainWindow::toolbarConfig(){
+    QToolBar *toolbar = this->addToolBar("My Toolbar");
+
+    QAction *settingsAction = new QAction("Settings", this);
+    connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
+    toolbar->addAction(settingsAction);
+
+    QAction *helpAction = new QAction("Help", this);
+    connect(helpAction, &QAction::triggered, this, &MainWindow::openHelp);
+    toolbar->addAction(helpAction);
+
+    //contextMenu.exec(event->globalPos());
+}
+
+void MainWindow::openSettings(){
+    std::cout << "openSettings() man!" << std::endl;
+}
+
+void MainWindow::openHelp(){
+    std::cout << "openHelp() man!" << std::endl;
 }
 
 MainWindow::~MainWindow()

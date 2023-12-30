@@ -9,30 +9,42 @@
 #include <QPixmap>
 #include <QKeyEvent>
 #include <QTransform>
+#include <QTimer>
+#include <QGraphicsColorizeEffect>
 #include <ctime>
 #include <iostream>
-#include "world.h"
+#include <unordered_map>
 
-#define TILE_SIZE 40
+#include "world.h"
+#include "xenemy.h"
+
 #define TEXT_OFFSET 15
+#define TILE_SIZE 40
+#define DEAD_OFFSET 25
 
 class SpriteWithValue
-{
+: public QObject{ // public inheritance !!
 public:
     SpriteWithValue();
+
     SpriteWithValue(std::shared_ptr<Protagonist> prog);
     SpriteWithValue(std::shared_ptr<Tile> entity);
     ~SpriteWithValue();
 
     void setHealth(float health);
-    void setDead();
+    void setDead(int spriteOffset = DEAD_OFFSET);
     void setAlive(float health);
-    void setPosition(int x, int y);
+    virtual void setPosition(int x, int y);
+    int getX() const;
+    int getY() const;
+
+    static QPixmap scaleSprite(QPixmap sprite, bool stretch = false);
 
     QGraphicsPixmapItem * sprite;
     QGraphicsTextItem * text;
-    QPixmap spriteDeadPixmap;
-    QPixmap spritePixmap;
+    std::unordered_map<std::string, QPixmap> spriteSet = {};
+
+protected:
     int x, y;
 };
 
