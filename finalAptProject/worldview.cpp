@@ -46,11 +46,11 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
 
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
-    case Qt::Key_Plus:  // Ctrl + +
+    case Qt::Key_Plus:  // Ctrl +
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(true);
         return;
-    case Qt::Key_Minus: // Ctrl + +
+    case Qt::Key_Minus: // Ctrl -
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(false);
         return;

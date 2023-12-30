@@ -15,8 +15,8 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
     graphicsView->setScene(scene);
 
     // Tile testing
-    addTileSet(0, 0.5, QPixmap("/home/jorgep/Documents/brownBrick.png"));
-    addTileSet(0.5, 1.0, QPixmap("/home/jorgep/Documents/blueStone.png"));
+    //addTileSet(0, 0.5, QPixmap("/home/jorgep/Documents/brownBrick.png"));
+    //addTileSet(0.5, 1.0, QPixmap("/home/jorgep/Documents/blueStone.png"));
 }
 
 /// @brief Renders the tiles of the game world.
@@ -114,7 +114,7 @@ void GraphicalView::zoom(bool in, float factor){
     centerView();
 }
 
-/// @brief Adds a tile to the tilesetThe QPixmap object representing the overlay image of the view.
+/// @brief Adds a tile to the tileset
 /// @param low The lower bound of the tile's range.
 /// @param high The upper bound of the tile's range.
 /// @param tile The QPixmap object representing the tile
@@ -135,7 +135,7 @@ void GraphicalView::addTileSet(float low, float high, QPixmap tile){
     tileSet[{low, high}] = newTile; // add the tile if successful
 }
 
-/// @brief Returns the tile corresponding to a given value.
+/// @brief Returns the tile from the tileset corresponding to a given value.
 /// @param value The value to be used for determining the tile.
 /// @return QPixmap object representing the tile.
 QPixmap GraphicalView::getTile(float value){

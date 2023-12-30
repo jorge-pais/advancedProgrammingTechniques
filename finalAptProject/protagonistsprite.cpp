@@ -39,12 +39,12 @@ void ProtagonistSprite::setEnergy(float value){
 }
 
 void ProtagonistSprite::setPosition(int x, int y){
-    if(sprite)
-        sprite->setPos(x*TILE_SIZE, y*TILE_SIZE);
-    if(text)
-        text->setPos(x*TILE_SIZE, y*TILE_SIZE - TEXT_OFFSET);
-    if(energyBar)
-        energyBar->setPos(x*TILE_SIZE - ENERGY_OFFSET, y*TILE_SIZE + (TILE_SIZE-energyBar->rect().height()));
+    //if(sprite)
+    sprite->setPos(x*TILE_SIZE, y*TILE_SIZE);
+    //if(text)
+    text->setPos(x*TILE_SIZE, y*TILE_SIZE - TEXT_OFFSET);
+    //if(energyBar)
+    energyBar->setPos(x*TILE_SIZE - ENERGY_OFFSET, y*TILE_SIZE + (TILE_SIZE-energyBar->rect().height()));
 
     this->x = x; this->y = y;
 };
