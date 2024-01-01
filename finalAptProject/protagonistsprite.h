@@ -34,7 +34,7 @@ public:
     void tint(bool poisoned);
     void setPosition(int x, int y);
 
-    QGraphicsRectItem * energyBar;
+    std::shared_ptr<QGraphicsRectItem> energyBar;
 
 protected:
     QTimer* animationTimer = nullptr;

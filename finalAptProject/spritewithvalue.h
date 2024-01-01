@@ -22,30 +22,32 @@
 #define TILE_SIZE 40
 #define DEAD_OFFSET 25
 
+#include <memory>
+
 class SpriteWithValue
 : public QObject{ // public inheritance !!
 public:
-    SpriteWithValue();
+   SpriteWithValue();
+   SpriteWithValue(std::shared_ptr<Protagonist> prog);
+   SpriteWithValue(std::shared_ptr<Tile> entity);
+   
+   ~SpriteWithValue() = default;
 
-    SpriteWithValue(std::shared_ptr<Protagonist> prog);
-    SpriteWithValue(std::shared_ptr<Tile> entity);
-    ~SpriteWithValue();
+   void setHealth(float health);
+   void setDead(int spriteOffset = DEAD_OFFSET);
+   void setAlive(float health);
+   virtual void setPosition(int x, int y);
+   int getX() const;
+   int getY() const;
 
-    void setHealth(float health);
-    void setDead(int spriteOffset = DEAD_OFFSET);
-    void setAlive(float health);
-    virtual void setPosition(int x, int y);
-    int getX() const;
-    int getY() const;
+   static QPixmap scaleSprite(QPixmap sprite, bool stretch = false);
 
-    static QPixmap scaleSprite(QPixmap sprite, bool stretch = false);
-
-    QGraphicsPixmapItem * sprite;
-    QGraphicsTextItem * text;
-    std::unordered_map<std::string, QPixmap> spriteSet = {};
+   std::shared_ptr<QGraphicsPixmapItem> sprite;
+   std::shared_ptr<QGraphicsTextItem> text;
+   std::unordered_map<std::string, QPixmap> spriteSet = {};
 
 protected:
-    int x, y;
+   int x, y;
 };
 
 #endif // SPRITEWITHVALUE_H

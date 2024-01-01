@@ -38,6 +38,7 @@ public:
     ProtagonistSprite * player;
     std::vector<SpriteWithValue *> entities;
     std::vector<SpriteWithValue *> healthPacks;
+    std::vector<QGraphicsItem *> path;
 
     void renderTiles(bool useTile = false);
     void renderEntities();
@@ -49,6 +50,9 @@ public:
     QPixmap getTile(float value);
     void addTileSet(float low, float high, QPixmap tile);
     void clearTiles();
+    
+    void pathTile(int x, int y);
+    void clearPath();
 
 private:
     QGraphicsView * view;
@@ -58,6 +62,8 @@ private:
 
     std::vector<QGraphicsItem *> tiles;
 
+    // this might have been a convoluted way to do this, since we 
+    // could have simply stored the lowest value in the range. oh well.
     std::map<std::pair<float, float>, QPixmap, CompareFirstVal> tileSet = {};
 };
 

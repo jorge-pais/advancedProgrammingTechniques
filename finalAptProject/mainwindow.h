@@ -18,12 +18,16 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QMessageBox>
+#include <QDirIterator>
 
 #include "worlddelegate.h"
 #include "world.h"
 #include "graphicalview.h"
 #include "world.h"
 #include "worldview.h"
+#include "settingswindow.h"
+
+//#include "settingsdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -51,6 +55,7 @@ private slots:
 public slots:
     void openSettings();
     void openHelp();
+    void newGame();
 
 private:
     Ui::MainWindow *ui;
@@ -65,8 +70,5 @@ private:
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
-    /* #ifndef QT_NO_CONTEXTMENU
-        void contextMenuEvent(QContextMenuEvent *event) override;
-    #endif //QT_NO_CONTEXTMENU */
 };
 #endif // MAINWINDOW_H

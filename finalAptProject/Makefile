@@ -56,12 +56,15 @@ SOURCES       = graphicalview.cpp \
 		main.cpp \
 		mainwindow.cpp \
 		protagonistsprite.cpp \
+		settings.cpp \
+		settingswindow.cpp \
 		spritewithvalue.cpp \
 		textview.cpp \
 		worlddelegate.cpp \
 		worldview.cpp \
 		xenemy.cpp qrc_images.cpp \
 		moc_mainwindow.cpp \
+		moc_settingswindow.cpp \
 		moc_textview.cpp \
 		moc_world.cpp \
 		moc_worlddelegate.cpp \
@@ -70,6 +73,8 @@ OBJECTS       = graphicalview.o \
 		main.o \
 		mainwindow.o \
 		protagonistsprite.o \
+		settings.o \
+		settingswindow.o \
 		spritewithvalue.o \
 		textview.o \
 		worlddelegate.o \
@@ -77,6 +82,7 @@ OBJECTS       = graphicalview.o \
 		xenemy.o \
 		qrc_images.o \
 		moc_mainwindow.o \
+		moc_settingswindow.o \
 		moc_textview.o \
 		moc_world.o \
 		moc_worlddelegate.o \
@@ -233,6 +239,10 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_quickwidgets.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_quickwidgets_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_script.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_script_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_scripttools.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_scripttools_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_sensors.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_sensors_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_service_support_private.pri \
@@ -274,6 +284,7 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/modules/qt_lib_xml_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_phonon4qt5.pri \
 		/usr/lib/qt/mkspecs/modules/qt_Prison.pri \
+		/usr/lib/qt/mkspecs/modules/qt_Qt5Keychain.pri \
 		/usr/lib/qt/mkspecs/modules/qt_QuickAddons.pri \
 		/usr/lib/qt/mkspecs/modules/qt_Solid.pri \
 		/usr/lib/qt/mkspecs/modules/qt_SonnetCore.pri \
@@ -312,6 +323,8 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		pathfinder.h \
 		pathfinder_class.h \
 		protagonistsprite.h \
+		settings.h \
+		settingswindow.h \
 		spritewithvalue.h \
 		textview.h \
 		world.h \
@@ -322,6 +335,8 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		main.cpp \
 		mainwindow.cpp \
 		protagonistsprite.cpp \
+		settings.cpp \
+		settingswindow.cpp \
 		spritewithvalue.cpp \
 		textview.cpp \
 		worlddelegate.cpp \
@@ -335,7 +350,7 @@ TARGET        = finalAptProject
 first: all
 ####### Build rules
 
-finalAptProject: ui_mainwindow.h $(OBJECTS)  
+finalAptProject: ui_mainwindow.h ui_settingswindow.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: finalAptProject.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspecs/features/spec_pre.prf \
@@ -490,6 +505,10 @@ Makefile: finalAptProject.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/
 		/usr/lib/qt/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_quickwidgets.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_quickwidgets_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_script.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_script_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_scripttools.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_scripttools_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_sensors.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_sensors_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_service_support_private.pri \
@@ -531,6 +550,7 @@ Makefile: finalAptProject.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/
 		/usr/lib/qt/mkspecs/modules/qt_lib_xml_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_phonon4qt5.pri \
 		/usr/lib/qt/mkspecs/modules/qt_Prison.pri \
+		/usr/lib/qt/mkspecs/modules/qt_Qt5Keychain.pri \
 		/usr/lib/qt/mkspecs/modules/qt_QuickAddons.pri \
 		/usr/lib/qt/mkspecs/modules/qt_Solid.pri \
 		/usr/lib/qt/mkspecs/modules/qt_SonnetCore.pri \
@@ -718,6 +738,10 @@ Makefile: finalAptProject.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/
 /usr/lib/qt/mkspecs/modules/qt_lib_quicktemplates2_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_quickwidgets.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_quickwidgets_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_script.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_script_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_scripttools.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_scripttools_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_sensors.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_sensors_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_service_support_private.pri:
@@ -759,6 +783,7 @@ Makefile: finalAptProject.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/
 /usr/lib/qt/mkspecs/modules/qt_lib_xml_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_phonon4qt5.pri:
 /usr/lib/qt/mkspecs/modules/qt_Prison.pri:
+/usr/lib/qt/mkspecs/modules/qt_Qt5Keychain.pri:
 /usr/lib/qt/mkspecs/modules/qt_QuickAddons.pri:
 /usr/lib/qt/mkspecs/modules/qt_Solid.pri:
 /usr/lib/qt/mkspecs/modules/qt_SonnetCore.pri:
@@ -809,9 +834,9 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinderfunction.h pathfinder.h pathfinder_class.h protagonistsprite.h spritewithvalue.h textview.h world.h world_global.h worlddelegate.h worldview.h xenemy.h $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp protagonistsprite.cpp spritewithvalue.cpp textview.cpp worlddelegate.cpp worldview.cpp xenemy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinderfunction.h pathfinder.h pathfinder_class.h protagonistsprite.h settings.h settingswindow.h spritewithvalue.h textview.h world.h world_global.h worlddelegate.h worldview.h xenemy.h $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp protagonistsprite.cpp settings.cpp settingswindow.cpp spritewithvalue.cpp textview.cpp worlddelegate.cpp worldview.cpp xenemy.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.ui settingswindow.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -865,9 +890,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
 	g++ -pipe -std=c++20 -O2 -flto -fno-fat-lto-objects -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_settingswindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_settingswindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 moc_mainwindow.cpp: mainwindow.h \
 		worlddelegate.h \
 		world.h \
@@ -879,10 +904,30 @@ moc_mainwindow.cpp: mainwindow.h \
 		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
+		settingswindow.h \
+		settings.h \
 		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+
+moc_settingswindow.cpp: settingswindow.h \
+		settings.h \
+		graphicalview.h \
+		xenemy.h \
+		world.h \
+		world_global.h \
+		worlddelegate.h \
+		worldview.h \
+		textview.h \
+		mainwindow.h \
+		settingswindow.h \
+		pathfinder_class.h \
+		spritewithvalue.h \
+		protagonistsprite.h \
+		moc_predefs.h \
+		/usr/bin/moc
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include settingswindow.h -o moc_settingswindow.cpp
 
 moc_textview.cpp: textview.h \
 		worldview.h \
@@ -896,6 +941,8 @@ moc_textview.cpp: textview.h \
 		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
+		settingswindow.h \
+		settings.h \
 		moc_predefs.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include textview.h -o moc_textview.cpp
@@ -918,6 +965,8 @@ moc_worlddelegate.cpp: worlddelegate.h \
 		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
+		settingswindow.h \
+		settings.h \
 		moc_predefs.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worlddelegate.h -o moc_worlddelegate.cpp
@@ -933,6 +982,8 @@ moc_worldview.cpp: worldview.h \
 		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
+		settingswindow.h \
+		settings.h \
 		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/bin/moc
@@ -942,12 +993,16 @@ compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all: ui_mainwindow.h ui_settingswindow.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
+	-$(DEL_FILE) ui_mainwindow.h ui_settingswindow.h
 ui_mainwindow.h: mainwindow.ui \
 		/usr/bin/uic
 	/usr/bin/uic mainwindow.ui -o ui_mainwindow.h
+
+ui_settingswindow.h: settingswindow.ui \
+		/usr/bin/uic
+	/usr/bin/uic settingswindow.ui -o ui_settingswindow.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -967,6 +1022,8 @@ graphicalview.o: graphicalview.cpp graphicalview.h \
 		worldview.h \
 		textview.h \
 		mainwindow.h \
+		settingswindow.h \
+		settings.h \
 		pathfinder_class.h \
 		spritewithvalue.h \
 		protagonistsprite.h
@@ -982,7 +1039,9 @@ main.o: main.cpp mainwindow.h \
 		spritewithvalue.h \
 		protagonistsprite.h \
 		textview.h \
-		pathfinder_class.h
+		pathfinder_class.h \
+		settingswindow.h \
+		settings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -996,6 +1055,8 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		protagonistsprite.h \
 		textview.h \
 		pathfinder_class.h \
+		settingswindow.h \
+		settings.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
@@ -1005,6 +1066,37 @@ protagonistsprite.o: protagonistsprite.cpp protagonistsprite.h \
 		world_global.h \
 		xenemy.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o protagonistsprite.o protagonistsprite.cpp
+
+settings.o: settings.cpp settings.h \
+		graphicalview.h \
+		xenemy.h \
+		world.h \
+		world_global.h \
+		worlddelegate.h \
+		worldview.h \
+		textview.h \
+		mainwindow.h \
+		settingswindow.h \
+		pathfinder_class.h \
+		spritewithvalue.h \
+		protagonistsprite.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o settings.o settings.cpp
+
+settingswindow.o: settingswindow.cpp settingswindow.h \
+		settings.h \
+		graphicalview.h \
+		xenemy.h \
+		world.h \
+		world_global.h \
+		worlddelegate.h \
+		worldview.h \
+		textview.h \
+		mainwindow.h \
+		pathfinder_class.h \
+		spritewithvalue.h \
+		protagonistsprite.h \
+		ui_settingswindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o settingswindow.o settingswindow.cpp
 
 spritewithvalue.o: spritewithvalue.cpp spritewithvalue.h \
 		world.h \
@@ -1022,7 +1114,9 @@ textview.o: textview.cpp textview.h \
 		xenemy.h \
 		spritewithvalue.h \
 		protagonistsprite.h \
-		mainwindow.h
+		mainwindow.h \
+		settingswindow.h \
+		settings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o textview.o textview.cpp
 
 worlddelegate.o: worlddelegate.cpp worlddelegate.h \
@@ -1035,6 +1129,8 @@ worlddelegate.o: worlddelegate.cpp worlddelegate.h \
 		protagonistsprite.h \
 		textview.h \
 		mainwindow.h \
+		settingswindow.h \
+		settings.h \
 		pathfinder_class.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worlddelegate.o worlddelegate.cpp
 
@@ -1048,7 +1144,9 @@ worldview.o: worldview.cpp worldview.h \
 		spritewithvalue.h \
 		protagonistsprite.h \
 		textview.h \
-		mainwindow.h
+		mainwindow.h \
+		settingswindow.h \
+		settings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worldview.o worldview.cpp
 
 xenemy.o: xenemy.cpp xenemy.h \
@@ -1061,6 +1159,9 @@ qrc_images.o: qrc_images.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_settingswindow.o: moc_settingswindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_settingswindow.o moc_settingswindow.cpp
 
 moc_textview.o: moc_textview.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_textview.o moc_textview.cpp

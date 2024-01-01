@@ -18,12 +18,12 @@ ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     spriteSet["heal"] = QPixmap(":/images/resources/entities/tux5.png");
     spriteSet["heal"] = scaleSprite(spriteSet["heal"]);
 
-    sprite = new QGraphicsPixmapItem(spriteSet["alive"]); 
+    sprite = std::make_shared<QGraphicsPixmapItem>(spriteSet["alive"]);
     animationState = IDLE;
     
-    text = new QGraphicsTextItem(QString::number(prog->getHealth()));
+    text = std::make_shared<QGraphicsTextItem>(QString::number(prog->getHealth()));
     
-    energyBar = new QGraphicsRectItem(0, 0, TILE_SIZE/5, TILE_SIZE);
+    energyBar = std::make_shared<QGraphicsRectItem>(0, 0, TILE_SIZE/5, TILE_SIZE);
     QBrush brush(Qt::yellow); QPen pen(Qt::NoPen);
     energyBar->setBrush(brush); energyBar->setPen(pen);
 

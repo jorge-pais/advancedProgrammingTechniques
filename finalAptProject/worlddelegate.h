@@ -44,6 +44,8 @@ private:
 
     std::shared_ptr<Protagonist> protagonist;
 
+    int singleMove(int x, int y);
+
     int deadEnemies;
 
 public:
