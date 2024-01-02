@@ -49,6 +49,8 @@ public:
     QPixmap getTile(float value);
     void addTileSet(float low, float high, QPixmap tile);
     void clearTiles();
+    void clearEntities();
+    void clearPlayer();
 
 private:
     QGraphicsView * view;

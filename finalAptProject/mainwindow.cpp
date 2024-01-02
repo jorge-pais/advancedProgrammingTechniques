@@ -9,8 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow),
     world(std::make_shared<World>()),
+    otherWorld(std::make_shared<World>()),
     wView(std::make_shared<WorldView>(this)),
-    worldDelegate(std::make_shared<WorldDelegate>(wView, world))
+    worldDelegate(std::make_shared<WorldDelegate>(wView, world, otherWorld))
 ////////////////////////////////////////////////////////////////
 {
     ui->setupUi(this);
@@ -20,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QString worldPath{":/images/resources/world_images/worldmap.png"};
     world->createWorld(worldPath, 5, 6, 0.0);
+    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
+    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();
@@ -48,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
     //connect slots and setup
+    worldDelegate->setDoor(3, 3);
     worldDelegate->connectSlots();
     wView->connectSlots();
     wView->setViews(gView, tView);

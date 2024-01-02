@@ -36,6 +36,7 @@ class WorldDelegate : public QObject
 private:
     std::shared_ptr<WorldView> view;
     std::shared_ptr<World> world;
+    std::shared_ptr<World> otherWorld;
 
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Enemy>> enemies;
@@ -45,10 +46,12 @@ private:
     std::shared_ptr<Protagonist> protagonist;
 
     int deadEnemies;
+    int doorX;
+    int doorY;
 
 public:
     WorldDelegate();
-    WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
+    WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world, std::shared_ptr<World> otherWorld);
     void initializeWDelegate();
     std::shared_ptr<Tile> getTile(int x, int y);
     std::vector<std::shared_ptr<Tile>> getWorldTiles();
@@ -63,12 +66,15 @@ public:
     void setProtagonistEnergy(float energyValue);
     std::string enemyStatus(Enemy& enemy);
     void attack(std::shared_ptr<Enemy> enemy); // maybe we won't need this due to the slot
+    void door();
+    void setDoor(int x, int y);
     void connectSlots();
 
 signals:
     void poisonSignal();
     void xEnemyStoleSignal(int x, int y, int oldX, int oldY, float health);
     void playerDiedSignal();
+    void newWorldLoadedSignal();
 
 public slots:
     void movedSlot(int x, int y);

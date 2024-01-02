@@ -56,6 +56,14 @@ void GraphicalView::clearTiles(){
     tiles.clear(); 
 }
 
+void GraphicalView::clearEntities(){
+    for(auto entity : entities){
+        scene->removeItem(entity->sprite);
+        scene->removeItem(entity->text);
+    }
+    entities.clear();
+}
+
 /// @brief Applies a "poison" effect to a tile.
 /// @param x The x-coordinate of the tile.
 /// @param y The y-coordinate of the tile.
@@ -87,6 +95,11 @@ void GraphicalView::renderEntities(){
     }
 }
 
+void GraphicalView::clearPlayer(){
+    scene->removeItem(player->energyBar);
+    scene->removeItem(player->sprite);
+    scene->removeItem(player->text);
+}
 /// @brief Renders the player character.
 void GraphicalView::renderPlayer(){
     // Initialize the player, after this the render/update method should be called

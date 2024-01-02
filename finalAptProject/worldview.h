@@ -49,6 +49,7 @@ public slots:
     void protagonistHealthChangedSlot(int h);
     void protagonistEnergyChangedSlot(int e);
     void enemyDeadSlot();
+    void newWorldLoadedSlot();
     void mainWindowEventSlot(QKeyEvent *event);
     void xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health);
 };

@@ -5,10 +5,11 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldDelegateCat("worldDelegate");
 
-WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world)
+WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world, std::shared_ptr<World> otherWorld)
 {
     this->view = view;
     this->world = world;
+    this->otherWorld = otherWorld;
 }
 
 void WorldDelegate::connectSlots(){
@@ -17,6 +18,7 @@ void WorldDelegate::connectSlots(){
     QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
     QObject::connect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
     QObject::connect(this, &WorldDelegate::xEnemyStoleSignal, this->view.get(), &WorldView::xEnemyStoleSlot);
+    QObject::connect(this, &WorldDelegate::newWorldLoadedSignal, this->view.get(), &WorldView::newWorldLoadedSlot);
 
     if(this->getWorldEnemies().size() != 0){
         for(auto& enemy : this->getWorldEnemies()){ // calling here world enemies makes it such that i can't get the enemies later on in the graphics views
@@ -31,12 +33,14 @@ void WorldDelegate::connectSlots(){
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
     //if (tiles != nullptr && healthPacks != nullptr && enemies != nullptr) return
+    tiles.clear();
     for(auto & tile : world->getTiles()){
         std::shared_ptr<Tile> sharedTile= std::move(tile);
         tiles.push_back(sharedTile);
     }
 
     bool xEnemyMade = false;
+    enemies.clear();
     for(auto & enemy : world->getEnemies()){
         if(!xEnemyMade){
             if(enemyStatus(*enemy) == "Regular"){
@@ -51,6 +55,7 @@ void WorldDelegate::initializeWDelegate(){
         }
     }
 
+    healthPacks.clear();
     for(auto & healthPack : world->getHealthPacks()){
         std::shared_ptr<Tile> sharedHealthPack= std::move(healthPack);
         healthPacks.push_back(sharedHealthPack);
@@ -96,6 +101,8 @@ void WorldDelegate::setProtagonistHealth(float healthValue){
 void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { this->protagonist->setPos(newWorldX, newWorldY); }
 
 void WorldDelegate::setProtagonistEnergy(float energyValue){ this->protagonist->setEnergy(energyValue >= 100 ? 100 : energyValue); }
+
+void WorldDelegate::setDoor(int x, int y){doorX = x; doorY = y;}
 
 /// TODO: this could be an aux function associated with some enum
 std::string WorldDelegate::enemyStatus(Enemy& enemy)
@@ -169,6 +176,16 @@ void WorldDelegate::addPoisonTile(int x, int y, float value){
     }
 }
 
+void WorldDelegate::door(){
+    world.swap(otherWorld);
+
+    initializeWDelegate();
+    connectSlots();
+    emit newWorldLoadedSignal();
+
+    protagonist->setPos(doorX + 1, doorY);
+}
+
 void WorldDelegate::movedSlot(int dx, int dy) {
     qCDebug(worldDelegateCat) << "movedSlot() called";
 
@@ -180,6 +197,10 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     if( (dx == 0 && dy==0) || newX < 0 || newY < 0 || 
         (newX > world->getCols() - 1) || (newY > world->getRows() - 1))
         return;
+
+    if(newX == doorX && newY == doorY){
+        door();
+    }
 
     float difference = 0;
     // There has to be a more efficient way to do this

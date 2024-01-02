@@ -56,6 +56,7 @@ private:
     Ui::MainWindow *ui;
 
     std::shared_ptr<World> world;
+    std::shared_ptr<World> otherWorld;
     std::shared_ptr<WorldView> wView;
     std::shared_ptr<WorldDelegate> worldDelegate;
     std::shared_ptr<GraphicalView> gView;

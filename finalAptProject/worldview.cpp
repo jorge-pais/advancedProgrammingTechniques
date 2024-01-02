@@ -50,7 +50,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(true);
         return;
-    case Qt::Key_Minus: // Ctrl + +
+    case Qt::Key_Minus: // Ctrl - -
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(false);
         return;
@@ -129,6 +129,16 @@ void WorldView::positionChangedSlot(int x, int y)
 
     // re-render everything on textView
     tView->renderTiles();
+}
+
+void WorldView::newWorldLoadedSlot(){
+    gView->clearTiles();
+    gView->renderTiles();
+    gView->clearEntities();
+    gView->renderEntities();
+    gView->clearPlayer();
+    gView->renderPlayer();
+    connectSlots();
 }
 
 /// is this even connected to something other than the protagonist?
