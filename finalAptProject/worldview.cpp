@@ -133,6 +133,18 @@ void WorldView::positionChangedSlot(int x, int y)
     tView->renderTiles();
 }
 
+void WorldView::newWorldLoadedSlot(){
+    disconnect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+    this->connectSlots();
+    gView->clearTiles();
+    gView->renderTiles();
+    gView->clearEntities();
+    gView->renderEntities();
+    gView->clearPlayer();
+    gView->renderPlayer();
+    gView->clearDoor();
+}
+
 /// is this even connected to something other than the protagonist?
 /// there is a pretty similar loop in world delegate
 void WorldView::protagonistHealthChangedSlot(int h)
