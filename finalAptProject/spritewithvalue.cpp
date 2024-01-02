@@ -33,8 +33,8 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
     sprite = std::make_shared<QGraphicsPixmapItem>(dead ? spriteSet["dead"] : spriteSet["alive"]);
 
     setPosition(entity->getXPos(), entity->getYPos());
-    sprite->setZValue(2);
-    text->setZValue(2);
+    sprite->setZValue(4);
+    text->setZValue(4);
 }
 
 int SpriteWithValue::getX() const { return x; }
@@ -58,7 +58,7 @@ void SpriteWithValue::setDead(int spriteOffset){
 void SpriteWithValue::setAlive(float health){
     sprite->setPixmap(spriteSet["alive"]);
     text->setPlainText(QString::number(health));
-    text->setZValue(2);
+    text->setZValue(4);
 }
 
 void SpriteWithValue::setHealth(float health){

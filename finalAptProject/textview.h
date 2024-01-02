@@ -33,6 +33,7 @@ public:
     TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view);
     void renderTiles();
     void resetColor();
+    void resetColorAfterDelay();
     void processCommand(const QString& command);
     std::vector<std::shared_ptr<Tile>> worldTiles;
     std::vector<std::shared_ptr<Enemy>> worldEnemies;

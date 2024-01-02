@@ -54,7 +54,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(false);
         return;
-        
+    // WASD movement 
     case Qt::Key_Up:
     case Qt::Key_W:
         dy--;
@@ -76,6 +76,8 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     }
     //handle the events and then emit these signals with appropriate parameters
     emit playerMovedSignal(dx, dy);
+
+    gView->clearPath();
 }
 
 void WorldView::attackNearestEnemy(){
@@ -129,6 +131,19 @@ void WorldView::positionChangedSlot(int x, int y)
 
     // re-render everything on textView
     tView->renderTiles();
+}
+
+void WorldView::newWorldLoadedSlot(){
+    disconnect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+    this->connectSlots();
+    
+    gView->clearTiles();
+    gView->renderTiles();
+    gView->clearEntities();
+    gView->renderEntities();
+    gView->clearPlayer();
+    gView->renderPlayer();
+    gView->clearDoor();
 }
 
 /// is this even connected to something other than the protagonist?

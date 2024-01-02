@@ -56,14 +56,24 @@ void GraphicalView::clearTiles(){
     tiles.clear(); 
 }
 
+void GraphicalView::clearEntities(){
+    for(auto entity : entities){
+        scene->removeItem(entity->sprite.get());
+        scene->removeItem(entity->text.get());
+    }
+    entities.clear();
+}
+
 /// @brief Applies a "poison" effect to a tile.
 /// @param x The x-coordinate of the tile.
 /// @param y The y-coordinate of the tile.
 /// @param poisonLevel The intensity of the poison effect.
 void GraphicalView::poisonTile(int x, int y, int poisonLevel){
-    scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
+    QGraphicsRectItem * rect = scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
                 QPen(Qt::NoPen),
-                QBrush(QColor(255-poisonLevel,80, 80)));
+                QBrush(QColor(255-poisonLevel,80, 80, 127)));
+
+    rect->setZValue(3);
 }
 
 /// @brief Renders the entities in the game world.
@@ -87,6 +97,28 @@ void GraphicalView::renderEntities(){
     }
 }
 
+void GraphicalView::renderDoor(){
+    auto sprite = QPixmap(":/images/resources/entities/door.png");
+    sprite = sprite.scaled(
+            TILE_SIZE, TILE_SIZE,
+            Qt::IgnoreAspectRatio,
+            Qt::SmoothTransformation);
+    door = new QGraphicsPixmapItem(sprite);
+
+    door->setPos(3*TILE_SIZE, 3*TILE_SIZE);
+
+    scene->addItem(door);
+}
+
+void GraphicalView::clearDoor(){
+    scene->removeItem(door);
+}
+
+void GraphicalView::clearPlayer(){
+    scene->removeItem(player->energyBar.get());
+    scene->removeItem(player->sprite.get());
+    scene->removeItem(player->text.get());
+}
 /// @brief Renders the player character.
 void GraphicalView::renderPlayer(){
     // Initialize the player, after this the render/update method should be called
@@ -171,9 +203,6 @@ void GraphicalView::setOverlay(QPixmap image){
     scene->addItem(overlay);
 }
 
-/// @brief 
-/// @param x 
-/// @param y 
 void GraphicalView::pathTile(int x, int y){
     QGraphicsItem* rect = scene->addRect(
                 (x+0.2)*TILE_SIZE, (y+0.2)*TILE_SIZE, 
@@ -181,6 +210,7 @@ void GraphicalView::pathTile(int x, int y){
                 QPen(Qt::NoPen),
                 QBrush(QColor(255, 153, 51, 127)));
 
+    rect->setZValue(3);
     path.push_back(rect);
 }
 
