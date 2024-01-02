@@ -873,12 +873,14 @@ qrc_images.cpp: images.qrc \
 		resources/entities/cpt-squished-left.png \
 		resources/entities/smartball-2.png \
 		resources/entities/tux3.png \
+		resources/entities/door.png \
 		resources/entities/captain_left-2.png \
 		resources/entities/tux2.png \
 		resources/entities/snowball-2.png \
 		resources/entities/platter.png \
 		resources/world_images/worldmap.png \
 		resources/world_images/maze3.png \
+		resources/world_images/worldmap2.png \
 		resources/world_images/maze2.png \
 		resources/world_images/maze1.png \
 		resources/world_images/worldmap4.png

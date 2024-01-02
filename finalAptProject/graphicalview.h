@@ -51,6 +51,10 @@ public:
     void addTileSet(float low, float high, QPixmap tile);
     void clearTileSet();
     void clearTiles();
+    void clearEntities();
+    void clearPlayer();
+    void clearDoor();
+    void renderDoor();
     
     void pathTile(int x, int y);
     void clearPath();
@@ -60,6 +64,7 @@ private:
     QGraphicsScene * scene;
     std::shared_ptr<WorldView> worldView;
     QGraphicsPixmapItem * overlay = nullptr;
+    QGraphicsPixmapItem * door;
 
     std::vector<QGraphicsItem *> tiles;
 

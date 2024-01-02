@@ -56,6 +56,14 @@ void GraphicalView::clearTiles(){
     tiles.clear(); 
 }
 
+void GraphicalView::clearEntities(){
+    for(auto entity : entities){
+        scene->removeItem(entity->sprite.get());
+        scene->removeItem(entity->text.get());
+    }
+    entities.clear();
+}
+
 /// @brief Applies a "poison" effect to a tile.
 /// @param x The x-coordinate of the tile.
 /// @param y The y-coordinate of the tile.
@@ -89,6 +97,28 @@ void GraphicalView::renderEntities(){
     }
 }
 
+void GraphicalView::renderDoor(){
+    auto sprite = QPixmap(":/images/resources/entities/door.png");
+    sprite = sprite.scaled(
+            TILE_SIZE, TILE_SIZE,
+            Qt::IgnoreAspectRatio,
+            Qt::SmoothTransformation);
+    door = new QGraphicsPixmapItem(sprite);
+
+    door->setPos(3*TILE_SIZE, 3*TILE_SIZE);
+
+    scene->addItem(door);
+}
+
+void GraphicalView::clearDoor(){
+    scene->removeItem(door);
+}
+
+void GraphicalView::clearPlayer(){
+    scene->removeItem(player->energyBar.get());
+    scene->removeItem(player->sprite.get());
+    scene->removeItem(player->text.get());
+}
 /// @brief Renders the player character.
 void GraphicalView::renderPlayer(){
     // Initialize the player, after this the render/update method should be called
