@@ -28,9 +28,9 @@ ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     energyBar->setBrush(brush); energyBar->setPen(pen);
 
     setPosition(prog->getXPos(), prog->getYPos());
-    sprite->setZValue(2);
-    text->setZValue(2);
-    energyBar->setZValue(2);
+    sprite->setZValue(4);
+    text->setZValue(4);
+    energyBar->setZValue(4);
 }
 
 void ProtagonistSprite::setEnergy(float value){
@@ -87,6 +87,13 @@ void ProtagonistSprite::animate(aState nextState, float time){
     });
 
     animationTimer->start(time*1000);
+}
+
+void ProtagonistSprite::setDead(int spriteOffset){
+    sprite->setPixmap(spriteSet["dead"]);
+    sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + spriteOffset);
+    text->setPlainText("");
+    animationState = DEAD;
 }
 
 void ProtagonistSprite::tint(bool poisoned){

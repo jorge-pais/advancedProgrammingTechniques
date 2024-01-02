@@ -44,7 +44,10 @@ void Settings::loadTileSet(std::string tileFile){
 void Settings::setOverlay(std::string overlayFile){
     QPixmap image(QString::fromStdString(overlayFile));
 
-    if(image.isNull()) return;
+    if(image.isNull()) {
+        qCDebug(settingsCat) << "image is null somehow?";
+        return;
+    }
 
     gView->setOverlay(image);
 

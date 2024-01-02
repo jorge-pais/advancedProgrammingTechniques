@@ -61,9 +61,11 @@ void GraphicalView::clearTiles(){
 /// @param y The y-coordinate of the tile.
 /// @param poisonLevel The intensity of the poison effect.
 void GraphicalView::poisonTile(int x, int y, int poisonLevel){
-    scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
+    QGraphicsRectItem * rect = scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
                 QPen(Qt::NoPen),
-                QBrush(QColor(255-poisonLevel,80, 80)));
+                QBrush(QColor(255-poisonLevel,80, 80, 127)));
+
+    rect->setZValue(3);
 }
 
 /// @brief Renders the entities in the game world.
@@ -181,6 +183,7 @@ void GraphicalView::pathTile(int x, int y){
                 QPen(Qt::NoPen),
                 QBrush(QColor(255, 153, 51, 127)));
 
+    rect->setZValue(3);
     path.push_back(rect);
 }
 

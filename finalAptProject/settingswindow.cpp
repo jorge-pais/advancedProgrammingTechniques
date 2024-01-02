@@ -37,7 +37,8 @@ SettingsWindow::~SettingsWindow(){
 
 void SettingsWindow::accept(){
     settings->loadTileSet(ui->lineEdit->displayText().toStdString());
-    
+    settings->setLevelFile(ui->lineEdit_2->displayText().toStdString());
+    settings->setOverlay(ui->lineEdit_3->displayText().toStdString());
     QDialog::accept();
 }
 
