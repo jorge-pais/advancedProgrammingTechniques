@@ -52,7 +52,7 @@ public:
     void clearEntities();
     void clearPlayer();
     void clearDoor();
-    void renderDoor();
+    void renderDoor(int x, int y);
 
 private:
     QGraphicsView * view;

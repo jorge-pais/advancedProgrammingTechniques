@@ -46,8 +46,7 @@ private:
     std::shared_ptr<Protagonist> protagonist;
 
     int deadEnemies;
-    int doorX;
-    int doorY;
+    std::shared_ptr<Tile> door;
 
 public:
     WorldDelegate();
@@ -66,8 +65,9 @@ public:
     void setProtagonistEnergy(float energyValue);
     std::string enemyStatus(Enemy& enemy);
     void attack(std::shared_ptr<Enemy> enemy); // maybe we won't need this due to the slot
-    void door();
-    void setDoor(int x, int y);
+    void activateDoor();
+    void addDoor();
+    std::shared_ptr<Tile> getDoor();
     void connectSlots();
 
 signals:
