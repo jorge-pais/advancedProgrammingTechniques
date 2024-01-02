@@ -13,37 +13,40 @@
 #include <QGraphicsColorizeEffect>
 #include <ctime>
 #include <iostream>
+#include <memory>
 #include <unordered_map>
 
 #include "world.h"
 #include "xenemy.h"
 
-#define TILE_SIZE 40
 #define TEXT_OFFSET 15
+#define TILE_SIZE 40
+#define DEAD_OFFSET 25
 
 class SpriteWithValue
 : public QObject{ // public inheritance !!
 public:
-    SpriteWithValue();
+   SpriteWithValue();
+   SpriteWithValue(std::shared_ptr<Protagonist> prog);
+   SpriteWithValue(std::shared_ptr<Tile> entity);
 
-    SpriteWithValue(std::shared_ptr<Protagonist> prog);
-    SpriteWithValue(std::shared_ptr<Tile> entity);
-    ~SpriteWithValue();
+   ~SpriteWithValue() = default;
 
-    void setHealth(float health);
-    void setDead();
-    void setAlive(float health);
-    virtual void setPosition(int x, int y);
-    int getX() const;
-    int getY() const;
-    QPixmap scaleSprite(QPixmap sprite);
+   void setHealth(float health);
+   void setDead(int spriteOffset = DEAD_OFFSET);
+   void setAlive(float health);
+   virtual void setPosition(int x, int y);
+   int getX() const;
+   int getY() const;
 
-    QGraphicsPixmapItem * sprite;
-    QGraphicsTextItem * text;
-    std::unordered_map<std::string, QPixmap> spriteSet = {};
+   static QPixmap scaleSprite(QPixmap sprite, bool stretch = false);
+
+   std::shared_ptr<QGraphicsPixmapItem> sprite;
+   std::shared_ptr<QGraphicsTextItem> text;
+   std::unordered_map<std::string, QPixmap> spriteSet = {};
 
 protected:
-    int x, y;
+   int x, y;
 };
 
 #endif // SPRITEWITHVALUE_H

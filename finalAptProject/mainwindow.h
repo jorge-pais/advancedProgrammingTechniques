@@ -17,17 +17,24 @@
 #include <string>
 #include <QMenu>
 #include <QToolBar>
+#include <QMessageBox>
+#include <QDirIterator>
 
 #include "worlddelegate.h"
 #include "world.h"
 #include "graphicalview.h"
 #include "world.h"
 #include "worldview.h"
+#include "settingswindow.h"
+#include "settings.h"
+
+//#include "settingsdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class Settings;
 class GraphicalView;
 class WorldView;
 class WorldDelegate;
@@ -40,6 +47,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 signals:
     void mainWindowEventSignal(QKeyEvent *event);
 
@@ -49,22 +57,24 @@ private slots:
 public slots:
     void openSettings();
     void openHelp();
+    void newGame();
+    void toggleOverlay();
 
 private:
     Ui::MainWindow *ui;
 
     std::shared_ptr<World> world;
+    std::shared_ptr<World> otherWorld;
     std::shared_ptr<WorldView> wView;
     std::shared_ptr<WorldDelegate> worldDelegate;
     std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
+    std::shared_ptr<Settings> settings;
 
     void toolbarConfig();
+    void setupViews();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
-    /* #ifndef QT_NO_CONTEXTMENU
-        void contextMenuEvent(QContextMenuEvent *event) override;
-    #endif //QT_NO_CONTEXTMENU */
 };
 #endif // MAINWINDOW_H

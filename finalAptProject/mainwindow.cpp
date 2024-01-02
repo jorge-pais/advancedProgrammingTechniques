@@ -9,23 +9,26 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow),
     world(std::make_shared<World>()),
+    otherWorld(std::make_shared<World>()),
     wView(std::make_shared<WorldView>(this)),
-    worldDelegate(std::make_shared<WorldDelegate>(wView, world))
-////////////////////////////////////////////////////////////////
+    worldDelegate(std::make_shared<WorldDelegate>(wView, world, otherWorld))
 {
     ui->setupUi(this);
     srand(time(0));
 
     wView->setDelegate(worldDelegate);
 
+    // Create the world from the file, this was to be
     QString worldPath{":/images/resources/world_images/worldmap.png"};
     world->createWorld(worldPath, 5, 6, 0.0);
+    //QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
+    //otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();
 
     // Initialize GraphicalView
-    QGraphicsScene * scene = new QGraphicsScene();
+    QGraphicsScene* scene = new QGraphicsScene();
     gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, wView);
 
     //Initialize TextView
@@ -45,10 +48,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit->setCompleter(completer);
 
     //submit command
-    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::submitCommand);
+    connect(ui->pushButton, &QPushButton::clicked,   this, &MainWindow::submitCommand);
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
     //connect slots and setup
+    worldDelegate->addDoor();
     worldDelegate->connectSlots();
     wView->connectSlots();
     wView->setViews(gView, tView);
@@ -57,10 +61,13 @@ MainWindow::MainWindow(QWidget *parent)
     gView->renderTiles();
     gView->renderEntities();
     gView->renderPlayer();
+    gView->renderDoor(worldDelegate->getDoor()->getXPos(), worldDelegate->getDoor()->getYPos());
 
     tView->renderTiles();
 
     toolbarConfig();
+
+    settings = std::make_shared<Settings>(gView);
 }
 
 void MainWindow::submitCommand(){
@@ -74,12 +81,13 @@ void MainWindow::submitCommand(){
     ui->lineEdit->clear();
 }
 
-/// this part signals the view and gives it the event,
-/// the view then extracts what this event means and gives the data to the delegate,
-/// the delegate then applies game logic and sends data to model
-/// model then sends new game values to view to display
-/// view then gives these values to text or graphical view to render in appropriate way
 void MainWindow::keyPressEvent(QKeyEvent *event){
+    /// this part signals the view and gives it the event,
+    /// the view then extracts what this event means and gives the data to the delegate,
+    /// the delegate then applies game logic and sends data to model
+    /// model then sends new game values to view to display
+    /// view then gives these values to text or graphical view to render in appropriate way
+
     emit mainWindowEventSignal(event);
 }
 
@@ -88,6 +96,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 //////////////////////////
 void MainWindow::toolbarConfig(){
     QToolBar *toolbar = this->addToolBar("My Toolbar");
+
+    QAction *newGameAction = new QAction("New game", this);
+    connect(newGameAction, &QAction::triggered, this, &MainWindow::newGame);
+    toolbar->addAction(newGameAction);
+
+    QAction *overlayAction = new QAction("Overlay", this);
+    overlayAction->setCheckable(true);
+    connect(overlayAction, &QAction::triggered, this, &MainWindow::toggleOverlay);
+    toolbar->addAction(overlayAction);
 
     QAction *settingsAction = new QAction("Settings", this);
     connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
@@ -100,12 +117,30 @@ void MainWindow::toolbarConfig(){
     //contextMenu.exec(event->globalPos());
 }
 
+void MainWindow::newGame(){
+    qCDebug(mainWindowCat) << "newGame()";
+
+    // for now just list the maps, in order to load them to the new game window prompt
+    QDirIterator it(":/images/resources/world_images", QDirIterator::Subdirectories);
+    while(it.hasNext()){
+        qCDebug(mainWindowCat) << it.next();
+    }
+}
+
+void MainWindow::toggleOverlay(){
+    QAction *action = qobject_cast<QAction *>(sender());
+    if(action)
+        gView->toggleOverlay(action->isChecked());
+}
+
 void MainWindow::openSettings(){
-    std::cout << "openSettings() man!" << std::endl;
+    SettingsWindow settingsWindow(nullptr, settings);
+    settingsWindow.setModal(true); // set window modality
+    settingsWindow.exec();
 }
 
 void MainWindow::openHelp(){
-    std::cout << "openHelp() man!" << std::endl;
+    qCDebug(mainWindowCat) << "openHelp() called";
 }
 
 MainWindow::~MainWindow()

@@ -13,7 +13,7 @@ std::string XEnemy::serialize(){
 
     strS << Enemy::serialize();
     for (std::shared_ptr<Enemy> enemy : alreadyRevived)
-        strS << ';' << enemy->serialize();
+        strS << ';' << enemy->getXPos() << "," << enemy->getYPos();
 
     return strS.str();
 }
