@@ -180,8 +180,16 @@ void WorldDelegate::door(){
     world.swap(otherWorld);
 
     initializeWDelegate();
-    connectSlots();
     emit newWorldLoadedSignal();
+
+    if(this->getWorldEnemies().size() != 0){
+        for(auto& enemy : this->getWorldEnemies()){ // calling here world enemies makes it such that i can't get the enemies later on in the graphics views
+            PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+            if(pEnemy){
+                QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
+            }
+        }
+    }
 
     protagonist->setPos(doorX + 1, doorY);
 }
@@ -197,7 +205,6 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     if( (dx == 0 && dy==0) || newX < 0 || newY < 0 || 
         (newX > world->getCols() - 1) || (newY > world->getRows() - 1))
         return;
-
     if(newX == doorX && newY == doorY){
         door();
     }

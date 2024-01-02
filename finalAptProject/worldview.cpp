@@ -132,13 +132,14 @@ void WorldView::positionChangedSlot(int x, int y)
 }
 
 void WorldView::newWorldLoadedSlot(){
+    disconnect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+    this->connectSlots();
     gView->clearTiles();
     gView->renderTiles();
     gView->clearEntities();
     gView->renderEntities();
     gView->clearPlayer();
     gView->renderPlayer();
-    connectSlots();
 }
 
 /// is this even connected to something other than the protagonist?
