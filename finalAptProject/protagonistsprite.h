@@ -23,7 +23,7 @@ public:
     enum aState { // for tracking animation priority
         IDLE = 0,
         MOVE = 1,
-        //DEAD = 10, // the dead state isn't part of any animation
+        DEAD = 10, // the dead state isn't part of any animation
         ATTACK = 3,
         HEAL = 2
     } animationState;
@@ -34,7 +34,9 @@ public:
     void tint(bool poisoned);
     void setPosition(int x, int y);
 
-    QGraphicsRectItem * energyBar;
+    void setDead(int spriteOffset = DEAD_OFFSET);
+
+    std::shared_ptr<QGraphicsRectItem> energyBar;
 
 protected:
     QTimer* animationTimer = nullptr;

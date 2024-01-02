@@ -18,19 +18,19 @@ ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     spriteSet["heal"] = QPixmap(":/images/resources/entities/tux5.png");
     spriteSet["heal"] = scaleSprite(spriteSet["heal"]);
 
-    sprite = new QGraphicsPixmapItem(spriteSet["alive"]); 
+    sprite = std::make_shared<QGraphicsPixmapItem>(spriteSet["alive"]);
     animationState = IDLE;
     
-    text = new QGraphicsTextItem(QString::number(prog->getHealth()));
+    text = std::make_shared<QGraphicsTextItem>(QString::number(prog->getHealth()));
     
-    energyBar = new QGraphicsRectItem(0, 0, TILE_SIZE/5, TILE_SIZE);
+    energyBar = std::make_shared<QGraphicsRectItem>(0, 0, TILE_SIZE/5, TILE_SIZE);
     QBrush brush(Qt::yellow); QPen pen(Qt::NoPen);
     energyBar->setBrush(brush); energyBar->setPen(pen);
 
     setPosition(prog->getXPos(), prog->getYPos());
-    sprite->setZValue(2);
-    text->setZValue(2);
-    energyBar->setZValue(2);
+    sprite->setZValue(4);
+    text->setZValue(4);
+    energyBar->setZValue(4);
 }
 
 void ProtagonistSprite::setEnergy(float value){
@@ -39,12 +39,12 @@ void ProtagonistSprite::setEnergy(float value){
 }
 
 void ProtagonistSprite::setPosition(int x, int y){
-    if(sprite)
-        sprite->setPos(x*TILE_SIZE, y*TILE_SIZE);
-    if(text)
-        text->setPos(x*TILE_SIZE, y*TILE_SIZE - TEXT_OFFSET);
-    if(energyBar)
-        energyBar->setPos(x*TILE_SIZE - ENERGY_OFFSET, y*TILE_SIZE + (TILE_SIZE-energyBar->rect().height()));
+    //if(sprite)
+    sprite->setPos(x*TILE_SIZE, y*TILE_SIZE);
+    //if(text)
+    text->setPos(x*TILE_SIZE, y*TILE_SIZE - TEXT_OFFSET);
+    //if(energyBar)
+    energyBar->setPos(x*TILE_SIZE - ENERGY_OFFSET, y*TILE_SIZE + (TILE_SIZE-energyBar->rect().height()));
 
     this->x = x; this->y = y;
 };
@@ -55,10 +55,10 @@ void ProtagonistSprite::animate(aState nextState, float time){
     if(nextState < animationState)
         return;
     
-    if(animationTimer != nullptr)
-        animationTimer->stop();
-    else
+    if(animationTimer == nullptr)
         animationTimer = new QTimer(this);
+    else
+        animationTimer->stop();
     
     animationState = nextState;
 
@@ -87,6 +87,12 @@ void ProtagonistSprite::animate(aState nextState, float time){
     });
 
     animationTimer->start(time*1000);
+}
+
+void ProtagonistSprite::setDead(int spriteOffset){
+    SpriteWithValue::setDead(spriteOffset);
+    energyBar->setRect(0, 0, 0, 0);
+    animationState = DEAD;
 }
 
 void ProtagonistSprite::tint(bool poisoned){

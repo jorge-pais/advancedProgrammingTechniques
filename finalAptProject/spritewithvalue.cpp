@@ -4,7 +4,7 @@ SpriteWithValue::SpriteWithValue() : sprite(nullptr), text(nullptr){}
 
 SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
 
-    text = new QGraphicsTextItem(QString::number(entity->getValue()));
+    text = std::make_shared<QGraphicsTextItem>(QString::number(entity->getValue()));
 
     // If we could modify the world classes, this would be more efficient,
     // as a tile method could be implemented and then overloaded by each entity class
@@ -30,21 +30,15 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
 
     bool dead = aux ? aux->getDefeated() : !(entity.get()->getValue());
 
-    sprite = new QGraphicsPixmapItem(dead ? spriteSet["dead"] : spriteSet["alive"]);
+    sprite = std::make_shared<QGraphicsPixmapItem>(dead ? spriteSet["dead"] : spriteSet["alive"]);
 
     setPosition(entity->getXPos(), entity->getYPos());
-    sprite->setZValue(2);
-    text->setZValue(2);
+    sprite->setZValue(4);
+    text->setZValue(4);
 }
 
 int SpriteWithValue::getX() const { return x; }
 int SpriteWithValue::getY() const { return y; }
-
-/// TODO remove this and every other dumb pointer
-SpriteWithValue::~SpriteWithValue(){
-    delete sprite;
-    delete text;
-}
 
 void SpriteWithValue::setPosition(int x, int y){
     if(sprite)
@@ -64,7 +58,7 @@ void SpriteWithValue::setDead(int spriteOffset){
 void SpriteWithValue::setAlive(float health){
     sprite->setPixmap(spriteSet["alive"]);
     text->setPlainText(QString::number(health));
-    text->setZValue(2);
+    text->setZValue(4);
 }
 
 void SpriteWithValue::setHealth(float health){

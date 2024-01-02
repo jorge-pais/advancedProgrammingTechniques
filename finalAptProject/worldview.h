@@ -19,10 +19,12 @@ class WorldView : public QObject
     Q_OBJECT
 private:
     std::shared_ptr<WorldDelegate> delegate = nullptr;
-    std::shared_ptr<GraphicalView> gView;
+    //std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
 
 public:
+    std::shared_ptr<GraphicalView> gView;
+
     //WorldView();
     WorldView(MainWindow * mainWindow);
     //WorldView(WorldDelegate& delegate);

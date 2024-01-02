@@ -13,6 +13,7 @@
 #include <QGraphicsColorizeEffect>
 #include <ctime>
 #include <iostream>
+#include <memory>
 #include <unordered_map>
 
 #include "world.h"
@@ -25,27 +26,27 @@
 class SpriteWithValue
 : public QObject{ // public inheritance !!
 public:
-    SpriteWithValue();
+   SpriteWithValue();
+   SpriteWithValue(std::shared_ptr<Protagonist> prog);
+   SpriteWithValue(std::shared_ptr<Tile> entity);
 
-    SpriteWithValue(std::shared_ptr<Protagonist> prog);
-    SpriteWithValue(std::shared_ptr<Tile> entity);
-    ~SpriteWithValue();
+   ~SpriteWithValue() = default;
 
-    void setHealth(float health);
-    void setDead(int spriteOffset = DEAD_OFFSET);
-    void setAlive(float health);
-    virtual void setPosition(int x, int y);
-    int getX() const;
-    int getY() const;
+   void setHealth(float health);
+   void setDead(int spriteOffset = DEAD_OFFSET);
+   void setAlive(float health);
+   virtual void setPosition(int x, int y);
+   int getX() const;
+   int getY() const;
 
-    static QPixmap scaleSprite(QPixmap sprite, bool stretch = false);
+   static QPixmap scaleSprite(QPixmap sprite, bool stretch = false);
 
-    QGraphicsPixmapItem * sprite;
-    QGraphicsTextItem * text;
-    std::unordered_map<std::string, QPixmap> spriteSet = {};
+   std::shared_ptr<QGraphicsPixmapItem> sprite;
+   std::shared_ptr<QGraphicsTextItem> text;
+   std::unordered_map<std::string, QPixmap> spriteSet = {};
 
 protected:
-    int x, y;
+   int x, y;
 };
 
 #endif // SPRITEWITHVALUE_H
