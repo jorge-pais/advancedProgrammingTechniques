@@ -332,3 +332,26 @@ int WorldDelegate::singleMove(int x, int y){
 
     return 0;
 }
+
+std::string WorldDelegate::serialize(){
+    std::stringstream out;
+
+    out << "/----TILES----/\n";
+    for(auto tile : tiles) 
+        out << tile->serialize() << '\n';
+
+    out << "/-PROTAGONIST-/\n";
+    out << protagonist->serialize() << '\n';
+
+    out << "/---ENEMIES---/\n";
+    for(auto enemy : enemies)
+        if(!dynamic_cast<XEnemy*>(enemy.get())) // not XEnemy
+            out << enemy->serialize() << '\n';
+
+    out << "/--XENEMIES---/\n";
+    for(auto enemy : enemies)
+        if(dynamic_cast<XEnemy*>(enemy.get()))
+            out << enemy->serialize() << '\n';
+
+    return out.str();
+}

@@ -71,6 +71,8 @@ public:
     void addDoor();
     std::shared_ptr<Tile> getDoor();
     void connectSlots();
+    
+    std::string serialize();
 
 signals:
     void poisonSignal();

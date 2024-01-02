@@ -58,6 +58,7 @@ public slots:
     void openSettings();
     void openHelp();
     void newGame();
+    void toggleOverlay();
 
 private:
     Ui::MainWindow *ui;
@@ -71,6 +72,7 @@ private:
     std::shared_ptr<Settings> settings;
 
     void toolbarConfig();
+    void setupViews();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

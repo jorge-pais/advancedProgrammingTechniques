@@ -46,9 +46,12 @@ public:
     void centerView();
     void poisonTile(int x, int y, int poisonLevel);
     void zoom(bool in, float factor = SCALE_FACTOR);
-    void setOverlay(QPixmap image);
     QPixmap getTile(float value);
     void addTileSet(float low, float high, QPixmap tile);
+    
+    void setOverlay(QPixmap image);
+    void toggleOverlay(bool v);
+
     void clearTileSet();
     void clearTiles();
     void clearEntities();
@@ -64,6 +67,7 @@ private:
     QGraphicsScene * scene;
     std::shared_ptr<WorldView> worldView;
     QGraphicsPixmapItem * overlay = nullptr;
+    bool overlayOn = false;
     QGraphicsPixmapItem * door;
 
     std::vector<QGraphicsItem *> tiles;

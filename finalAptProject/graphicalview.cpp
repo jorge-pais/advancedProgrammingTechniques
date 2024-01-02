@@ -206,8 +206,18 @@ void GraphicalView::setOverlay(QPixmap image){
 
     overlay = new QGraphicsPixmapItem(img);
     overlay->setZValue(2); //above the tiles, below the entity sprites
+    
+    if(overlayOn)
+        scene->addItem(overlay);
+}
 
-    scene->addItem(overlay);
+void GraphicalView::toggleOverlay(bool v){
+    qCDebug(graphicalViewCat) << "overlay is: " << v;
+    overlayOn = v;
+    if(overlayOn)
+        scene->addItem(overlay);
+    else
+        scene->removeItem(overlay);
 }
 
 void GraphicalView::pathTile(int x, int y){
@@ -221,7 +231,6 @@ void GraphicalView::pathTile(int x, int y){
     path.push_back(rect);
 }
 
-/// @brief 
 void GraphicalView::clearPath(){
     for(auto tile: path)
         scene->removeItem(tile);
