@@ -173,9 +173,6 @@ void GraphicalView::setOverlay(QPixmap image){
     scene->addItem(overlay);
 }
 
-/// @brief 
-/// @param x 
-/// @param y 
 void GraphicalView::pathTile(int x, int y){
     QGraphicsItem* rect = scene->addRect(
                 (x+0.2)*TILE_SIZE, (y+0.2)*TILE_SIZE, 

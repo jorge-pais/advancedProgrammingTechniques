@@ -54,7 +54,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(false);
         return;
-        
+    // WASD movement 
     case Qt::Key_Up:
     case Qt::Key_W:
         dy--;
@@ -76,6 +76,8 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     }
     //handle the events and then emit these signals with appropriate parameters
     emit playerMovedSignal(dx, dy);
+
+    gView->clearPath();
 }
 
 void WorldView::attackNearestEnemy(){

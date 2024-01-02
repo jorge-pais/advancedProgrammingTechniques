@@ -90,9 +90,8 @@ void ProtagonistSprite::animate(aState nextState, float time){
 }
 
 void ProtagonistSprite::setDead(int spriteOffset){
-    sprite->setPixmap(spriteSet["dead"]);
-    sprite->setPos(x*TILE_SIZE, y*TILE_SIZE + spriteOffset);
-    text->setPlainText("");
+    SpriteWithValue::setDead(spriteOffset);
+    energyBar->setRect(0, 0, 0, 0);
     animationState = DEAD;
 }
 
