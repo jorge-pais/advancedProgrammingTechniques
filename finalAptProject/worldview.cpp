@@ -140,6 +140,7 @@ void WorldView::newWorldLoadedSlot(){
     gView->renderEntities();
     gView->clearPlayer();
     gView->renderPlayer();
+    gView->clearDoor();
 }
 
 /// is this even connected to something other than the protagonist?

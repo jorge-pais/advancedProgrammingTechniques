@@ -51,12 +51,15 @@ public:
     void clearTiles();
     void clearEntities();
     void clearPlayer();
+    void clearDoor();
+    void renderDoor();
 
 private:
     QGraphicsView * view;
     QGraphicsScene * scene;
     std::shared_ptr<WorldView> worldView;
     QGraphicsPixmapItem * overlay = nullptr;
+    QGraphicsPixmapItem * door;
 
     std::vector<QGraphicsItem *> tiles;
 

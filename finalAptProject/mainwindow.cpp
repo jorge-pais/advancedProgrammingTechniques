@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     gView->renderTiles();
     gView->renderEntities();
     gView->renderPlayer();
+    gView->renderDoor();
 
     tView->renderTiles();
 

@@ -95,6 +95,23 @@ void GraphicalView::renderEntities(){
     }
 }
 
+void GraphicalView::renderDoor(){
+    auto sprite = QPixmap(":/images/resources/entities/door.png");
+    sprite = sprite.scaled(
+            TILE_SIZE, TILE_SIZE,
+            Qt::IgnoreAspectRatio,
+            Qt::SmoothTransformation);
+    door = new QGraphicsPixmapItem(sprite);
+
+    door->setPos(3*TILE_SIZE, 3*TILE_SIZE);
+
+    scene->addItem(door);
+}
+
+void GraphicalView::clearDoor(){
+    scene->removeItem(door);
+}
+
 void GraphicalView::clearPlayer(){
     scene->removeItem(player->energyBar);
     scene->removeItem(player->sprite);
