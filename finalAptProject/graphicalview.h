@@ -54,14 +54,10 @@ public:
     void clearEntities();
     void clearPlayer();
     void clearDoor();
-<<<<<<< HEAD
     void renderDoor(int x, int y);
-=======
-    void renderDoor();
     
     void pathTile(int x, int y);
     void clearPath();
->>>>>>> cb32035f6a335018a4ef1b23a60061a61ed07b90
 
 private:
     QGraphicsView * view;
