@@ -14,6 +14,8 @@ TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<
     textView->setTextCursor(cursor);
 
     previousHealth = view->getDelegate()->getWorldProtagonist()->getHealth();
+    colorResetTimer = new QTimer(this);
+    connect(colorResetTimer, &QTimer::timeout, this, &TextView::resetColor);
 }
 
 void TextView::renderTiles() {
@@ -57,6 +59,40 @@ void TextView::renderTiles() {
         textView->append(line);
         textView->append(QString(line.size(), '-'));
     }
+
+    /*
+    for (const auto& row : worldView) {
+        QString line;
+        for (const auto& tile : row) {
+            if(tile == 'P'){
+                if (currentHealth < previousHealth) {
+                    line += "<font color='red'> P </font> ";
+                    resetColorAfterDelay();
+                    previousHealth = currentHealth;
+                }
+                else if(currentHealth > previousHealth){
+                    line += "<font color='green'> P </font> ";
+                    resetColorAfterDelay();
+                    previousHealth = currentHealth;
+                }
+                else {
+                     line += QString(tile);
+                }
+            }
+            else{
+              line += tile;
+            }
+            //line += " | "; // Add grid lines
+        }
+        //htmlContent += line + "<br>";
+        // Append the line to the text view
+        //htmlContent += "</pre>";
+        //textView->setHtml(htmlContent);
+        QString formattedLine = "<font color='black'>" + line + "</font>";
+        textView->append(line);
+        textView->append(QString(line.size(), '-'));
+    }
+    */
     this->centerPlayer();
 }
 
@@ -80,6 +116,12 @@ void TextView::centerPlayer(){
         int newHValue = rect.x() - (textView->viewport()->width() / 2);
         hbar->setValue(newHValue + hbar->pageStep() / 2);
     }
+}
+
+void TextView::resetColorAfterDelay() {
+    colorResetTimer->stop();
+    colorResetTimer->start(2000); //ms
+    qCDebug(textViewCat) << "resetColorAfterDelay() is called";
 }
 
 void TextView::resetColor() {

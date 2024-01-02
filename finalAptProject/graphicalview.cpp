@@ -61,11 +61,14 @@ void GraphicalView::clearEntities(){
         scene->removeItem(entity->sprite.get());
         scene->removeItem(entity->text.get());
     }
+
     for(auto pack : healthPacks){
         scene->removeItem(pack->sprite.get());
         scene->removeItem(pack->text.get());
     }
+
     entities.clear();
+    healthPacks.clear();
 }
 
 /// @brief Applies a "poison" effect to a tile.
