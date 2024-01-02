@@ -67,6 +67,7 @@ private:
     QGraphicsPixmapItem * door;
 
     std::vector<QGraphicsItem *> tiles;
+    std::vector<QGraphicsItem *> poisonTiles;
 
     // this might have been a convoluted way to do this, since we 
     // could have simply stored the lowest value in the range. oh well.

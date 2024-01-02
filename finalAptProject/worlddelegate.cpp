@@ -212,6 +212,7 @@ void WorldDelegate::addPoisonTile(int x, int y, float value){
 void WorldDelegate::activateDoor(){
     world.swap(otherWorld);
 
+    poisonTiles.clear();
     initializeWDelegate();
     emit newWorldLoadedSignal();
 

@@ -53,7 +53,10 @@ void GraphicalView::renderTiles(bool useTile){
 void GraphicalView::clearTiles(){
     for(auto tile : tiles)
         scene->removeItem(tile);
-    tiles.clear(); 
+    tiles.clear();
+    for(auto tile : poisonTiles)
+        scene->removeItem(tile);
+    poisonTiles.clear();
 }
 
 void GraphicalView::clearEntities(){
@@ -80,6 +83,7 @@ void GraphicalView::poisonTile(int x, int y, int poisonLevel){
                 QPen(Qt::NoPen),
                 QBrush(QColor(255-poisonLevel,80, 80, 127)));
 
+    poisonTiles.push_back(rect);
     rect->setZValue(3);
 }
 
