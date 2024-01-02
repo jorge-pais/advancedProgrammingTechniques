@@ -14,9 +14,9 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
     // Create the scene
     graphicsView->setScene(scene);
 
-    /// Tile testing
-    addTileSet(0, 0.5, QPixmap("/home/jorgep/Documents/brownBrick.png"));
-    addTileSet(0.5, 1.0, QPixmap("/home/jorgep/Documents/blueStone.png"));
+    // Tile testing
+    //addTileSet(0, 0.5, QPixmap("/home/jorgep/Documents/brownBrick.png"));
+    //addTileSet(0.5, 1.0, QPixmap("/home/jorgep/Documents/blueStone.png"));
 }
 
 /// @brief Renders the tiles of the game world.
@@ -32,7 +32,7 @@ void GraphicalView::renderTiles(bool useTile){
         y = tilePtr->getYPos();
         value = tilePtr->getValue();
 
-        if(useTile){
+        if(useTile){ // hopefully the compiler optimizes this
             auto pixTile = scene->addPixmap(getTile(value));
             pixTile->setPos(x*TILE_SIZE, y*TILE_SIZE);
             tiles.push_back(pixTile);
@@ -69,9 +69,11 @@ void GraphicalView::clearEntities(){
 /// @param y The y-coordinate of the tile.
 /// @param poisonLevel The intensity of the poison effect.
 void GraphicalView::poisonTile(int x, int y, int poisonLevel){
-    scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
-               QPen(Qt::NoPen),
-               QBrush(QColor(255-poisonLevel,80, 80)));
+    QGraphicsRectItem * rect = scene->addRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE,
+                QPen(Qt::NoPen),
+                QBrush(QColor(255-poisonLevel,80, 80, 127)));
+
+    rect->setZValue(3);
 }
 
 /// @brief Renders the entities in the game world.
@@ -82,16 +84,16 @@ void GraphicalView::renderEntities(){
         //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
         SpriteWithValue* a = new SpriteWithValue(enemyPtr);
         entities.push_back(a);
-        scene->addItem(a->sprite);
-        scene->addItem(a->text);
+        scene->addItem(a->sprite.get());
+        scene->addItem(a->text.get());
     }
 
     for(const auto & healthPtr : worldView->getDelegate()->getWorldHealthPacks()){
         //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
         SpriteWithValue* a = new SpriteWithValue(healthPtr);
-        entities.push_back(a);
-        scene->addItem(a->sprite);
-        scene->addItem(a->text);
+        healthPacks.push_back(a);
+        scene->addItem(a->sprite.get());
+        scene->addItem(a->text.get());
     }
 }
 
@@ -122,15 +124,15 @@ void GraphicalView::renderPlayer(){
     // Initialize the player, after this the render/update method should be called
     qCDebug(graphicalViewCat) << "renderPlayer() called";
     player = new ProtagonistSprite(worldView->getDelegate()->getWorldProtagonist());
-    scene->addItem(player->sprite);
-    scene->addItem(player->text);
-    scene->addItem(player->energyBar);
+    scene->addItem(player->sprite.get());
+    scene->addItem(player->text.get());
+    scene->addItem(player->energyBar.get());
 }
 
 /// @brief Centers the view on the player character.
 void GraphicalView::centerView(){
     qCDebug(graphicalViewCat) << "centerView() called";
-    this->view->centerOn(this->player->sprite);
+    this->view->centerOn(this->player->sprite.get());
 }
 
 /// @brief Zooms the view in or out.
@@ -144,7 +146,7 @@ void GraphicalView::zoom(bool in, float factor){
     centerView();
 }
 
-/// @brief Adds a tile to the tilesetThe QPixmap object representing the overlay image of the view.
+/// @brief Adds a tile to the tileset
 /// @param low The lower bound of the tile's range.
 /// @param high The upper bound of the tile's range.
 /// @param tile The QPixmap object representing the tile
@@ -165,7 +167,11 @@ void GraphicalView::addTileSet(float low, float high, QPixmap tile){
     tileSet[{low, high}] = newTile; // add the tile if successful
 }
 
-/// @brief Returns the tile corresponding to a given value.
+void GraphicalView::clearTileSet(){
+    tileSet.clear();
+}
+
+/// @brief Returns the tile from the tileset corresponding to a given value.
 /// @param value The value to be used for determining the tile.
 /// @return QPixmap object representing the tile.
 QPixmap GraphicalView::getTile(float value){
@@ -180,14 +186,36 @@ QPixmap GraphicalView::getTile(float value){
 /// @brief Sets an overlay image for the game world.
 /// @param image The QPixmap object representing the overlay image.
 void GraphicalView::setOverlay(QPixmap image){
-    /// TODO: so this overlay is pretty basic, we should probably 
-    /// do some checks regarding the overlay size and wtv
     qCDebug(graphicalViewCat) << "setOverlay() called";
+
     if(overlay) // remove the current overlay
         scene->removeItem(overlay);
+    
+    if(image.isNull()) return;
 
-    overlay = new QGraphicsPixmapItem(image);
+    int h = worldView->getDelegate()->getWorldColumns()*TILE_SIZE;
+    int w = worldView->getDelegate()->getWorldRows()*TILE_SIZE;
+    QPixmap img = image.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+    overlay = new QGraphicsPixmapItem(img);
     overlay->setZValue(2); //above the tiles, below the entity sprites
 
     scene->addItem(overlay);
+}
+
+void GraphicalView::pathTile(int x, int y){
+    QGraphicsItem* rect = scene->addRect(
+                (x+0.2)*TILE_SIZE, (y+0.2)*TILE_SIZE, 
+                0.6*TILE_SIZE, 0.6*TILE_SIZE,
+                QPen(Qt::NoPen),
+                QBrush(QColor(255, 153, 51, 127)));
+
+    rect->setZValue(3);
+    path.push_back(rect);
+}
+
+/// @brief 
+void GraphicalView::clearPath(){
+    for(auto tile: path)
+        scene->removeItem(tile);
 }

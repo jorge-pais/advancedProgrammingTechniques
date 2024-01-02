@@ -46,15 +46,15 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
 
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
-    case Qt::Key_Plus:  // Ctrl + +
+    case Qt::Key_Plus:  // Ctrl +
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(true);
         return;
-    case Qt::Key_Minus: // Ctrl - -
+    case Qt::Key_Minus: // Ctrl -
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(false);
         return;
-        
+    // WASD movement 
     case Qt::Key_Up:
     case Qt::Key_W:
         dy--;
@@ -76,6 +76,8 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     }
     //handle the events and then emit these signals with appropriate parameters
     emit playerMovedSignal(dx, dy);
+
+    gView->clearPath();
 }
 
 void WorldView::attackNearestEnemy(){
@@ -152,8 +154,8 @@ void WorldView::protagonistHealthChangedSlot(int h)
 
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
-        if(pack->getValue() == 0){
-            for(auto& healthPack : gView->entities){
+        if(pack->getValue() == 0 && pack->getXPos() == delegate->getWorldProtagonist()->getXPos() && pack->getYPos() == delegate->getWorldProtagonist()->getYPos()){
+            for(auto& healthPack : gView->healthPacks){
                 if(healthPack->getX() == pack->getXPos() && healthPack->getY() == pack->getYPos()){
                     healthPack->setDead();
                     gView->player->animate(ProtagonistSprite::HEAL, 0.50);
@@ -179,7 +181,7 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     }
 }
 
-/// Only for graphical view as of now
+/// TODO: Only for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
@@ -195,11 +197,11 @@ void WorldView::enemyDeadSlot()
     for(auto& worldEnemy : worldEnemies){
         for(auto& enemy : gView->entities){
             if(enemy->getX() == worldEnemy->getXPos() && enemy->getY() == worldEnemy->getYPos() && worldEnemy->getDefeated()){
+                // show the enemy dying on screen
                 enemy->setDead();
             }
         }
     }
-    // show the enemy dying on screen
 
     // protagonist animation
     gView->player->animate(ProtagonistSprite::ATTACK, 0.4);
