@@ -55,10 +55,10 @@ void ProtagonistSprite::animate(aState nextState, float time){
     if(nextState < animationState)
         return;
     
-    if(animationTimer != nullptr)
-        animationTimer->stop();
-    else
+    if(animationTimer == nullptr)
         animationTimer = new QTimer(this);
+    else
+        animationTimer->stop();
     
     animationState = nextState;
 

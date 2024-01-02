@@ -49,6 +49,7 @@ public:
     void setOverlay(QPixmap image);
     QPixmap getTile(float value);
     void addTileSet(float low, float high, QPixmap tile);
+    void clearTileSet();
     void clearTiles();
     
     void pathTile(int x, int y);

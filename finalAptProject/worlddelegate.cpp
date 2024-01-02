@@ -190,8 +190,6 @@ void WorldDelegate::movedSlot(int dx, int dy) {
 /// TODO: there could be some timing function to move the protagonist
 /// step by step
 void WorldDelegate::gotoSlot(int newX, int newY){
-    /// idk why, but the command "goto 0 0", isn't working
-    /// while debugging, it simply returns an empty path 
     qCDebug(worldDelegateCat) << "gotoSlot() called";
 
     std::vector<Node> nodes;
@@ -257,9 +255,13 @@ int WorldDelegate::singleMove(int x, int y){
     for(const auto& enemy : enemies){
         if(enemy->getXPos() == x && enemy->getYPos() == y && !enemy->getDefeated()){
             attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
-            return 1; // stop pathing
+            return 1; // flag to stop path
         }
     }
+
+    // Move the protagonist and update the energy
+    setProtagonistPosition(x, y);
+    setProtagonistEnergy(protagonist->getEnergy() - energyCost);
 
     // Check if there's a health pack on the path
     for(const auto& pack : healthPacks){
@@ -269,9 +271,6 @@ int WorldDelegate::singleMove(int x, int y){
             setProtagonistHealth(protagonist->getHealth() + plusHealth);
         }
     }
-    // Move the protagonist and update the energy
-    setProtagonistPosition(x, y);
-    setProtagonistEnergy(protagonist->getEnergy() - energyCost);
 
     return 0;
 }

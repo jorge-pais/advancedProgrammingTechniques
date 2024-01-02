@@ -26,6 +26,7 @@
 #include "world.h"
 #include "worldview.h"
 #include "settingswindow.h"
+#include "settings.h"
 
 //#include "settingsdialog.h"
 
@@ -33,6 +34,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class Settings;
 class GraphicalView;
 class WorldView;
 class WorldDelegate;
@@ -65,6 +67,7 @@ private:
     std::shared_ptr<WorldDelegate> worldDelegate;
     std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
+    std::shared_ptr<Settings> settings;
 
     void toolbarConfig();
 

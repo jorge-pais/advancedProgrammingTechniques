@@ -13,6 +13,7 @@
 #include <QGraphicsColorizeEffect>
 #include <ctime>
 #include <iostream>
+#include <memory>
 #include <unordered_map>
 
 #include "world.h"
@@ -22,15 +23,13 @@
 #define TILE_SIZE 40
 #define DEAD_OFFSET 25
 
-#include <memory>
-
 class SpriteWithValue
 : public QObject{ // public inheritance !!
 public:
    SpriteWithValue();
    SpriteWithValue(std::shared_ptr<Protagonist> prog);
    SpriteWithValue(std::shared_ptr<Tile> entity);
-   
+
    ~SpriteWithValue() = default;
 
    void setHealth(float health);

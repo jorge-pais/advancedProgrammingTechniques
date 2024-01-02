@@ -32,7 +32,7 @@ void GraphicalView::renderTiles(bool useTile){
         y = tilePtr->getYPos();
         value = tilePtr->getValue();
 
-        if(useTile){
+        if(useTile){ // hopefully the compiler optimizes this
             auto pixTile = scene->addPixmap(getTile(value));
             pixTile->setPos(x*TILE_SIZE, y*TILE_SIZE);
             tiles.push_back(pixTile);
@@ -135,6 +135,10 @@ void GraphicalView::addTileSet(float low, float high, QPixmap tile){
     tileSet[{low, high}] = newTile; // add the tile if successful
 }
 
+void GraphicalView::clearTileSet(){
+    tileSet.clear();
+}
+
 /// @brief Returns the tile from the tileset corresponding to a given value.
 /// @param value The value to be used for determining the tile.
 /// @return QPixmap object representing the tile.
@@ -167,16 +171,20 @@ void GraphicalView::setOverlay(QPixmap image){
     scene->addItem(overlay);
 }
 
+/// @brief 
+/// @param x 
+/// @param y 
 void GraphicalView::pathTile(int x, int y){
     QGraphicsItem* rect = scene->addRect(
                 (x+0.2)*TILE_SIZE, (y+0.2)*TILE_SIZE, 
                 0.6*TILE_SIZE, 0.6*TILE_SIZE,
                 QPen(Qt::NoPen),
-                QBrush(QColor(255, 153, 51)));
+                QBrush(QColor(255, 153, 51, 127)));
 
     path.push_back(rect);
-}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+}
 
+/// @brief 
 void GraphicalView::clearPath(){
     for(auto tile: path)
         scene->removeItem(tile);

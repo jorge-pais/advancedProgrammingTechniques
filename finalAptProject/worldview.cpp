@@ -140,7 +140,7 @@ void WorldView::protagonistHealthChangedSlot(int h)
 
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
-        if(pack->getValue() == 0){
+        if(pack->getValue() == 0 && pack->getXPos() == delegate->getWorldProtagonist()->getXPos() && pack->getYPos() == delegate->getWorldProtagonist()->getYPos()){
             for(auto& healthPack : gView->healthPacks){
                 if(healthPack->getX() == pack->getXPos() && healthPack->getY() == pack->getYPos()){
                     healthPack->setDead();

@@ -60,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent)
     tView->renderTiles();
 
     toolbarConfig();
+
+    settings = std::make_shared<Settings>(gView);
 }
 
 void MainWindow::submitCommand(){
@@ -114,7 +116,7 @@ void MainWindow::newGame(){
 }
 
 void MainWindow::openSettings(){
-    SettingsWindow settingsWindow;
+    SettingsWindow settingsWindow(nullptr, settings);
     settingsWindow.setModal(true); // set window modality
     settingsWindow.exec();
 }
