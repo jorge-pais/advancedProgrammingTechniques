@@ -46,15 +46,15 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
 
     /// TODO Figure out why the arrow keys aren't working
     switch(event->key()){
-    case Qt::Key_Plus:  // Ctrl + +
+    case Qt::Key_Plus:  // Ctrl +
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(true);
         return;
-    case Qt::Key_Minus: // Ctrl + +
+    case Qt::Key_Minus: // Ctrl -
         if(event->modifiers() & Qt::ControlModifier)
             gView->zoom(false);
         return;
-        
+    // WASD movement 
     case Qt::Key_Up:
     case Qt::Key_W:
         dy--;
@@ -76,6 +76,8 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     }
     //handle the events and then emit these signals with appropriate parameters
     emit playerMovedSignal(dx, dy);
+
+    gView->clearPath();
 }
 
 void WorldView::attackNearestEnemy(){
@@ -104,7 +106,8 @@ void WorldView::poisonLevelUpdatedSlot(int value)
                         if( abs(i) + abs(j) == difference -1){
                             int poisonX = pEnemy->getXPos() + i;
                             int poisonY = pEnemy->getYPos() + j;
-                            if(poisonX < 0 || poisonY < 0 || (poisonX > this->delegate->getWorldColumns() - 1) || (poisonY > this->delegate->getWorldRows() - 1)){}
+                            if(poisonX < 0 || poisonY < 0 || (poisonX > this->delegate->getWorldColumns() - 1) || (poisonY > this->delegate->getWorldRows() - 1))
+                            {} // change the condition
                             else{
                                 this->gView->poisonTile(poisonX, poisonY, value);
                                 this->delegate->addPoisonTile(poisonX, poisonY, value);
@@ -116,14 +119,13 @@ void WorldView::poisonLevelUpdatedSlot(int value)
         }
     }
     qCDebug(worldViewCat) << "poisonLevelUpdatedSlot() called";
-    // show the poision on screen
 }
 
 void WorldView::positionChangedSlot(int x, int y)
 {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
-    gView->player->animate(gView->player->spriteSet["move"], gView->player->spriteSet["alive"], 0.1);
+    gView->player->animate(ProtagonistSprite::MOVE);
     gView->player->setPosition(x, y);
     gView->centerView();
 
@@ -131,24 +133,40 @@ void WorldView::positionChangedSlot(int x, int y)
     tView->renderTiles();
 }
 
+void WorldView::newWorldLoadedSlot(){
+    disconnect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+    this->connectSlots();
+    
+    gView->clearTiles();
+    gView->renderTiles();
+    gView->clearEntities();
+    gView->renderEntities();
+    gView->clearPlayer();
+    gView->renderPlayer();
+    gView->clearDoor();
+}
+
 /// is this even connected to something other than the protagonist?
 /// there is a pretty similar loop in world delegate
 void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
-    gView->player->setHealth(h);
+    gView->player->setHealth(h <= 0 ? 0 : h);
+
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
-        if(pack->getValue() == 0){
-            for(auto& healthPack : gView->entities){
+        if(pack->getValue() == 0 && pack->getXPos() == delegate->getWorldProtagonist()->getXPos() && pack->getYPos() == delegate->getWorldProtagonist()->getYPos()){
+            for(auto& healthPack : gView->healthPacks){
                 if(healthPack->getX() == pack->getXPos() && healthPack->getY() == pack->getYPos()){
                     healthPack->setDead();
+                    gView->player->animate(ProtagonistSprite::HEAL, 0.50);
                 }
             }
         }
     }
-    //tView->protagonist->setHealth(h);
-    // show the health bar changing on screen
+
+    if(h <= 0)
+        deathScreen();
 }
 
 void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
@@ -164,7 +182,7 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     }
 }
 
-/// Only for graphical view as of now
+/// TODO: Only for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
@@ -180,13 +198,39 @@ void WorldView::enemyDeadSlot()
     for(auto& worldEnemy : worldEnemies){
         for(auto& enemy : gView->entities){
             if(enemy->getX() == worldEnemy->getXPos() && enemy->getY() == worldEnemy->getYPos() && worldEnemy->getDefeated()){
+                // show the enemy dying on screen
                 enemy->setDead();
             }
         }
     }
-    // show the enemy dying on screen
+
+    // protagonist animation
+    gView->player->animate(ProtagonistSprite::ATTACK, 0.4);
 }
 
 void WorldView::playerPoisoned(bool val){
     this->gView->player->tint(val);
+}
+
+void WorldView::deathScreen(){
+    qCDebug(worldViewCat) << "deathScreenSlot() called!";
+
+    gView->player->setDead(0);
+
+    QMessageBox deadBox(QMessageBox::NoIcon, 
+            "You died!",
+            "You just died, maybe it's the devs' fault, maybe it's a skill issue");
+    
+    QAbstractButton * buttonRetry = deadBox.addButton("Retry", QMessageBox::YesRole);
+    QAbstractButton * buttonQuit = deadBox.addButton("Quit", QMessageBox::NoRole);
+
+    deadBox.exec();
+
+    if(deadBox.clickedButton() == buttonRetry){
+        qCDebug(worldViewCat) << "retry!";
+        
+    }
+    else if(deadBox.clickedButton() == buttonQuit){
+        qCDebug(worldViewCat) << "quit!";
+    }
 }

@@ -153,7 +153,8 @@ private:
     unsigned int currentX = parent->getXPos();
     unsigned int currentY = parent->getYPos();
     float currentCost = parent->f;
-    if (nX >= 0 && nX < width && nY >= 0 && nY < height && (nX != 0 || nY != 0))
+    if (nX >= 0 && nX < width && nY >= 0 && nY < height)
+    //if (nX >= 0 && nX < width && nY >= 0 && nY < height && (nX != 0 || nY != 0)) // i removed this line, pathfinding begins to act up, remove this
     {
       if (Nodes.at(nY*width+nX).getValue()!=std::numeric_limits<float>::infinity() ) //top
       {

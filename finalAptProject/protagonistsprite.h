@@ -20,12 +20,26 @@ class ProtagonistSprite : public SpriteWithValue
 public:
     ProtagonistSprite(std::shared_ptr<Protagonist> prog);
 
+    enum aState { // for tracking animation priority
+        IDLE = 0,
+        MOVE = 1,
+        DEAD = 10, // the dead state isn't part of any animation
+        ATTACK = 3,
+        HEAL = 2
+    } animationState;
+
     void setEnergy(float value);
-    void animate(QPixmap start, QPixmap end, float time);
+    //void animate(QPixmap start, QPixmap end, float time);
+    void animate(aState nextState, float time = 0.10);
     void tint(bool poisoned);
     void setPosition(int x, int y);
 
-    QGraphicsRectItem * energyBar;
+    void setDead(int spriteOffset = DEAD_OFFSET);
+
+    std::shared_ptr<QGraphicsRectItem> energyBar;
+
+protected:
+    QTimer* animationTimer = nullptr;
 };
 
 #endif // PROTAGONISTSPRITE_H
