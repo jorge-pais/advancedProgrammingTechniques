@@ -15,6 +15,8 @@
         <file>resources/entities/squished-left.png</file>
         <file>resources/entities/tux2.png</file>
         <file>resources/entities/tux3.png</file>
+        <file>resources/entities/tux4.png</file>
+        <file>resources/entities/tux5.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

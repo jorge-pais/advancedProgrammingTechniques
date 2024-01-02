@@ -15,6 +15,7 @@ void WorldDelegate::connectSlots(){
     qCDebug(worldDelegateCat) << "connectSlots() called";
 
     QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+    QObject::connect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
     QObject::connect(this, &WorldDelegate::xEnemyStoleSignal, this->view.get(), &WorldView::xEnemyStoleSlot);
 
     if(this->getWorldEnemies().size() != 0){
@@ -27,12 +28,9 @@ void WorldDelegate::connectSlots(){
     }
 }
 
-/// TODO we should change this to spawn the player on a low energy tile
-/// in the case of the maze images, the player is put at (0,0)
-/// which is a tile that takes infinite energy
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
-    //if (tiles == nullptr && healthPacks != nullptr && enemies != nullptr) return
+    //if (tiles != nullptr && healthPacks != nullptr && enemies != nullptr) return
     for(auto & tile : world->getTiles()){
         std::shared_ptr<Tile> sharedTile= std::move(tile);
         tiles.push_back(sharedTile);
@@ -60,11 +58,21 @@ void WorldDelegate::initializeWDelegate(){
 
     this->protagonist = std::move(world->getProtagonist());
 
-    /// TODO: we should check if the protagonist is in a infinite energy 
-    /// tile and move it to another (random ?) position
+    /// check if the protagonist is in a infinite energy tile
+    if(std::isinf(getTile(protagonist->getXPos(), protagonist->getYPos())->getValue())){
+        for(auto & tile : tiles){
+            if(!std::isinf(tile->getValue())){
+                this->protagonist->setPos(tile->getXPos(), tile->getYPos());
+                break;
+            }
+        }
+    }
 }
 
 std::shared_ptr<Tile> WorldDelegate::getTile(int x, int y){
+    if((x < 0 || x >= world->getCols()) || (y < 0 || y >= world->getRows())) 
+        return nullptr;
+
     int rows = getWorldRows();
     return this->tiles[rows*y + x];
 }
@@ -81,14 +89,18 @@ int WorldDelegate::getWorldColumns() const { return world->getCols(); }
 
 std::shared_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const { return this->protagonist; }
 
-void WorldDelegate::setProtagonistHealth(float healthValue) { this->protagonist->setHealth(healthValue >= 100 ? 100 : healthValue); }
+void WorldDelegate::setProtagonistHealth(float healthValue){
+    this->protagonist->setHealth(healthValue >= 100 ? 100 : healthValue); 
+}
 
 void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { this->protagonist->setPos(newWorldX, newWorldY); }
 
-void WorldDelegate::setProtagonistEnergy(float energyValue){ this->protagonist->setEnergy(energyValue >= 100 ? 100 : energyValue); }
+void WorldDelegate::setProtagonistEnergy(float energyValue){ 
+    this->protagonist->setEnergy(energyValue >= 100 ? 100 : energyValue); 
+    std::cout << protagonist->getEnergy() << std::endl;
+}
 
 /// TODO: this could be an aux function associated with some enum
-/// this would make it easier reuse between the different 
 std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
     qCDebug(worldDelegateCat) << "enemyStatus() called";
@@ -151,84 +163,38 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 void WorldDelegate::addPoisonTile(int x, int y, float value){
     auto tile = std::make_shared<Tile>( x, y, value);
     poisonTiles.push_back(tile);
+    
+    // check for player poison and that the player is still alive, otherwise
+    // it will proc more than once
+    if(protagonist->getXPos() == x && protagonist->getYPos() == y && protagonist->getHealth() > 0){
+        setProtagonistHealth(protagonist->getHealth() - value);
+        view->playerPoisoned(true);
+    }
 }
 
 void WorldDelegate::movedSlot(int dx, int dy) {
     qCDebug(worldDelegateCat) << "movedSlot() called";
 
+    if(protagonist->getHealth() <= 0) return;
+
     // Calculate new postition, check if it's valid
     int newX = protagonist->getXPos() + dx;
     int newY = protagonist->getYPos() + dy;
-
-    if((dx == 0 && dy==0) || newX < 0 || newY < 0 || (newX > world->getCols() - 1) || (newY > world->getRows() - 1)) return;
-    
-    // If the difference in direction is more than 1, use the pathfinder
-    if (sqrt(dx*dx + dy*dy) > 1) {
-        // Fill the nodes vector with the tiles of your world
-        qCDebug(worldDelegateCat) << "using pathfinder";
-        moveOnPath(newX, newY);
+    if( (dx == 0 && dy==0) || newX < 0 || newY < 0 || 
+        (newX > world->getCols() - 1) || (newY > world->getRows() - 1))
         return;
-    }
-    
-    auto protagonist = getWorldProtagonist();
-    auto enemies = getWorldEnemies();
-    auto tiles = getWorldTiles();
 
-    qCDebug(worldDelegateCat) << "NOT using pathfinder";
-    float difference = 0;
-
-    // There has to be a more efficient way to do this
-    difference += getTile(newX, newY)->getValue();
-
-    // Moving in the world will take energy defined by the value of the tile you are moving to
-    if(difference < 0){
-        difference = -difference;
-    }
-
-    if(protagonist->getEnergy() - difference < 0){
-        return;
-    }
-
-    /// TODO: maybe there should be a way to address the poisonTiles directly
-    bool isPoisoned = false;
-    for(const auto& poisonTile : poisonTiles){
-        if(poisonTile->getXPos() == newX && poisonTile->getYPos() == newY){
-            setProtagonistHealth(protagonist->getHealth() - poisonTile->getValue());
-            isPoisoned = true;
-        }
-    }
-    view->playerPoisoned(isPoisoned);
-
-    for(const auto& enemy : enemies){
-        if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
-            attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
-            return;
-        }
-    }
-
-    for(const auto& pack : getWorldHealthPacks()){
-        if(pack->getXPos() == newX && pack->getYPos() == newY){
-            float plusHealth = pack->getValue();
-            pack->setValue(0);
-            setProtagonistHealth(protagonist->getHealth() + plusHealth);
-        }
-    }
-
-    protagonist->setPos(newX, newY);
-    setProtagonistEnergy(protagonist->getEnergy() - difference);
-    std::cout << protagonist->getEnergy() << std::endl;
+    singleMove(newX, newY);
 }
 
-void WorldDelegate::moveOnPath(int newX, int newY){
-    auto protagonist = getWorldProtagonist();
-    auto enemies = getWorldEnemies();
-    auto tiles = getWorldTiles();
-    auto healthpacks = getWorldHealthPacks();
+/// TODO: there could be some timing function to move the protagonist
+/// step by step
+void WorldDelegate::gotoSlot(int newX, int newY){
+    qCDebug(worldDelegateCat) << "gotoSlot() called";
 
     std::vector<Node> nodes;
-    for (const auto& tile : getWorldTiles()) {
+    for (const auto& tile : tiles)
         nodes.push_back(Node(tile->getXPos(), tile->getYPos(), tile->getValue()));
-    }
 
     // Position object for the start and destination
     Position start(protagonist->getXPos(), protagonist->getYPos());
@@ -247,37 +213,64 @@ void WorldDelegate::moveOnPath(int newX, int newY){
     std::vector<int> path = pathFinder.A_star();
 
     // Define the moveX and moveY arrays
-    const int moveX[] = {0, 1, 1, 1, 0, -1, -1, -1};
-    const int moveY[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+    const int moveX[] = {+0, -1, -1, -1, +0, +1, +1, +1}; // x here is flipped for some bizarre, unknown reason
+    const int moveY[] = {-1, -1, +0, +1, +1, +1, +0, -1};
+
+    int nextX, nextY;
+    view->gView->clearPath();
 
     // Use the path to move the protagonist
     for (int move : path) {
-        int newX = protagonist->getXPos() + moveX[move];
-        int newY = protagonist->getYPos() + moveY[move];
+        nextX = protagonist->getXPos() + moveX[move];
+        nextY = protagonist->getYPos() + moveY[move];
 
-        // Calculate the energy cost of the move
-        float energyCost = getTile(newX, newY)->getValue();
-        
-        // If the protagonist's health is 0 or less, stop the loop and return
-        if (protagonist->getEnergy() < energyCost && protagonist->getEnergy() <= 0) return;
+        // If we find an enemy or run out energy, stop taking the path
+        if(singleMove(nextX, nextY))
+            return;
 
-        // Check if there's an enemy on the path
-        for(const auto& enemy : enemies){
-            if(enemy->getXPos() == newX && enemy->getYPos() == newY && !enemy->getDefeated()){
-                attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
-                return;
-            }
-        }
-
-        // Check if there's a health pack on the path
-        for(const auto& pack : healthpacks){
-            if(pack->getXPos() == newX && pack->getYPos() == newY){
-                protagonist->setHealth(protagonist->getHealth() + pack->getValue());
-            }
-        }
-
-        // Move the protagonist and update the energy
-        protagonist->setPos(newX, newY);
-        protagonist->setEnergy(protagonist->getEnergy() - energyCost);
+        view->gView->pathTile(nextX, nextY);
     }
+}
+
+/// Aux function for the movement slots
+int WorldDelegate::singleMove(int x, int y){
+    // Calculate the energy cost of the move
+    float energyCost = getTile(x, y)->getValue();
+    
+    // If the protagonist's health is 0 or less, stop the loop and return
+    if (protagonist->getEnergy() < energyCost && protagonist->getEnergy() <= 0) 
+        return 1;
+
+    // check for poison tile
+    bool isPoisoned = false;
+    for(const auto& poisonTile : poisonTiles){
+        if(poisonTile->getXPos() == x && poisonTile->getYPos() == y){
+            setProtagonistHealth(protagonist->getHealth() - poisonTile->getValue());
+            isPoisoned = true;
+        }
+    }
+    view->playerPoisoned(isPoisoned);
+
+    // Check if there's an enemy on the path
+    for(const auto& enemy : enemies){
+        if(enemy->getXPos() == x && enemy->getYPos() == y && !enemy->getDefeated()){
+            attack(const_cast<std::shared_ptr<Enemy>&>(enemy));
+            return 1; // flag to stop path
+        }
+    }
+
+    // Move the protagonist and update the energy
+    setProtagonistPosition(x, y);
+    setProtagonistEnergy(protagonist->getEnergy() - energyCost);
+
+    // Check if there's a health pack on the path
+    for(const auto& pack : healthPacks){
+        if(pack->getXPos() == x && pack->getYPos() == y){
+            float plusHealth = pack->getValue();
+            pack->setValue(0);
+            setProtagonistHealth(protagonist->getHealth() + plusHealth);
+        }
+    }
+
+    return 0;
 }

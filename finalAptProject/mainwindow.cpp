@@ -60,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent)
     tView->renderTiles();
 
     toolbarConfig();
+
+    settings = std::make_shared<Settings>(gView);
 }
 
 void MainWindow::submitCommand(){
@@ -88,6 +90,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 void MainWindow::toolbarConfig(){
     QToolBar *toolbar = this->addToolBar("My Toolbar");
 
+    QAction *newGameAction = new QAction("New game", this);
+    connect(newGameAction, &QAction::triggered, this, &MainWindow::newGame);
+    toolbar->addAction(newGameAction);
+
     QAction *settingsAction = new QAction("Settings", this);
     connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
     toolbar->addAction(settingsAction);
@@ -99,12 +105,24 @@ void MainWindow::toolbarConfig(){
     //contextMenu.exec(event->globalPos());
 }
 
+void MainWindow::newGame(){
+    qCDebug(mainWindowCat) << "newGame()";
+
+    // for now just list the maps, in order to load them to the new game window prompt
+    QDirIterator it(":/images/resources/world_images", QDirIterator::Subdirectories);
+    while(it.hasNext()){
+        qCDebug(mainWindowCat) << it.next();
+    }
+}
+
 void MainWindow::openSettings(){
-    std::cout << "openSettings() man!" << std::endl;
+    SettingsWindow settingsWindow(nullptr, settings);
+    settingsWindow.setModal(true); // set window modality
+    settingsWindow.exec();
 }
 
 void MainWindow::openHelp(){
-    std::cout << "openHelp() man!" << std::endl;
+    qCDebug(mainWindowCat) << "openHelp() called";
 }
 
 MainWindow::~MainWindow()

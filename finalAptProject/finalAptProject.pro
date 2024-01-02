@@ -15,6 +15,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     protagonistsprite.cpp \
+    settings.cpp \
+    settingswindow.cpp \
     spritewithvalue.cpp \
     textview.cpp \
     worlddelegate.cpp \
@@ -28,6 +30,8 @@ HEADERS += \
     pathfinder.h \
     pathfinder_class.h \
     protagonistsprite.h \
+    settings.h \
+    settingswindow.h \
     spritewithvalue.h \
     textview.h \
     world.h \
@@ -37,7 +41,8 @@ HEADERS += \
     xenemy.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    settingswindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
