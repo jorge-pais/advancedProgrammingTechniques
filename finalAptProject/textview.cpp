@@ -27,7 +27,7 @@ void TextView::renderTiles() {
     worldEnemies = delegate->getWorldEnemies();
     worldHealthPacks = delegate->getWorldHealthPacks();
     protagonist = delegate->getWorldProtagonist();
-    //float currentHealth = protagonist->getHealth();
+    float currentHealth = protagonist->getHealth();
 
     textView->clear();
     std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
@@ -48,6 +48,7 @@ void TextView::renderTiles() {
     worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
 
     // grid
+    /*
     QString line;
     for (const auto& row : worldView) {
         QString line = "| ";
@@ -59,40 +60,32 @@ void TextView::renderTiles() {
         textView->append(line);
         textView->append(QString(line.size(), '-'));
     }
-
-    /*
+    */
     for (const auto& row : worldView) {
-        QString line;
-        for (const auto& tile : row) {
-            if(tile == 'P'){
-                if (currentHealth < previousHealth) {
-                    line += "<font color='red'> P </font> ";
-                    resetColorAfterDelay();
-                    previousHealth = currentHealth;
-                }
-                else if(currentHealth > previousHealth){
-                    line += "<font color='green'> P </font> ";
-                    resetColorAfterDelay();
-                    previousHealth = currentHealth;
+            QString line;
+            for (const auto& tile : row) {
+                if(tile == 'P'){
+                    if (currentHealth < previousHealth) {
+                        line += "<font color='red'>P</font>";
+                        resetColorAfterDelay();
+                    }
+                    else if(currentHealth > previousHealth){
+                        line += "<font color='green'>P</font>";
+                        resetColorAfterDelay();
+                    }
+                    else {
+                        line += "P";
+                    }
                 }
                 else {
-                     line += QString(tile);
+                    line += QString(tile);
                 }
+                line += " | "; // Add grid lines
             }
-            else{
-              line += tile;
-            }
-            //line += " | "; // Add grid lines
+            textView->append(line);
+            textView->append(QString(line.size(), '-'));
         }
-        //htmlContent += line + "<br>";
-        // Append the line to the text view
-        //htmlContent += "</pre>";
-        //textView->setHtml(htmlContent);
-        QString formattedLine = "<font color='black'>" + line + "</font>";
-        textView->append(line);
-        textView->append(QString(line.size(), '-'));
-    }
-    */
+    previousHealth = currentHealth;
     this->centerPlayer();
 }
 
