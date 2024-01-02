@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     //Initialize TextView
     tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView);
     QFont font;
-    font.setFamily("Courier");
+    font.setFamily("Courier");q
     font.setStyleHint(QFont::Monospace);
     font.setFixedPitch(true);
     font.setPointSize(10);

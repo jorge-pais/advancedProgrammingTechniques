@@ -35,7 +35,7 @@ class WorldDelegate : public QObject
 
 private:
     std::shared_ptr<WorldView> view;
-    std::shared_ptr<World> world;
+    std::shared_ptr<World> world; // these could be changed to a unique_ptr maybe 
     std::shared_ptr<World> otherWorld;
 
     std::vector<std::shared_ptr<Tile>> tiles;
@@ -44,6 +44,8 @@ private:
     std::vector<std::shared_ptr<Tile>> poisonTiles;
 
     std::shared_ptr<Protagonist> protagonist;
+
+    int rows, cols;
 
     int singleMove(int x, int y);
 
