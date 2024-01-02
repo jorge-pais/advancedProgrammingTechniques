@@ -1,4 +1,5 @@
 #include "worlddelegate.h"
+#include <stdlib.h>
 #include "xenemy.h"
 
 // QT Logging
@@ -105,7 +106,36 @@ void WorldDelegate::setProtagonistEnergy(float energyValue){
     std::cout << protagonist->getEnergy() << std::endl;
 }
 
-void WorldDelegate::setDoor(int x, int y){ doorX = x; doorY = y; }
+std::shared_ptr<Tile> WorldDelegate::getDoor(){
+    return door;
+}
+void WorldDelegate::addDoor(){
+    srand(time(NULL));
+    bool done = false;
+    int x;
+    int y;
+    while(!done){
+        x = rand() % getWorldColumns();
+        y = rand() % getWorldRows();
+        for(const auto& healthpack : getWorldHealthPacks()){
+            if(healthpack->getXPos() == x && healthpack->getYPos() == y){
+                break;
+            }
+        }
+        for(const auto& enemy : getWorldEnemies()){
+            if(enemy->getXPos() == x && enemy->getYPos() == y){
+                break;
+            }
+        }
+        if(x == 0 && y == 0){
+            break;
+        }
+        done = true;
+    }
+
+    door = std::make_shared<Tile>(x, y, 0);
+
+}
 
 /// TODO: this could be an aux function associated with some enum
 std::string WorldDelegate::enemyStatus(Enemy& enemy)
@@ -179,7 +209,7 @@ void WorldDelegate::addPoisonTile(int x, int y, float value){
     }
 }
 
-void WorldDelegate::door(){
+void WorldDelegate::activateDoor(){
     world.swap(otherWorld);
 
     initializeWDelegate();
@@ -194,7 +224,7 @@ void WorldDelegate::door(){
         }
     }
 
-    protagonist->setPos(doorX + 1, doorY);
+    protagonist->setPos(door->getXPos() + 1, door->getYPos());
 }
 
 void WorldDelegate::movedSlot(int dx, int dy) {
@@ -208,8 +238,8 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     if( (dx == 0 && dy==0) || newX < 0 || newY < 0 || 
         (newX > world->getCols() - 1) || (newY > world->getRows() - 1))
         return;
-    if(newX == doorX && newY == doorY){
-        door();
+    if(newX == door->getXPos() && newY == door->getYPos()){
+        activateDoor();
     }
 
     singleMove(newX, newY);

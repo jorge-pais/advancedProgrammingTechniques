@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
     //connect slots and setup
-    //worldDelegate->setDoor(3, 3);
+    worldDelegate->addDoor();
     worldDelegate->connectSlots();
     wView->connectSlots();
     wView->setViews(gView, tView);
@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     gView->renderTiles();
     gView->renderEntities();
     gView->renderPlayer();
-    //gView->renderDoor();
+    gView->renderDoor(worldDelegate->getDoor()->getXPos(), worldDelegate->getDoor()->getYPos());
 
     tView->renderTiles();
 

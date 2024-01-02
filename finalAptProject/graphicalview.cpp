@@ -61,7 +61,14 @@ void GraphicalView::clearEntities(){
         scene->removeItem(entity->sprite.get());
         scene->removeItem(entity->text.get());
     }
+
+    for(auto pack : healthPacks){
+        scene->removeItem(pack->sprite.get());
+        scene->removeItem(pack->text.get());
+    }
+
     entities.clear();
+    healthPacks.clear();
 }
 
 /// @brief Applies a "poison" effect to a tile.
@@ -97,7 +104,7 @@ void GraphicalView::renderEntities(){
     }
 }
 
-void GraphicalView::renderDoor(){
+void GraphicalView::renderDoor(int x, int y){
     auto sprite = QPixmap(":/images/resources/entities/door.png");
     sprite = sprite.scaled(
             TILE_SIZE, TILE_SIZE,
@@ -105,7 +112,7 @@ void GraphicalView::renderDoor(){
             Qt::SmoothTransformation);
     door = new QGraphicsPixmapItem(sprite);
 
-    door->setPos(3*TILE_SIZE, 3*TILE_SIZE);
+    door->setPos(x*TILE_SIZE, y*TILE_SIZE);
 
     scene->addItem(door);
 }
