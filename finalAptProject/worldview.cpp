@@ -136,6 +136,7 @@ void WorldView::positionChangedSlot(int x, int y)
 void WorldView::newWorldLoadedSlot(){
     disconnect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
     this->connectSlots();
+    
     gView->clearTiles();
     gView->renderTiles();
     gView->clearEntities();

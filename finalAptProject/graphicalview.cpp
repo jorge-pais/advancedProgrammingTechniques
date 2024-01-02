@@ -58,8 +58,8 @@ void GraphicalView::clearTiles(){
 
 void GraphicalView::clearEntities(){
     for(auto entity : entities){
-        scene->removeItem(entity->sprite);
-        scene->removeItem(entity->text);
+        scene->removeItem(entity->sprite.get());
+        scene->removeItem(entity->text.get());
     }
     entities.clear();
 }
@@ -115,9 +115,9 @@ void GraphicalView::clearDoor(){
 }
 
 void GraphicalView::clearPlayer(){
-    scene->removeItem(player->energyBar);
-    scene->removeItem(player->sprite);
-    scene->removeItem(player->text);
+    scene->removeItem(player->energyBar.get());
+    scene->removeItem(player->sprite.get());
+    scene->removeItem(player->text.get());
 }
 /// @brief Renders the player character.
 void GraphicalView::renderPlayer(){
