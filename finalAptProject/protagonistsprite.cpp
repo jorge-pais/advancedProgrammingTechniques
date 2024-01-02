@@ -90,9 +90,9 @@ void ProtagonistSprite::animate(aState nextState, float time){
 }
 
 void ProtagonistSprite::setDead(int spriteOffset){
+    animationState = DEAD;
     SpriteWithValue::setDead(spriteOffset);
     energyBar->setRect(0, 0, 0, 0);
-    animationState = DEAD;
 }
 
 void ProtagonistSprite::tint(bool poisoned){

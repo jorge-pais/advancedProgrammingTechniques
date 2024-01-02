@@ -71,6 +71,8 @@ public:
     void door();
     void setDoor(int x, int y);
     void connectSlots();
+    
+    std::string serialize();
 
 signals:
     void poisonSignal();

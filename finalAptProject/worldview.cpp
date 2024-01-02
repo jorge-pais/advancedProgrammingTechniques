@@ -228,6 +228,7 @@ void WorldView::deathScreen(){
 
     if(deadBox.clickedButton() == buttonRetry){
         qCDebug(worldViewCat) << "retry!";
+        
     }
     else if(deadBox.clickedButton() == buttonQuit){
         qCDebug(worldViewCat) << "quit!";
