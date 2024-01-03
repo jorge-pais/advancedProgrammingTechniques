@@ -67,6 +67,8 @@ void TextView::renderTiles() {
         //textView->setTextColor(Qt::black);// tile is a pair<x, y>
     }
 
+    textView->disconnect(SIGNAL(textChanged()));
+
     // grid
     QString line;
     for (const auto& row : worldView) {
@@ -79,29 +81,12 @@ void TextView::renderTiles() {
         textView->append(line);
         textView->append(QString(line.size(), '-'));
     }
-    this->centerPlayer();
-}
+    //this->centerPlayer();
+    QFontMetrics metrics(textView->font());
+    int lineHeight = metrics.lineSpacing();
+    int scrollPos= protagonist->getYPos() * lineHeight;
+    textView->verticalScrollBar()->setValue(scrollPos);
 
-void TextView::centerPlayer(){
-    //std::cout << "this got called!" << std::endl;
-    QApplication::processEvents(); // lets see if this works
-
-    if (textView->find("P")) {
-        std::cout << "got here!!!!" << std::endl;
-        //std::cout << "centering player hopefully" << std::endl;
-        QTextCursor cursor = textView->textCursor();
-        QRect rect = textView->cursorRect(cursor);
-        QScrollBar *vbar = textView->verticalScrollBar();
-        QScrollBar *hbar = textView->horizontalScrollBar();
-
-        // Centering vertically
-        int newVValue = rect.y() - (textView->viewport()->height() / 2);
-        vbar->setValue(newVValue + vbar->pageStep() / 2);
-
-        // Centering horizontally (if needed)
-        int newHValue = rect.x() - (textView->viewport()->width() / 2);
-        hbar->setValue(newHValue + hbar->pageStep() / 2);
-    }
 }
 
 void TextView::resetColorAfterDelay() {
