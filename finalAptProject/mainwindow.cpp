@@ -21,8 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Create the world from the file, this was to be
     QString worldPath{":/images/resources/world_images/worldmap.png"};
     world->createWorld(worldPath, 5, 6, 0.0);
-    //QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    //otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
+    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
+    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();

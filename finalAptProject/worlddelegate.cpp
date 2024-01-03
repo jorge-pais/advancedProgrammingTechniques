@@ -73,13 +73,15 @@ void WorldDelegate::initializeWDelegate(){
             }
         }
     }
+
+    rows = world->getRows();
+    cols = world->getCols();
 }
 
 std::shared_ptr<Tile> WorldDelegate::getTile(int x, int y){
-    if((x < 0 || x >= world->getCols()) || (y < 0 || y >= world->getRows())) 
+    if((x < 0 || x >= cols) || (y < 0 || y >= rows)) 
         return nullptr;
 
-    int rows = getWorldRows();
     return this->tiles[rows*y + x];
 }
 
@@ -89,9 +91,9 @@ std::vector<std::shared_ptr<Enemy>> WorldDelegate::getWorldEnemies(){ return thi
 
 std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldHealthPacks(){ return this->healthPacks; }
 
-int WorldDelegate::getWorldRows() const { return world->getRows(); }
+int WorldDelegate::getWorldRows() const { return this->rows; }
 
-int WorldDelegate::getWorldColumns() const { return world->getCols(); }
+int WorldDelegate::getWorldColumns() const { return this->cols; }
 
 std::shared_ptr<Protagonist> WorldDelegate::getWorldProtagonist() const { return this->protagonist; }
 
@@ -137,7 +139,6 @@ void WorldDelegate::addDoor(){
 
 }
 
-/// TODO: this could be an aux function associated with some enum
 std::string WorldDelegate::enemyStatus(Enemy& enemy)
 {
     qCDebug(worldDelegateCat) << "enemyStatus() called";
@@ -212,6 +213,7 @@ void WorldDelegate::addPoisonTile(int x, int y, float value){
 void WorldDelegate::activateDoor(){
     world.swap(otherWorld);
 
+    poisonTiles.clear();
     initializeWDelegate();
     emit newWorldLoadedSignal();
 
@@ -236,7 +238,7 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     int newX = protagonist->getXPos() + dx;
     int newY = protagonist->getYPos() + dy;
     if( (dx == 0 && dy==0) || newX < 0 || newY < 0 || 
-        (newX > world->getCols() - 1) || (newY > world->getRows() - 1))
+        (newX > cols - 1) || (newY > rows - 1))
         return;
     if(newX == door->getXPos() && newY == door->getYPos()){
         activateDoor();
@@ -264,7 +266,7 @@ void WorldDelegate::gotoSlot(int newX, int newY){
     };
 
     // width and heuristic weight
-    unsigned int width = world->getCols();
+    unsigned int width = cols;
     float heurWeight = 1.0f;
 
     PathFinder<Node, Position> pathFinder(nodes, &start, &destination, comp, width, heurWeight);
@@ -334,6 +336,7 @@ int WorldDelegate::singleMove(int x, int y){
 }
 
 std::string WorldDelegate::serialize(){
+    /// TODO: this method is untested as of yet!
     std::stringstream out;
 
     out << "/----TILES----/\n";

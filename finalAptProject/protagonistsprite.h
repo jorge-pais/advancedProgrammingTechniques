@@ -15,12 +15,17 @@
 
 #define ENERGY_OFFSET 8 // x offset for the energy bar
 
+/// @class ProtagonistSprite
+/// @brief A class that represents the protagonist's sprite in the game.
+/// This class is a child of the SpriteWithValue class and is used to represent the protagonist's sprite in the game.
+/// It includes additional functionality for animations and energy bar display.
 class ProtagonistSprite : public SpriteWithValue
 {
 public:
     ProtagonistSprite(std::shared_ptr<Protagonist> prog);
 
-    enum aState { // for tracking animation priority
+    /// @brief Enum for tracking animation priority.
+    enum aState {
         IDLE = 0,
         MOVE = 1,
         DEAD = 10, // the dead state isn't part of any animation
