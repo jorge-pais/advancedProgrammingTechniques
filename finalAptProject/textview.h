@@ -43,7 +43,7 @@ public:
     std::vector<std::shared_ptr<Enemy>> worldEnemies;
     std::vector<std::shared_ptr<Tile>> worldHealthPacks;
     std::shared_ptr<Protagonist> protagonist;
-    void centerPlayer();
+    //void centerPlayer();
 
 private:
     QTextBrowser* textView;
