@@ -35,15 +35,28 @@ void TextView::renderTiles() {
 
     // Defeated enemies show up as lower case
     for (const auto& enemy : worldEnemies) {
-        if (dynamic_cast<PEnemy*>(enemy.get())) {
-            worldView[enemy->getYPos()][enemy->getXPos()] = enemy->getDefeated() ? 'q' : 'Q' ;
+        char textEnemy = 'E'; // Default character for regular enemies
+
+        if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
+            textEnemy = pEnemy->getDefeated() ? 'q' : 'Q'; // lower case for dead
+        } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            textEnemy = xEnemy->getDefeated() ? 'x' : 'X';
         } else {
-            worldView[enemy->getYPos()][enemy->getXPos()] = enemy->getDefeated() ? 'e' : 'E';
+            textEnemy = enemy->getDefeated() ? 'e' : 'E';
         }
+
+        worldView[enemy->getYPos()][enemy->getXPos()] = textEnemy;
     }
 
     for (const auto& healthPack : worldHealthPacks) {
         worldView[healthPack->getYPos()][healthPack->getXPos()] = healthPack->getValue() ? 'H' : ' ';
+    }
+
+
+    // Place door on the grid
+    auto door = delegate->getDoor();
+    if (door) {
+        worldView[door->getYPos()][door->getXPos()] = 'D';
     }
 
     worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
