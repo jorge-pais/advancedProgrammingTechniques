@@ -136,6 +136,7 @@ void GraphicalView::clearPlayer(){
     scene->removeItem(player->energyBar.get());
     scene->removeItem(player->sprite.get());
     scene->removeItem(player->text.get());
+    player = NULL;
 }
 /// @brief Renders the player character.
 void GraphicalView::renderPlayer(){

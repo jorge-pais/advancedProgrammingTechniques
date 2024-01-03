@@ -149,21 +149,28 @@ void WorldView::positionChangedSlot(int x, int y)
 
 void WorldView::newWorldLoadedSlot(){
 
-    this->delegate.swap(this->otherDelegate);
-    this->delegate->connectSlots();
-    this->delegate->setProtagonistPosition(this->delegate->getDoor()->getXPos(),this->delegate->getDoor()->getYPos());
+    delegate.swap(otherDelegate);
+    delegate->connectSlots();
+
+    delegate->setProtagonistHealth(otherDelegate->getWorldProtagonist()->getHealth());
+    delegate->setProtagonistPosition(delegate->getDoor()->getXPos(),delegate->getDoor()->getYPos());
+
     gView->clearTiles();
-    gView->renderTiles();
     gView->clearEntities();
-    gView->renderEntities();
-    gView->clearPlayer();
-    gView->renderPlayer();
     gView->clearDoor();
+    gView->clearPlayer();
+
+    gView->renderTiles();
+    gView->renderEntities();
     gView->renderDoor();
     gView->renderPoisonTiles();
+    gView->renderPlayer();
+    //I am very confused why it only shows the protagonist after you mover again? Any thoughts? (textview works tho)
+
+    gView->centerView();
     enemyDeadSlot();
-    this->delegate->setProtagonistHealth(otherDelegate->getWorldProtagonist()->getHealth());
-    gView->player->setPosition(this->delegate->getWorldProtagonist()->getXPos(), this->delegate->getWorldProtagonist()->getYPos());
+
+    gView->player->setPosition(delegate->getDoor()->getXPos(),delegate->getDoor()->getYPos());
 }
 
 /// is this even connected to something other than the protagonist?
