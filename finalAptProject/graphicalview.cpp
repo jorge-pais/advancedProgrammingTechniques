@@ -84,6 +84,12 @@ void GraphicalView::poisonTile(int x, int y, int poisonLevel){
     rect->setZValue(3);
 }
 
+void GraphicalView::renderPoisonTiles(){
+    for(const auto& tile : this->worldView->getDelegate()->getPoisonTiles()){
+        poisonTile(tile->getXPos(), tile->getYPos(), tile->getValue());
+    }
+}
+
 /// @brief Renders the entities in the game world.
 void GraphicalView::renderEntities(){
     qCDebug(graphicalViewCat) << "renderEntities() called";
@@ -108,14 +114,15 @@ void GraphicalView::renderEntities(){
 /// @brief Renders the door entity on the scene.
 /// @param x The x-coordinate of the door.
 /// @param y The y-coordinate of the door.
-void GraphicalView::renderDoor(int x, int y){
+void GraphicalView::renderDoor(){
     auto sprite = QPixmap(":/images/resources/entities/door.png");
     sprite = sprite.scaled(
             TILE_SIZE, TILE_SIZE,
             Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation);
     door = new QGraphicsPixmapItem(sprite);
-
+    int x = this->worldView->getDelegate()->getDoor()->getXPos();
+    int y = this->worldView->getDelegate()->getDoor()->getYPos();
     door->setPos(x*TILE_SIZE, y*TILE_SIZE);
 
     scene->addItem(door);
@@ -131,6 +138,7 @@ void GraphicalView::clearPlayer(){
     scene->removeItem(player->energyBar.get());
     scene->removeItem(player->sprite.get());
     scene->removeItem(player->text.get());
+    player = NULL;
 }
 /// @brief Renders the player character.
 void GraphicalView::renderPlayer(){
