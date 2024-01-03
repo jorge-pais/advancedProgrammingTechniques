@@ -13,10 +13,6 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene
 {   
     // Create the scene
     graphicsView->setScene(scene);
-
-    // Tile testing
-    //addTileSet(0, 0.5, QPixmap("/home/jorgep/Documents/brownBrick.png"));
-    //addTileSet(0.5, 1.0, QPixmap("/home/jorgep/Documents/blueStone.png"));
 }
 
 /// @brief Renders the tiles of the game world.
@@ -59,6 +55,7 @@ void GraphicalView::clearTiles(){
     poisonTiles.clear();
 }
 
+/// @brief Clears all entities and healthpacks from the scene
 void GraphicalView::clearEntities(){
     for(auto entity : entities){
         scene->removeItem(entity->sprite.get());
@@ -114,6 +111,9 @@ void GraphicalView::renderEntities(){
     }
 }
 
+/// @brief Renders the door entity on the scene.
+/// @param x The x-coordinate of the door.
+/// @param y The y-coordinate of the door.
 void GraphicalView::renderDoor(){
     auto sprite = QPixmap(":/images/resources/entities/door.png");
     sprite = sprite.scaled(
@@ -128,10 +128,12 @@ void GraphicalView::renderDoor(){
     scene->addItem(door);
 }
 
+/// @brief Removes the door from the scene.
 void GraphicalView::clearDoor(){
     scene->removeItem(door);
 }
 
+/// @brief Removes the player character from the scene.
 void GraphicalView::clearPlayer(){
     scene->removeItem(player->energyBar.get());
     scene->removeItem(player->sprite.get());
@@ -186,6 +188,7 @@ void GraphicalView::addTileSet(float low, float high, QPixmap tile){
     tileSet[{low, high}] = newTile; // add the tile if successful
 }
 
+/// @brief Removes all tile sprites from the tileset.
 void GraphicalView::clearTileSet(){
     tileSet.clear();
 }
@@ -223,15 +226,19 @@ void GraphicalView::setOverlay(QPixmap image){
         scene->addItem(overlay);
 }
 
-void GraphicalView::toggleOverlay(bool v){
-    qCDebug(graphicalViewCat) << "overlay is: " << v;
-    overlayOn = v;
+/// @brief Toggle the overlay over the game scene.
+/// @param show Display/hide.
+void GraphicalView::toggleOverlay(bool show){
+    overlayOn = show;
     if(overlayOn)
         scene->addItem(overlay);
     else
         scene->removeItem(overlay);
 }
 
+/// @brief Creates a pathfinding tile and adds it to the scene.
+/// @param x The x-coordinate of the tile.
+/// @param y The y-coordinate of the tile.
 void GraphicalView::pathTile(int x, int y){
     QGraphicsItem* rect = scene->addRect(
                 (x+0.2)*TILE_SIZE, (y+0.2)*TILE_SIZE, 
@@ -243,6 +250,7 @@ void GraphicalView::pathTile(int x, int y){
     path.push_back(rect);
 }
 
+/// @brief Remove all pathfinding tiles from the scene.
 void GraphicalView::clearPath(){
     for(auto tile: path)
         scene->removeItem(tile);

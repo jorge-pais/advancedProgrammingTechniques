@@ -4,8 +4,7 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldViewCat("worldView");
 
-std::shared_ptr<WorldDelegate> WorldView::getDelegate() const
-{
+std::shared_ptr<WorldDelegate> WorldView::getDelegate() const {
     return delegate;
 }
 
@@ -54,8 +53,7 @@ void WorldView::setDelegates(std::shared_ptr<WorldDelegate> del, std::shared_ptr
     this->otherDelegate = otherDel;
 }
 
-void WorldView::mainWindowEventSlot(QKeyEvent *event)
-{
+void WorldView::mainWindowEventSlot(QKeyEvent *event) {
     int dx = 0, dy = 0;
 
     /// TODO Figure out why the arrow keys aren't working
@@ -94,18 +92,37 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     gView->clearPath();
 }
 
+template <typename T> /// TODO: these functions are untested as of yet
+void WorldView::goToNearestEntity(std::vector<std::shared_ptr<T>> entities){
+    int progX = delegate->getWorldProtagonist()->getXPos();
+    int progY = delegate->getWorldProtagonist()->getYPos();
+
+    std::shared_ptr<T> closest; int x, y; float min = __FLT_MAX__;
+    for(auto & entity: entities){
+        x = entity->getXPos(); y = entity->getYPos();
+        float dist = sqrt((x-progX)*(x-progX) + (y-progY)*(y-progY));
+        if(dist < min){
+            dist = min; 
+            closest = entity;
+        }
+    }
+
+    emit playerGotoSignal(closest->getXPos(), closest->getYPos());
+}
+
 void WorldView::attackNearestEnemy(){
     qCDebug(worldViewCat) << "attackNearestEnemy() called";
     //find nearest enemy and then use the pathfinder to send the protagonist there and attack
+    goToNearestEntity(delegate->getWorldEnemies());
 }
 
 void WorldView::takeNearestHealthPack(){
     qCDebug(worldViewCat) << "takeNearestHealthPack() called";
     //find nearest healthpack and then use the pathfinder to send the protagonist there and increase health
+    goToNearestEntity(delegate->getWorldHealthPacks());
 }
 
-void WorldView::poisonLevelUpdatedSlot(int value)
-{
+void WorldView::poisonLevelUpdatedSlot(int value) {
     auto enemies = this->delegate->getWorldEnemies();
 
     for(auto& enemy : enemies){
@@ -124,6 +141,7 @@ void WorldView::poisonLevelUpdatedSlot(int value)
                             {} // change the condition
                             else{
                                 this->gView->poisonTile(poisonX, poisonY, value);
+                                this->tView->poisonTile(poisonX, poisonY, value);
                                 this->delegate->addPoisonTile(poisonX, poisonY, value);
                             }
                         }
@@ -135,8 +153,7 @@ void WorldView::poisonLevelUpdatedSlot(int value)
     qCDebug(worldViewCat) << "poisonLevelUpdatedSlot() called";
 }
 
-void WorldView::positionChangedSlot(int x, int y)
-{
+void WorldView::positionChangedSlot(int x, int y) {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->animate(ProtagonistSprite::MOVE);
@@ -169,13 +186,10 @@ void WorldView::newWorldLoadedSlot(){
 
 }
 
-/// is this even connected to something other than the protagonist?
-/// there is a pretty similar loop in world delegate
-void WorldView::protagonistHealthChangedSlot(int h)
-{
+void WorldView::protagonistHealthChangedSlot(int h) {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
     gView->player->setHealth(h <= 0 ? 0 : h);
-
+    tView->updateHealthDisplay(h);
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
         if(pack->getValue() == 0 && pack->getXPos() == delegate->getWorldProtagonist()->getXPos() && pack->getYPos() == delegate->getWorldProtagonist()->getYPos()){
@@ -205,13 +219,14 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     }
 }
 
-/// TODO: Only for graphical view as of now
+/// TODO: Only implemented for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
     
     // show the energy level changing on screen
     gView->player->setEnergy(e);
+    tView->updateEnergyDisplay(e);
 }
 
 void WorldView::enemyDeadSlot()

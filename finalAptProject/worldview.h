@@ -23,6 +23,8 @@ private:
     //std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
 
+    template <typename T> void goToNearestEntity(std::vector<std::shared_ptr<T>> entities);
+
 public:
     std::shared_ptr<GraphicalView> gView;
 
@@ -37,8 +39,10 @@ public:
     void attackNearestEnemy(); //used in text view
     void takeNearestHealthPack();
     void playerPoisoned(bool val);
-
     void deathScreen();
+    float calculateDistance(const std::pair<int, int>& pos1, const std::pair<int, int>& pos2) {
+        return std::abs(pos1.first - pos2.first) + std::abs(pos1.second - pos2.second);
+    }
 
     MainWindow * window;
 
