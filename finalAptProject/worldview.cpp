@@ -4,8 +4,7 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldViewCat("worldView");
 
-std::shared_ptr<WorldDelegate> WorldView::getDelegate() const
-{
+std::shared_ptr<WorldDelegate> WorldView::getDelegate() const {
     return delegate;
 }
 
@@ -39,8 +38,7 @@ void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
     this->delegate = del;
 }
 
-void WorldView::mainWindowEventSlot(QKeyEvent *event)
-{
+void WorldView::mainWindowEventSlot(QKeyEvent *event) {
     int dx = 0, dy = 0;
 
     /// TODO Figure out why the arrow keys aren't working
@@ -109,8 +107,7 @@ void WorldView::takeNearestHealthPack(){
     goToNearestEntity(delegate->getWorldHealthPacks());
 }
 
-void WorldView::poisonLevelUpdatedSlot(int value)
-{
+void WorldView::poisonLevelUpdatedSlot(int value) {
     auto enemies = this->delegate->getWorldEnemies();
 
     for(auto& enemy : enemies){
@@ -140,8 +137,7 @@ void WorldView::poisonLevelUpdatedSlot(int value)
     qCDebug(worldViewCat) << "poisonLevelUpdatedSlot() called";
 }
 
-void WorldView::positionChangedSlot(int x, int y)
-{
+void WorldView::positionChangedSlot(int x, int y) {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->animate(ProtagonistSprite::MOVE);
@@ -165,10 +161,7 @@ void WorldView::newWorldLoadedSlot(){
     gView->clearDoor();
 }
 
-/// is this even connected to something other than the protagonist?
-/// there is a pretty similar loop in world delegate
-void WorldView::protagonistHealthChangedSlot(int h)
-{
+void WorldView::protagonistHealthChangedSlot(int h) {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
     gView->player->setHealth(h <= 0 ? 0 : h);
 
@@ -201,7 +194,7 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     }
 }
 
-/// TODO: Only for graphical view as of now
+/// TODO: Only implemented for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";

@@ -2,6 +2,8 @@
 
 //#include "qloggingcategory.h"
 
+/// @brief Constructor for the ProtagonistSprite class.
+/// @param prog Shared pointer to the Protagonist object.
 ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     spriteSet["alive"] = QPixmap(":/images/resources/entities/tux.png");
     spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
@@ -33,11 +35,16 @@ ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     energyBar->setZValue(4);
 }
 
+/// @brief Sets the energy value for the protagonist.
+/// @param value The energy value to be set.
 void ProtagonistSprite::setEnergy(float value){
     int newH = static_cast<int> (TILE_SIZE * value/100.0);
     energyBar->setRect(energyBar->rect().x(), energyBar->rect().y(), energyBar->rect().width(), newH);
 }
 
+/// @brief Sets the position of the protagonist sprite.
+/// @param x The x-coordinate of the position.
+/// @param y The y-coordinate of the position.
 void ProtagonistSprite::setPosition(int x, int y){
     //if(sprite)
     sprite->setPos(x*TILE_SIZE, y*TILE_SIZE);
@@ -49,6 +56,9 @@ void ProtagonistSprite::setPosition(int x, int y){
     this->x = x; this->y = y;
 };
 
+/// @brief Animates the protagonist sprite based on the next state.
+/// @param nextState The next state of the animation.
+/// @param time The time duration for the animation.
 void ProtagonistSprite::animate(aState nextState, float time){
     QPixmap start, end = spriteSet["alive"];
 
@@ -89,12 +99,16 @@ void ProtagonistSprite::animate(aState nextState, float time){
     animationTimer->start(time*1000);
 }
 
+/// @brief Sets the protagonist sprite to the dead state.
+/// @param spriteOffset The sprite offset for the dead state.
 void ProtagonistSprite::setDead(int spriteOffset){
     animationState = DEAD;
     SpriteWithValue::setDead(spriteOffset);
     energyBar->setRect(0, 0, 0, 0);
 }
 
+/// @brief Tints the protagonist sprite based on the poisoned state.
+/// @param poisoned The poisoned state of the protagonist.
 void ProtagonistSprite::tint(bool poisoned){
     QGraphicsColorizeEffect * colourEffect = dynamic_cast<QGraphicsColorizeEffect*>(sprite->graphicsEffect());
     
