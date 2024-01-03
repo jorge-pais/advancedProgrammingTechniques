@@ -17,6 +17,7 @@
 #include <iostream>
 #include <QScrollBar>
 #include <QApplication>
+#include <set>
 
 #include "worldview.h"
 
@@ -37,6 +38,7 @@ public:
     void updateHealthDisplay(float currentHealth);
     void updateEnergyDisplay(int currentEnergy);
     void processCommand(const QString& command);
+    void poisonTile(int x, int y, int poisonLevel);
     std::vector<std::shared_ptr<Tile>> worldTiles;
     std::vector<std::shared_ptr<Enemy>> worldEnemies;
     std::vector<std::shared_ptr<Tile>> worldHealthPacks;
@@ -53,6 +55,7 @@ private:
     QLineEdit* lineEdit;
     float previousHealth;
     QTimer* colorResetTimer;
+    std::set<std::pair<int, int>> poisonedTiles;
 
 
     void printHelp();

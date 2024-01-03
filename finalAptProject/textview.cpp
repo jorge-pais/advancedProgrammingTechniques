@@ -29,7 +29,7 @@ void TextView::renderTiles() {
     worldEnemies = delegate->getWorldEnemies();
     worldHealthPacks = delegate->getWorldHealthPacks();
     protagonist = delegate->getWorldProtagonist();
-
+    //auto poisonedTiles = delegate->getPoisonedTiles();
     textView->clear();
     std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
 
@@ -61,8 +61,13 @@ void TextView::renderTiles() {
 
     worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
 
-    // grid
+    for (const auto& tile : poisonedTiles) {
+        textView->setTextColor(Qt::red);
+        worldView[tile.second][tile.first] = '*';
+        textView->setTextColor(Qt::black);// tile is a pair<x, y>
+    }
 
+    // grid
     QString line;
     for (const auto& row : worldView) {
         QString line = "| ";
@@ -108,6 +113,9 @@ void TextView::resetColorAfterDelay() {
 
 void TextView::resetColor(){
     updateHealthDisplay(view->getDelegate()->getWorldProtagonist()->getHealth());
+}
+void TextView::poisonTile(int x, int y, int poisonLevel){
+    poisonedTiles.insert({x, y});
 }
 
 void TextView::updateHealthDisplay(float currentHealth) {

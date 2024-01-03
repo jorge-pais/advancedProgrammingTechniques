@@ -110,6 +110,7 @@ void WorldView::poisonLevelUpdatedSlot(int value)
                             {} // change the condition
                             else{
                                 this->gView->poisonTile(poisonX, poisonY, value);
+                                this->tView->poisonTile(poisonX, poisonY, value);
                                 this->delegate->addPoisonTile(poisonX, poisonY, value);
                             }
                         }
