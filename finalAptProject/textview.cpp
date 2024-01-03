@@ -4,11 +4,13 @@
 #include "qloggingcategory.h"
 QLoggingCategory textViewCat("textView");
 
-TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view)
+TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view, QTextBrowser* healthBrowser, QTextBrowser* energyBrowser)
 {
     this->textView = textView;
     this->view = view;
     this->lineEdit = lineEdit;
+    this->healthBrowser = healthBrowser;
+    this->energyBrowser = energyBrowser;
     QTextCursor cursor(textView->document());
 
     textView->setTextCursor(cursor);
@@ -27,7 +29,6 @@ void TextView::renderTiles() {
     worldEnemies = delegate->getWorldEnemies();
     worldHealthPacks = delegate->getWorldHealthPacks();
     protagonist = delegate->getWorldProtagonist();
-    float currentHealth = protagonist->getHealth();
 
     textView->clear();
     std::vector<std::vector<char>> worldView(delegate->getWorldRows(), std::vector<char>(delegate->getWorldColumns(), ' '));
@@ -48,7 +49,7 @@ void TextView::renderTiles() {
     worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
 
     // grid
-    /*
+
     QString line;
     for (const auto& row : worldView) {
         QString line = "| ";
@@ -60,32 +61,6 @@ void TextView::renderTiles() {
         textView->append(line);
         textView->append(QString(line.size(), '-'));
     }
-    */
-    for (const auto& row : worldView) {
-            QString line;
-            for (const auto& tile : row) {
-                if(tile == 'P'){
-                    if (currentHealth < previousHealth) {
-                        line += "<font color='red'>P</font>";
-                        resetColorAfterDelay();
-                    }
-                    else if(currentHealth > previousHealth){
-                        line += "<font color='green'>P</font>";
-                        resetColorAfterDelay();
-                    }
-                    else {
-                        line += "P";
-                    }
-                }
-                else {
-                    line += QString(tile);
-                }
-                line += " | "; // Add grid lines
-            }
-            textView->append(line);
-            textView->append(QString(line.size(), '-'));
-        }
-    previousHealth = currentHealth;
     this->centerPlayer();
 }
 
@@ -115,10 +90,37 @@ void TextView::resetColorAfterDelay() {
     colorResetTimer->stop();
     colorResetTimer->start(2000); //ms
     qCDebug(textViewCat) << "resetColorAfterDelay() is called";
+
 }
 
-void TextView::resetColor() {
-    textView->setTextColor(Qt::black);
+void TextView::resetColor(){
+    updateHealthDisplay(view->getDelegate()->getWorldProtagonist()->getHealth());
+}
+
+void TextView::updateHealthDisplay(float currentHealth) {
+    QString healthText = QString::number(currentHealth);
+
+
+    if (currentHealth < previousHealth) {
+        healthBrowser->setTextColor(Qt::red);
+        healthBrowser->setText(healthText);
+        resetColorAfterDelay();
+    } else if (currentHealth > previousHealth) {
+        healthBrowser->setTextColor(Qt::green);
+        healthBrowser->setText(healthText);
+        resetColorAfterDelay();
+    }
+    else{
+        healthBrowser->setTextColor(Qt::black);
+        healthBrowser->setText(healthText);
+    }
+    previousHealth = currentHealth;
+}
+
+void TextView::updateEnergyDisplay(int currentEnergy){
+    QString energyText = QString::number(currentEnergy);
+    energyBrowser->setTextColor(Qt::blue);
+    energyBrowser->setText(energyText);
 }
 
 void TextView::processCommand(const QString& command)

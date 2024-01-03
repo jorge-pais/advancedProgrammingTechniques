@@ -30,10 +30,12 @@ class TextView: public QObject
 
 public:
     //TextView(QTextBrowser* textView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate);
-    TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view);
+    TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view, QTextBrowser* healthBrowser, QTextBrowser* energyBrowser);
     void renderTiles();
     void resetColor();
     void resetColorAfterDelay();
+    void updateHealthDisplay(float currentHealth);
+    void updateEnergyDisplay(int currentEnergy);
     void processCommand(const QString& command);
     std::vector<std::shared_ptr<Tile>> worldTiles;
     std::vector<std::shared_ptr<Enemy>> worldEnemies;
@@ -43,6 +45,8 @@ public:
 
 private:
     QTextBrowser* textView;
+    QTextBrowser* healthBrowser;
+    QTextBrowser* energyBrowser;
     QCompleter* completer;
     std::shared_ptr<WorldView> view;
     QStringList availableCommands;

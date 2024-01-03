@@ -152,7 +152,7 @@ void WorldView::protagonistHealthChangedSlot(int h)
 {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
     gView->player->setHealth(h <= 0 ? 0 : h);
-
+    tView->updateHealthDisplay(h);
     auto healthPacks = this->delegate->getWorldHealthPacks();
     for(auto& pack : healthPacks){
         if(pack->getValue() == 0 && pack->getXPos() == delegate->getWorldProtagonist()->getXPos() && pack->getYPos() == delegate->getWorldProtagonist()->getYPos()){
@@ -189,6 +189,7 @@ void WorldView::protagonistEnergyChangedSlot(int e)
     
     // show the energy level changing on screen
     gView->player->setEnergy(e);
+    tView->updateEnergyDisplay(e);
 }
 
 void WorldView::enemyDeadSlot()
