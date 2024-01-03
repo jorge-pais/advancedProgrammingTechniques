@@ -158,19 +158,15 @@ void WorldView::newWorldLoadedSlot(){
     gView->clearTiles();
     gView->clearEntities();
     gView->clearDoor();
-    gView->clearPlayer();
 
     gView->renderTiles();
     gView->renderEntities();
     gView->renderDoor();
     gView->renderPoisonTiles();
-    gView->renderPlayer();
-    //I am very confused why it only shows the protagonist after you mover again? Any thoughts? (textview works tho)
 
     gView->centerView();
     enemyDeadSlot();
 
-    gView->player->setPosition(delegate->getDoor()->getXPos(),delegate->getDoor()->getYPos());
 }
 
 /// is this even connected to something other than the protagonist?

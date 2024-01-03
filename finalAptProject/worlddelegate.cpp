@@ -241,6 +241,7 @@ void WorldDelegate::movedSlot(int dx, int dy) {
         return;
     if(newX == door->getXPos() && newY == door->getYPos()){
         activateDoor();
+        return;
     }
 
     singleMove(newX, newY);
