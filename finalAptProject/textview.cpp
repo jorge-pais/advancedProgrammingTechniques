@@ -62,9 +62,9 @@ void TextView::renderTiles() {
     worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
 
     for (const auto& tile : poisonedTiles) {
-        textView->setTextColor(Qt::red);
+        //textView->setTextColor(Qt::red);
         worldView[tile.second][tile.first] = '*';
-        textView->setTextColor(Qt::black);// tile is a pair<x, y>
+        //textView->setTextColor(Qt::black);// tile is a pair<x, y>
     }
 
     // grid

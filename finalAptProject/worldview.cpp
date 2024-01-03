@@ -82,13 +82,48 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
 
 void WorldView::attackNearestEnemy(){
     qCDebug(worldViewCat) << "attackNearestEnemy() called";
-    //find nearest enemy and then use the pathfinder to send the protagonist there and attack
+    //find nearest enemy and then go there to attack
+    auto protagonistXPos = delegate->getWorldProtagonist()->getXPos();
+    auto protagonistYPos = delegate->getWorldProtagonist()->getYPos();
+    std::shared_ptr<Enemy> nearestEnemy;
+    float minDistance = std::numeric_limits<float>::max();
+
+    for (auto& enemy : delegate->getWorldEnemies()) {
+        if (!enemy->getDefeated()) {
+            float distance = calculateDistance({protagonistXPos, protagonistYPos}, {enemy->getXPos(), enemy->getYPos()});
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestEnemy = enemy;
+            }
+        }
+    }
+    if (nearestEnemy) {
+        emit playerGotoSignal(nearestEnemy->getXPos(), nearestEnemy->getYPos());
+    }
 }
 
 void WorldView::takeNearestHealthPack(){
     qCDebug(worldViewCat) << "takeNearestHealthPack() called";
-    //find nearest healthpack and then use the pathfinder to send the protagonist there and increase health
+    //find nearest healthpack and then go there and increase health
+    auto protagonistXPos = delegate->getWorldProtagonist()->getXPos();
+    auto protagonistYPos = delegate->getWorldProtagonist()->getYPos();
+    std::shared_ptr<Tile> nearestHealthPack;
+    float minDistance = std::numeric_limits<float>::max();
+
+    for (auto& healthPack : delegate->getWorldHealthPacks()) {
+        if (healthPack->getValue() > 0) { // Check if the health pack is not already taken
+            float distance = calculateDistance({protagonistXPos, protagonistYPos}, {healthPack->getXPos(), healthPack->getYPos()});
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestHealthPack = healthPack;
+            }
+        }
+    }
+    if (nearestHealthPack) {
+        emit playerGotoSignal(nearestHealthPack->getXPos(), nearestHealthPack->getYPos());
+    }
 }
+
 
 void WorldView::poisonLevelUpdatedSlot(int value)
 {
