@@ -57,7 +57,7 @@ public:
     void clearEntities();
     void clearPlayer();
     void clearDoor();
-    void renderDoor(int x, int y);
+    void renderDoor();
     
     void pathTile(int x, int y);
     void clearPath();

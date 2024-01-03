@@ -11,21 +11,23 @@ MainWindow::MainWindow(QWidget *parent)
     world(std::make_shared<World>()),
     otherWorld(std::make_shared<World>()),
     wView(std::make_shared<WorldView>(this)),
-    worldDelegate(std::make_shared<WorldDelegate>(wView, world, otherWorld))
+    worldDelegate(std::make_shared<WorldDelegate>(wView, world)),
+    otherWorldDelegate(std::make_shared<WorldDelegate>(wView, otherWorld))
 {
     ui->setupUi(this);
     srand(time(0));
 
-    wView->setDelegate(worldDelegate);
+    wView->setDelegates(worldDelegate, otherWorldDelegate);
 
     // Create the world from the file, this was to be
     QString worldPath{":/images/resources/world_images/worldmap.png"};
     world->createWorld(worldPath, 5, 6, 0.0);
-    //QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    //otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
+    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
+    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();
+    otherWorldDelegate->initializeWDelegate();
 
     // Initialize GraphicalView
     QGraphicsScene* scene = new QGraphicsScene();
@@ -34,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     //Initialize TextView
     tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView);
     QFont font;
-    font.setFamily("Courier");q
+    font.setFamily("Courier");
     font.setStyleHint(QFont::Monospace);
     font.setFixedPitch(true);
     font.setPointSize(10);
@@ -53,7 +55,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     //connect slots and setup
     worldDelegate->addDoor();
+    otherWorldDelegate->addDoor();
+    worldDelegate->connectSignals();
     worldDelegate->connectSlots();
+    otherWorldDelegate->connectSignals();
     wView->connectSlots();
     wView->setViews(gView, tView);
 
@@ -61,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     gView->renderTiles();
     gView->renderEntities();
     gView->renderPlayer();
-    gView->renderDoor(worldDelegate->getDoor()->getXPos(), worldDelegate->getDoor()->getYPos());
+    gView->renderDoor();
 
     tView->renderTiles();
 

@@ -19,9 +19,22 @@ void WorldView::connectSlots(){
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
+
+    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
+    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
+    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
+
     connect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
 
     for(auto& enemy : delegate->getWorldEnemies()){
+        QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
+        PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+        if(pEnemy){
+            QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
+        }
+    }
+
+    for(auto& enemy : otherDelegate->getWorldEnemies()){
         QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
         PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
         if(pEnemy){
@@ -35,9 +48,10 @@ void WorldView::setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr
     this->tView = text;
 }
 
-void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
+void WorldView::setDelegates(std::shared_ptr<WorldDelegate> del, std::shared_ptr<WorldDelegate> otherDel){
     qCDebug(worldViewCat) << "setDelegate() called";
     this->delegate = del;
+    this->otherDelegate = otherDel;
 }
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event)
@@ -134,9 +148,11 @@ void WorldView::positionChangedSlot(int x, int y)
 }
 
 void WorldView::newWorldLoadedSlot(){
-    disconnect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
-    this->connectSlots();
-    
+
+    this->delegate.swap(this->otherDelegate);
+    this->delegate->connectSlots();
+    this->delegate->getWorldProtagonist()->setXPos(this->delegate->getDoor()->getXPos());
+    this->delegate->getWorldProtagonist()->setYPos(this->delegate->getDoor()->getYPos());
     gView->clearTiles();
     gView->renderTiles();
     gView->clearEntities();
@@ -144,6 +160,7 @@ void WorldView::newWorldLoadedSlot(){
     gView->clearPlayer();
     gView->renderPlayer();
     gView->clearDoor();
+    gView->renderDoor();
 }
 
 /// is this even connected to something other than the protagonist?

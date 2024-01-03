@@ -108,14 +108,15 @@ void GraphicalView::renderEntities(){
     }
 }
 
-void GraphicalView::renderDoor(int x, int y){
+void GraphicalView::renderDoor(){
     auto sprite = QPixmap(":/images/resources/entities/door.png");
     sprite = sprite.scaled(
             TILE_SIZE, TILE_SIZE,
             Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation);
     door = new QGraphicsPixmapItem(sprite);
-
+    int x = this->worldView->getDelegate()->getDoor()->getXPos();
+    int y = this->worldView->getDelegate()->getDoor()->getYPos();
     door->setPos(x*TILE_SIZE, y*TILE_SIZE);
 
     scene->addItem(door);

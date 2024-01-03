@@ -19,6 +19,7 @@ class WorldView : public QObject
     Q_OBJECT
 private:
     std::shared_ptr<WorldDelegate> delegate = nullptr;
+    std::shared_ptr<WorldDelegate> otherDelegate = nullptr;
     //std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
 
@@ -29,7 +30,7 @@ public:
     WorldView(MainWindow * mainWindow);
     //WorldView(WorldDelegate& delegate);
     void setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr<TextView> text);
-    void setDelegate(std::shared_ptr<WorldDelegate> delegate);
+    void setDelegates(std::shared_ptr<WorldDelegate> delegate, std::shared_ptr<WorldDelegate> otherDelegate);
     std::shared_ptr<WorldDelegate> getDelegate() const;
     void connectSlots();
     void attack();//what is this for?
