@@ -17,6 +17,7 @@
 #include <iostream>
 #include <QScrollBar>
 #include <QApplication>
+#include <set>
 
 #include "worldview.h"
 
@@ -30,25 +31,31 @@ class TextView: public QObject
 
 public:
     //TextView(QTextBrowser* textView, QGraphicsScene * scene, std::shared_ptr<WorldDelegate> delegate);
-    TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view);
+    TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view, QTextBrowser* healthBrowser, QTextBrowser* energyBrowser);
     void renderTiles();
     void resetColor();
     void resetColorAfterDelay();
+    void updateHealthDisplay(float currentHealth);
+    void updateEnergyDisplay(int currentEnergy);
     void processCommand(const QString& command);
+    void poisonTile(int x, int y, int poisonLevel);
     std::vector<std::shared_ptr<Tile>> worldTiles;
     std::vector<std::shared_ptr<Enemy>> worldEnemies;
     std::vector<std::shared_ptr<Tile>> worldHealthPacks;
     std::shared_ptr<Protagonist> protagonist;
-    void centerPlayer();
+    //void centerPlayer();
 
 private:
     QTextBrowser* textView;
+    QTextBrowser* healthBrowser;
+    QTextBrowser* energyBrowser;
     QCompleter* completer;
     std::shared_ptr<WorldView> view;
     QStringList availableCommands;
     QLineEdit* lineEdit;
     float previousHealth;
     QTimer* colorResetTimer;
+    std::set<std::pair<int, int>> poisonedTiles;
 
 
     void printHelp();

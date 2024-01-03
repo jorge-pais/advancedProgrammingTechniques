@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, wView);
 
     //Initialize TextView
-    tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView);
+    tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView, ui->healthBrowser, ui->energyBroswer);
     QFont font;
     font.setFamily("Courier");
     font.setStyleHint(QFont::Monospace);
@@ -64,6 +64,9 @@ MainWindow::MainWindow(QWidget *parent)
     gView->renderDoor(worldDelegate->getDoor()->getXPos(), worldDelegate->getDoor()->getYPos());
 
     tView->renderTiles();
+    //show health and energy from the start
+    tView->updateHealthDisplay(worldDelegate->getWorldProtagonist()->getHealth());
+    tView->updateEnergyDisplay(worldDelegate->getWorldProtagonist()->getEnergy());
 
     toolbarConfig();
 
