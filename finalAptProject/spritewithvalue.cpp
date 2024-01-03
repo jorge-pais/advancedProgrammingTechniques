@@ -20,6 +20,9 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
     }else{
         spriteSet["alive"] = QPixmap(":/images/resources/entities/platter.png");
         spriteSet["dead"] = QPixmap(); // puff! disappear!
+        if(entity->getValue() == 0){
+            text = std::make_shared<QGraphicsTextItem>(QString());
+        }
     }   
 
     spriteSet["alive"] = scaleSprite(spriteSet["alive"]);

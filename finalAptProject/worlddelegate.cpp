@@ -90,6 +90,8 @@ std::shared_ptr<Tile> WorldDelegate::getTile(int x, int y){
 
 std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldTiles(){ return this->tiles; }
 
+std::vector<std::shared_ptr<Tile>> WorldDelegate::getPoisonTiles(){ return this->poisonTiles; }
+
 std::vector<std::shared_ptr<Enemy>> WorldDelegate::getWorldEnemies(){ return this->enemies; }
 
 std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldHealthPacks(){ return this->healthPacks; }

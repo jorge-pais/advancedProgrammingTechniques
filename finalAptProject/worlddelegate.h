@@ -57,6 +57,7 @@ public:
     void initializeWDelegate();
     std::shared_ptr<Tile> getTile(int x, int y);
     std::vector<std::shared_ptr<Tile>> getWorldTiles();
+    std::vector<std::shared_ptr<Tile>> getPoisonTiles();
     std::vector<std::shared_ptr<Enemy>> getWorldEnemies();
     std::vector<std::shared_ptr<Tile>> getWorldHealthPacks();
     int getWorldRows() const;

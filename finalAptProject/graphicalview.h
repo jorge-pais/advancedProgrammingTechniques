@@ -58,6 +58,7 @@ public:
     void clearPlayer();
     void clearDoor();
     void renderDoor();
+    void renderPoisonTiles();
     
     void pathTile(int x, int y);
     void clearPath();

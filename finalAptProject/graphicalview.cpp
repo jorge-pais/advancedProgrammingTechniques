@@ -87,6 +87,12 @@ void GraphicalView::poisonTile(int x, int y, int poisonLevel){
     rect->setZValue(3);
 }
 
+void GraphicalView::renderPoisonTiles(){
+    for(const auto& tile : this->worldView->getDelegate()->getPoisonTiles()){
+        poisonTile(tile->getXPos(), tile->getYPos(), tile->getValue());
+    }
+}
+
 /// @brief Renders the entities in the game world.
 void GraphicalView::renderEntities(){
     qCDebug(graphicalViewCat) << "renderEntities() called";

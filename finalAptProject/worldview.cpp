@@ -161,6 +161,8 @@ void WorldView::newWorldLoadedSlot(){
     gView->renderPlayer();
     gView->clearDoor();
     gView->renderDoor();
+    gView->renderPoisonTiles();
+    enemyDeadSlot();
 }
 
 /// is this even connected to something other than the protagonist?
