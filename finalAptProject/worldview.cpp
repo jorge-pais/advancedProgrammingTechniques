@@ -151,8 +151,7 @@ void WorldView::newWorldLoadedSlot(){
 
     this->delegate.swap(this->otherDelegate);
     this->delegate->connectSlots();
-    this->delegate->getWorldProtagonist()->setXPos(this->delegate->getDoor()->getXPos());
-    this->delegate->getWorldProtagonist()->setYPos(this->delegate->getDoor()->getYPos());
+    this->delegate->setProtagonistPosition(this->delegate->getDoor()->getXPos(),this->delegate->getDoor()->getYPos());
     gView->clearTiles();
     gView->renderTiles();
     gView->clearEntities();
@@ -163,6 +162,8 @@ void WorldView::newWorldLoadedSlot(){
     gView->renderDoor();
     gView->renderPoisonTiles();
     enemyDeadSlot();
+    this->delegate->setProtagonistHealth(otherDelegate->getWorldProtagonist()->getHealth());
+    gView->player->setPosition(this->delegate->getWorldProtagonist()->getXPos(), this->delegate->getWorldProtagonist()->getYPos());
 }
 
 /// is this even connected to something other than the protagonist?

@@ -70,7 +70,7 @@ public:
     std::string enemyStatus(Enemy& enemy);
     void attack(std::shared_ptr<Enemy> enemy); // maybe we won't need this due to the slot
     void activateDoor();
-    void addDoor();
+    void addDoor(int seed);
     std::shared_ptr<Tile> getDoor();
     void connectSlots();
     void connectSignals();

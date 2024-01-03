@@ -116,28 +116,33 @@ void WorldDelegate::setProtagonistEnergy(float energyValue){
 std::shared_ptr<Tile> WorldDelegate::getDoor(){
     return door;
 }
-void WorldDelegate::addDoor(){
-    srand(time(NULL));
+void WorldDelegate::addDoor(int seed){
+    srand(seed);
     bool done = false;
+    bool found = false;
     int x;
     int y;
     while(!done){
+        found = false;
         x = rand() % getWorldColumns();
         y = rand() % getWorldRows();
+
         for(const auto& healthpack : getWorldHealthPacks()){
             if(healthpack->getXPos() == x && healthpack->getYPos() == y){
-                break;
+                found = true;
             }
         }
         for(const auto& enemy : getWorldEnemies()){
             if(enemy->getXPos() == x && enemy->getYPos() == y){
-                break;
+                found = true;
             }
         }
         if(x == 0 && y == 0){
-            break;
+            found = true;;
         }
-        done = true;
+        if(!found){
+            done = true;
+        }
     }
 
     door = std::make_shared<Tile>(x, y, 0);

@@ -54,8 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
     //connect slots and setup
-    worldDelegate->addDoor();
-    otherWorldDelegate->addDoor();
+    worldDelegate->addDoor(rand());
+    otherWorldDelegate->addDoor(rand());
     worldDelegate->connectSignals();
     worldDelegate->connectSlots();
     otherWorldDelegate->connectSignals();
