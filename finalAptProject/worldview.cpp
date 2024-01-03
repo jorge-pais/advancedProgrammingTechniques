@@ -4,8 +4,7 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldViewCat("worldView");
 
-std::shared_ptr<WorldDelegate> WorldView::getDelegate() const
-{
+std::shared_ptr<WorldDelegate> WorldView::getDelegate() const {
     return delegate;
 }
 
@@ -19,9 +18,22 @@ void WorldView::connectSlots(){
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
+
+    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
+    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
+    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
+
     connect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
 
     for(auto& enemy : delegate->getWorldEnemies()){
+        QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
+        PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+        if(pEnemy){
+            QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
+        }
+    }
+
+    for(auto& enemy : otherDelegate->getWorldEnemies()){
         QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
         PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
         if(pEnemy){
@@ -35,13 +47,13 @@ void WorldView::setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr
     this->tView = text;
 }
 
-void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
+void WorldView::setDelegates(std::shared_ptr<WorldDelegate> del, std::shared_ptr<WorldDelegate> otherDel){
     qCDebug(worldViewCat) << "setDelegate() called";
     this->delegate = del;
+    this->otherDelegate = otherDel;
 }
 
-void WorldView::mainWindowEventSlot(QKeyEvent *event)
-{
+void WorldView::mainWindowEventSlot(QKeyEvent *event) {
     int dx = 0, dy = 0;
 
     /// TODO Figure out why the arrow keys aren't working
@@ -80,53 +92,37 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     gView->clearPath();
 }
 
-void WorldView::attackNearestEnemy(){
-    qCDebug(worldViewCat) << "attackNearestEnemy() called";
-    //find nearest enemy and then go there to attack
-    auto protagonistXPos = delegate->getWorldProtagonist()->getXPos();
-    auto protagonistYPos = delegate->getWorldProtagonist()->getYPos();
-    std::shared_ptr<Enemy> nearestEnemy;
-    float minDistance = std::numeric_limits<float>::max();
+template <typename T> /// TODO: these functions are untested as of yet
+void WorldView::goToNearestEntity(std::vector<std::shared_ptr<T>> entities){
+    int progX = delegate->getWorldProtagonist()->getXPos();
+    int progY = delegate->getWorldProtagonist()->getYPos();
 
-    for (auto& enemy : delegate->getWorldEnemies()) {
-        if (!enemy->getDefeated()) {
-            float distance = calculateDistance({protagonistXPos, protagonistYPos}, {enemy->getXPos(), enemy->getYPos()});
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestEnemy = enemy;
-            }
+    std::shared_ptr<T> closest; int x, y; float min = __FLT_MAX__;
+    for(auto & entity: entities){
+        x = entity->getXPos(); y = entity->getYPos();
+        float dist = sqrt((x-progX)*(x-progX) + (y-progY)*(y-progY));
+        if(dist < min){
+            dist = min; 
+            closest = entity;
         }
     }
-    if (nearestEnemy) {
-        emit playerGotoSignal(nearestEnemy->getXPos(), nearestEnemy->getYPos());
-    }
+
+    emit playerGotoSignal(closest->getXPos(), closest->getYPos());
+}
+
+void WorldView::attackNearestEnemy(){
+    qCDebug(worldViewCat) << "attackNearestEnemy() called";
+    //find nearest enemy and then use the pathfinder to send the protagonist there and attack
+    goToNearestEntity(delegate->getWorldEnemies());
 }
 
 void WorldView::takeNearestHealthPack(){
     qCDebug(worldViewCat) << "takeNearestHealthPack() called";
-    //find nearest healthpack and then go there and increase health
-    auto protagonistXPos = delegate->getWorldProtagonist()->getXPos();
-    auto protagonistYPos = delegate->getWorldProtagonist()->getYPos();
-    std::shared_ptr<Tile> nearestHealthPack;
-    float minDistance = std::numeric_limits<float>::max();
-
-    for (auto& healthPack : delegate->getWorldHealthPacks()) {
-        if (healthPack->getValue() > 0) { // Check if the health pack is not already taken
-            float distance = calculateDistance({protagonistXPos, protagonistYPos}, {healthPack->getXPos(), healthPack->getYPos()});
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestHealthPack = healthPack;
-            }
-        }
-    }
-    if (nearestHealthPack) {
-        emit playerGotoSignal(nearestHealthPack->getXPos(), nearestHealthPack->getYPos());
-    }
+    //find nearest healthpack and then use the pathfinder to send the protagonist there and increase health
+    goToNearestEntity(delegate->getWorldHealthPacks());
 }
 
-
-void WorldView::poisonLevelUpdatedSlot(int value)
-{
+void WorldView::poisonLevelUpdatedSlot(int value) {
     auto enemies = this->delegate->getWorldEnemies();
 
     for(auto& enemy : enemies){
@@ -157,8 +153,7 @@ void WorldView::poisonLevelUpdatedSlot(int value)
     qCDebug(worldViewCat) << "poisonLevelUpdatedSlot() called";
 }
 
-void WorldView::positionChangedSlot(int x, int y)
-{
+void WorldView::positionChangedSlot(int x, int y) {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->animate(ProtagonistSprite::MOVE);
@@ -170,22 +165,28 @@ void WorldView::positionChangedSlot(int x, int y)
 }
 
 void WorldView::newWorldLoadedSlot(){
-    disconnect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
-    this->connectSlots();
-    
+
+    delegate.swap(otherDelegate);
+    delegate->connectSlots();
+
+    delegate->setProtagonistHealth(otherDelegate->getWorldProtagonist()->getHealth());
+    delegate->setProtagonistPosition(delegate->getDoor()->getXPos(),delegate->getDoor()->getYPos());
+
     gView->clearTiles();
-    gView->renderTiles();
     gView->clearEntities();
-    gView->renderEntities();
-    gView->clearPlayer();
-    gView->renderPlayer();
     gView->clearDoor();
+
+    gView->renderTiles();
+    gView->renderEntities();
+    gView->renderDoor();
+    gView->renderPoisonTiles();
+
+    gView->centerView();
+    enemyDeadSlot();
+
 }
 
-/// is this even connected to something other than the protagonist?
-/// there is a pretty similar loop in world delegate
-void WorldView::protagonistHealthChangedSlot(int h)
-{
+void WorldView::protagonistHealthChangedSlot(int h) {
     qCDebug(worldViewCat) << "protagonistHealthChangeSlot() called";
     gView->player->setHealth(h <= 0 ? 0 : h);
     tView->updateHealthDisplay(h);
@@ -218,7 +219,7 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     }
 }
 
-/// TODO: Only for graphical view as of now
+/// TODO: Only implemented for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";

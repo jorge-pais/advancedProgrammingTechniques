@@ -23,11 +23,12 @@
 #define TILE_SIZE 40
 #define DEAD_OFFSET 25
 
-class SpriteWithValue
-: public QObject{ // public inheritance !!
+/// @class SpriteWithValue
+/// @brief A class that represents a sprite with a value.
+/// This class is used to represent entities in the game world that have a sprite and a value, such as enemies and health packs.
+class SpriteWithValue : public QObject{
 public:
    SpriteWithValue();
-   SpriteWithValue(std::shared_ptr<Protagonist> prog);
    SpriteWithValue(std::shared_ptr<Tile> entity);
 
    ~SpriteWithValue() = default;

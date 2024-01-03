@@ -57,7 +57,8 @@ public:
     void clearEntities();
     void clearPlayer();
     void clearDoor();
-    void renderDoor(int x, int y);
+    void renderDoor();
+    void renderPoisonTiles();
     
     void pathTile(int x, int y);
     void clearPath();
@@ -71,6 +72,7 @@ private:
     QGraphicsPixmapItem * door;
 
     std::vector<QGraphicsItem *> tiles;
+    std::vector<QGraphicsItem *> poisonTiles;
 
     // this might have been a convoluted way to do this, since we 
     // could have simply stored the lowest value in the range. oh well.

@@ -67,6 +67,7 @@ private:
     std::shared_ptr<World> otherWorld;
     std::shared_ptr<WorldView> wView;
     std::shared_ptr<WorldDelegate> worldDelegate;
+    std::shared_ptr<WorldDelegate> otherWorldDelegate;
     std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
     std::shared_ptr<Settings> settings;
