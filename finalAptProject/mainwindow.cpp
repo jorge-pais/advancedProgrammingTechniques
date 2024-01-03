@@ -12,29 +12,29 @@ MainWindow::MainWindow(QWidget *parent)
     otherWorld(std::make_shared<World>()),
     wView(std::make_shared<WorldView>(this)),
     worldDelegate(std::make_shared<WorldDelegate>(wView, world, otherWorld))
-////////////////////////////////////////////////////////////////
 {
     ui->setupUi(this);
     srand(time(0));
 
     wView->setDelegate(worldDelegate);
 
+    // Create the world from the file, this was to be
     QString worldPath{":/images/resources/world_images/worldmap.png"};
     world->createWorld(worldPath, 5, 6, 0.0);
-    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
+    //QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
+    //otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();
 
     // Initialize GraphicalView
-    QGraphicsScene * scene = new QGraphicsScene();
+    QGraphicsScene* scene = new QGraphicsScene();
     gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, wView);
 
     //Initialize TextView
     tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView);
     QFont font;
-    font.setFamily("Courier");
+    font.setFamily("Courier");q
     font.setStyleHint(QFont::Monospace);
     font.setFixedPitch(true);
     font.setPointSize(10);
@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit->setCompleter(completer);
 
     //submit command
-    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::submitCommand);
+    connect(ui->pushButton, &QPushButton::clicked,   this, &MainWindow::submitCommand);
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
     //connect slots and setup
@@ -81,12 +81,13 @@ void MainWindow::submitCommand(){
     ui->lineEdit->clear();
 }
 
-/// this part signals the view and gives it the event,
-/// the view then extracts what this event means and gives the data to the delegate,
-/// the delegate then applies game logic and sends data to model
-/// model then sends new game values to view to display
-/// view then gives these values to text or graphical view to render in appropriate way
 void MainWindow::keyPressEvent(QKeyEvent *event){
+    /// this part signals the view and gives it the event,
+    /// the view then extracts what this event means and gives the data to the delegate,
+    /// the delegate then applies game logic and sends data to model
+    /// model then sends new game values to view to display
+    /// view then gives these values to text or graphical view to render in appropriate way
+
     emit mainWindowEventSignal(event);
 }
 
@@ -99,6 +100,11 @@ void MainWindow::toolbarConfig(){
     QAction *newGameAction = new QAction("New game", this);
     connect(newGameAction, &QAction::triggered, this, &MainWindow::newGame);
     toolbar->addAction(newGameAction);
+
+    QAction *overlayAction = new QAction("Overlay", this);
+    overlayAction->setCheckable(true);
+    connect(overlayAction, &QAction::triggered, this, &MainWindow::toggleOverlay);
+    toolbar->addAction(overlayAction);
 
     QAction *settingsAction = new QAction("Settings", this);
     connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
@@ -119,6 +125,12 @@ void MainWindow::newGame(){
     while(it.hasNext()){
         qCDebug(mainWindowCat) << it.next();
     }
+}
+
+void MainWindow::toggleOverlay(){
+    QAction *action = qobject_cast<QAction *>(sender());
+    if(action)
+        gView->toggleOverlay(action->isChecked());
 }
 
 void MainWindow::openSettings(){
