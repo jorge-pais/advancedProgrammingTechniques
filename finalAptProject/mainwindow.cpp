@@ -21,8 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Create the world from the file, this was to be
     QString worldPath{":/images/resources/world_images/worldmap.png"};
     world->createWorld(worldPath, 5, 6, 0.0);
-    //QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    //otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
+    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
+    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     //Initialize TextView
     tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView);
     QFont font;
-    font.setFamily("Courier");q
+    font.setFamily("Courier");
     font.setStyleHint(QFont::Monospace);
     font.setFixedPitch(true);
     font.setPointSize(10);
