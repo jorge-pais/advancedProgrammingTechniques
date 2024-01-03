@@ -36,7 +36,6 @@ void WorldView::setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr
 }
 
 void WorldView::setDelegate(std::shared_ptr<WorldDelegate> del){
-    qCDebug(worldViewCat) << "setDelegate() called";
     this->delegate = del;
 }
 
@@ -80,14 +79,34 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event)
     gView->clearPath();
 }
 
+template <typename T> /// TODO: these functions are untested as of yet
+void WorldView::goToNearestEntity(std::vector<std::shared_ptr<T>> entities){
+    int progX = delegate->getWorldProtagonist()->getXPos();
+    int progY = delegate->getWorldProtagonist()->getYPos();
+
+    std::shared_ptr<T> closest; int x, y; float min = __FLT_MAX__;
+    for(auto & entity: entities){
+        x = entity->getXPos(); y = entity->getYPos();
+        float dist = sqrt((x-progX)*(x-progX) + (y-progY)*(y-progY));
+        if(dist < min){
+            dist = min; 
+            closest = entity;
+        }
+    }
+
+    emit playerGotoSignal(closest->getXPos(), closest->getYPos());
+}
+
 void WorldView::attackNearestEnemy(){
     qCDebug(worldViewCat) << "attackNearestEnemy() called";
     //find nearest enemy and then use the pathfinder to send the protagonist there and attack
+    goToNearestEntity(delegate->getWorldEnemies());
 }
 
 void WorldView::takeNearestHealthPack(){
     qCDebug(worldViewCat) << "takeNearestHealthPack() called";
     //find nearest healthpack and then use the pathfinder to send the protagonist there and increase health
+    goToNearestEntity(delegate->getWorldHealthPacks());
 }
 
 void WorldView::poisonLevelUpdatedSlot(int value)
