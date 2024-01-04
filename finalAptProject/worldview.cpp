@@ -246,5 +246,7 @@ void WorldView::deathScreen(){
     }
     else if(deadBox.clickedButton() == buttonQuit){
         qCDebug(worldViewCat) << "quit!";
+        
+        exit(0);
     }
 }
