@@ -6,18 +6,14 @@
 #include "qloggingcategory.h"
 QLoggingCategory worldDelegateCat("worldDelegate");
 
-WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world, std::shared_ptr<World> otherWorld)
+WorldDelegate::WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world)
 {
     this->view = view;
     this->world = world;
-    this->otherWorld = otherWorld;
 }
 
-void WorldDelegate::connectSlots(){
-    qCDebug(worldDelegateCat) << "connectSlots() called";
+void WorldDelegate::connectSignals(){
 
-    QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
-    QObject::connect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
     QObject::connect(this, &WorldDelegate::xEnemyStoleSignal, this->view.get(), &WorldView::xEnemyStoleSlot);
     QObject::connect(this, &WorldDelegate::newWorldLoadedSignal, this->view.get(), &WorldView::newWorldLoadedSlot);
 
@@ -29,19 +25,25 @@ void WorldDelegate::connectSlots(){
             }
         }
     }
+
+}
+
+void WorldDelegate::connectSlots(){
+    qCDebug(worldDelegateCat) << "connectSlots() called";
+
+    QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+    QObject::connect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
 }
 
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
     //if (tiles != nullptr && healthPacks != nullptr && enemies != nullptr) return
-    tiles.clear();
     for(auto & tile : world->getTiles()){
         std::shared_ptr<Tile> sharedTile= std::move(tile);
         tiles.push_back(sharedTile);
     }
 
     bool xEnemyMade = false;
-    enemies.clear();
     for(auto & enemy : world->getEnemies()){
         if(!xEnemyMade){
             if(enemyStatus(*enemy) == "Regular"){
@@ -56,7 +58,6 @@ void WorldDelegate::initializeWDelegate(){
         }
     }
 
-    healthPacks.clear();
     for(auto & healthPack : world->getHealthPacks()){
         std::shared_ptr<Tile> sharedHealthPack= std::move(healthPack);
         healthPacks.push_back(sharedHealthPack);
@@ -65,6 +66,7 @@ void WorldDelegate::initializeWDelegate(){
     this->protagonist = std::move(world->getProtagonist());
 
     /// check if the protagonist is in a infinite energy tile
+    /*
     if(std::isinf(getTile(protagonist->getXPos(), protagonist->getYPos())->getValue())){
         for(auto & tile : tiles){
             if(!std::isinf(tile->getValue())){
@@ -73,6 +75,7 @@ void WorldDelegate::initializeWDelegate(){
             }
         }
     }
+    */
 
     rows = world->getRows();
     cols = world->getCols();
@@ -86,6 +89,8 @@ std::shared_ptr<Tile> WorldDelegate::getTile(int x, int y){
 }
 
 std::vector<std::shared_ptr<Tile>> WorldDelegate::getWorldTiles(){ return this->tiles; }
+
+std::vector<std::shared_ptr<Tile>> WorldDelegate::getPoisonTiles(){ return this->poisonTiles; }
 
 std::vector<std::shared_ptr<Enemy>> WorldDelegate::getWorldEnemies(){ return this->enemies; }
 
@@ -111,28 +116,33 @@ void WorldDelegate::setProtagonistEnergy(float energyValue){
 std::shared_ptr<Tile> WorldDelegate::getDoor(){
     return door;
 }
-void WorldDelegate::addDoor(){
-    srand(time(NULL));
+void WorldDelegate::addDoor(int seed){
+    srand(seed);
     bool done = false;
+    bool found = false;
     int x;
     int y;
     while(!done){
+        found = false;
         x = rand() % getWorldColumns();
         y = rand() % getWorldRows();
+
         for(const auto& healthpack : getWorldHealthPacks()){
             if(healthpack->getXPos() == x && healthpack->getYPos() == y){
-                break;
+                found = true;
             }
         }
         for(const auto& enemy : getWorldEnemies()){
             if(enemy->getXPos() == x && enemy->getYPos() == y){
-                break;
+                found = true;
             }
         }
         if(x == 0 && y == 0){
-            break;
+            found = true;;
         }
-        done = true;
+        if(!found){
+            done = true;
+        }
     }
 
     door = std::make_shared<Tile>(x, y, 0);
@@ -211,22 +221,11 @@ void WorldDelegate::addPoisonTile(int x, int y, float value){
 }
 
 void WorldDelegate::activateDoor(){
-    world.swap(otherWorld);
 
-    poisonTiles.clear();
-    initializeWDelegate();
+    QObject::disconnect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
+    QObject::disconnect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
+
     emit newWorldLoadedSignal();
-
-    if(this->getWorldEnemies().size() != 0){
-        for(auto& enemy : this->getWorldEnemies()){ // calling here world enemies makes it such that i can't get the enemies later on in the graphics views
-            PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
-            if(pEnemy){
-                QObject::connect(this, &WorldDelegate::poisonSignal, pEnemy, &PEnemy::poison);
-            }
-        }
-    }
-
-    protagonist->setPos(door->getXPos() + 1, door->getYPos());
 }
 
 void WorldDelegate::movedSlot(int dx, int dy) {
@@ -242,6 +241,7 @@ void WorldDelegate::movedSlot(int dx, int dy) {
         return;
     if(newX == door->getXPos() && newY == door->getYPos()){
         activateDoor();
+        return;
     }
 
     singleMove(newX, newY);

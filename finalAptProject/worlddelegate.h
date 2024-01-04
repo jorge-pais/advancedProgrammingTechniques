@@ -35,8 +35,7 @@ class WorldDelegate : public QObject
 
 private:
     std::shared_ptr<WorldView> view;
-    std::shared_ptr<World> world; // these could be changed to a unique_ptr maybe 
-    std::shared_ptr<World> otherWorld;
+    std::shared_ptr<World> world; // these could be changed to a unique_ptr maybe But then you can't intialize the world from the mainwindow right? Because you initialize the worlddelegate with the shared pointer but then the world isn't loaded yet ~ Kris
 
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Enemy>> enemies;
@@ -54,10 +53,11 @@ private:
 
 public:
     WorldDelegate();
-    WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world, std::shared_ptr<World> otherWorld);
+    WorldDelegate(std::shared_ptr<WorldView> view, std::shared_ptr<World> world);
     void initializeWDelegate();
     std::shared_ptr<Tile> getTile(int x, int y);
     std::vector<std::shared_ptr<Tile>> getWorldTiles();
+    std::vector<std::shared_ptr<Tile>> getPoisonTiles();
     std::vector<std::shared_ptr<Enemy>> getWorldEnemies();
     std::vector<std::shared_ptr<Tile>> getWorldHealthPacks();
     int getWorldRows() const;
@@ -70,10 +70,11 @@ public:
     std::string enemyStatus(Enemy& enemy);
     void attack(std::shared_ptr<Enemy> enemy); // maybe we won't need this due to the slot
     void activateDoor();
-    void addDoor();
+    void addDoor(int seed);
     std::shared_ptr<Tile> getDoor();
     void connectSlots();
-    
+    void connectSignals();
+
     std::string serialize();
 
 signals:
