@@ -98,7 +98,7 @@ void WorldView::goToNearestEntity(std::vector<std::shared_ptr<T>> entities){
     int progX = delegate->getWorldProtagonist()->getXPos();
     int progY = delegate->getWorldProtagonist()->getYPos();
 
-    std::shared_ptr<T> closest; int x, y; float min = __FLT_MAX__;
+    std::shared_ptr<T> closest = nullptr; int x, y; float min = __FLT_MAX__;
     for(auto & entity: entities){
         // hm spaghetti, idk why this doesn't work without the brackets
         if constexpr (std::is_same<T, Enemy>::value){
@@ -119,7 +119,8 @@ void WorldView::goToNearestEntity(std::vector<std::shared_ptr<T>> entities){
         }
     }
 
-    emit playerGotoSignal(closest->getXPos(), closest->getYPos());
+    if(closest != nullptr)
+        emit playerGotoSignal(closest->getXPos(), closest->getYPos());
 }
 
 void WorldView::attackNearestEnemy(){
@@ -136,6 +137,8 @@ void WorldView::takeNearestHealthPack(){
 }
 
 void WorldView::poisonLevelUpdatedSlot(int value) {
+    qCDebug(worldViewCat) << "poisonLevelUpdatedSlot() called";
+
     auto enemies = this->delegate->getWorldEnemies();
 
     for(auto& enemy : enemies){
@@ -163,7 +166,6 @@ void WorldView::poisonLevelUpdatedSlot(int value) {
             }
         }
     }
-    qCDebug(worldViewCat) << "poisonLevelUpdatedSlot() called";
 }
 
 void WorldView::positionChangedSlot(int x, int y) {
@@ -175,6 +177,11 @@ void WorldView::positionChangedSlot(int x, int y) {
 
     // re-render everything on textView
     tView->renderTiles();
+}
+
+void WorldView::clearPath(){
+    gView->clearPath();
+    ///TODO: Something in textview also!
 }
 
 void WorldView::newWorldLoadedSlot(){
@@ -342,6 +349,8 @@ void WorldView::autoplaySlot(bool activate){
             auto enemies = delegate->getWorldEnemies();
 
             // this is working more or less, 
+            // there is a segmentation fault which happens when no
+            // enemy to attack is found
             while(autoplayEnabled){
                 std::shared_ptr<Enemy> attack = nullptr;
 

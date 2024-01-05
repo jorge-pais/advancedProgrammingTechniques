@@ -46,6 +46,7 @@ public:
     //void attack(); //what is this for?
     void playerPoisoned(bool val);
     void deathScreen();
+    void clearPath();
 
     MainWindow * window;
 

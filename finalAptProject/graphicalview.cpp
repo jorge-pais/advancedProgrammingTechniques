@@ -250,6 +250,9 @@ void GraphicalView::pathTile(int x, int y){
 
 /// @brief Remove all pathfinding tiles from the scene.
 void GraphicalView::clearPath(){
+    if(path.size() == 0) return;
+    
     for(auto tile: path)
-        scene->removeItem(tile);
+        scene->removeItem(tile);    
+    path.clear();
 }
