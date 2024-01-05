@@ -50,6 +50,7 @@ public:
 
 signals:
     void mainWindowEventSignal(QKeyEvent *event);
+    void autoplaySignal(bool activate);
 
 private slots:
     void submitCommand();
@@ -59,6 +60,7 @@ public slots:
     void openHelp();
     void newGame();
     void toggleOverlay();
+    void autoplay();
 
 private:
     Ui::MainWindow *ui;

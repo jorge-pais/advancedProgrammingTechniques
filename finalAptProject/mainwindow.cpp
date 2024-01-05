@@ -122,7 +122,10 @@ void MainWindow::toolbarConfig(){
     connect(helpAction, &QAction::triggered, this, &MainWindow::openHelp);
     toolbar->addAction(helpAction);
 
-    //contextMenu.exec(event->globalPos());
+    QAction *autoplayAction = new QAction("Autoplay", this);
+    autoplayAction->setCheckable(true);
+    connect(autoplayAction, &QAction::triggered, this, &MainWindow::autoplay);
+    toolbar->addAction(autoplayAction);
 }
 
 void MainWindow::newGame(){
@@ -149,6 +152,14 @@ void MainWindow::openSettings(){
 
 void MainWindow::openHelp(){
     qCDebug(mainWindowCat) << "openHelp() called";
+}
+
+void MainWindow::autoplay(){
+    qCDebug(mainWindowCat) << "autoplay() called";
+
+    QAction *action = qobject_cast<QAction *>(sender());
+    if(action)
+        emit autoplaySignal(action->isChecked());
 }
 
 MainWindow::~MainWindow()

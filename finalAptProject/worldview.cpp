@@ -24,6 +24,7 @@ void WorldView::connectSlots(){
     QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
 
     connect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
+    connect(this->window, &MainWindow::autoplaySignal, this, &WorldView::autoplaySlot);
 
     for(auto& enemy : delegate->getWorldEnemies()){
         QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
@@ -219,7 +220,6 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     }
 }
 
-/// TODO: Only implemented for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
@@ -270,7 +270,33 @@ void WorldView::deathScreen(){
     }
     else if(deadBox.clickedButton() == buttonQuit){
         qCDebug(worldViewCat) << "quit!";
-        
+
         exit(0);
     }
+}
+
+/// TODO: The autoplay should maybe be in a different class?
+void WorldView::autoplaySlot(bool activate){
+    qCDebug(worldViewCat) << "autoplaySlot() called " << activate;
+
+    auto player = delegate->getWorldProtagonist();
+    auto enemies = delegate->getWorldEnemies(); 
+
+    autoplayEnabled = activate;
+
+    /* while(autoplayEnabled){ /// doesn't work
+        std::shared_ptr<Enemy> attack = nullptr; 
+        
+        for(auto enemy : enemies)
+            if(enemy->getValue() < player->getHealth())
+                attack = enemy;
+        
+
+        if(attack == nullptr)
+            takeNearestHealthPack();
+        else
+            playerGotoSignal(attack->getXPos(), attack->getYPos());
+
+        sleep(5);
+    } */
 }

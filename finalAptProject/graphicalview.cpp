@@ -112,8 +112,6 @@ void GraphicalView::renderEntities(){
 }
 
 /// @brief Renders the door entity on the scene.
-/// @param x The x-coordinate of the door.
-/// @param y The y-coordinate of the door.
 void GraphicalView::renderDoor(){
     auto sprite = QPixmap(":/images/resources/entities/door.png");
     sprite = sprite.scaled(

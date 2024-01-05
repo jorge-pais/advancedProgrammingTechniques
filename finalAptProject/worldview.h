@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QKeyEvent>
+#include <unistd.h>
 
 #include "world.h"
 #include "worlddelegate.h"
@@ -24,6 +25,11 @@ private:
     std::shared_ptr<TextView> tView;
 
     template <typename T> void goToNearestEntity(std::vector<std::shared_ptr<T>> entities);
+    //float calculateDistance(const std::pair<int, int>& pos1, const std::pair<int, int>& pos2) {
+    //    return std::abs(pos1.first - pos2.first) + std::abs(pos1.second - pos2.second);
+    //}
+
+    bool autoplayEnabled = false;
 
 public:
     std::shared_ptr<GraphicalView> gView;
@@ -35,14 +41,11 @@ public:
     void setDelegates(std::shared_ptr<WorldDelegate> delegate, std::shared_ptr<WorldDelegate> otherDelegate);
     std::shared_ptr<WorldDelegate> getDelegate() const;
     void connectSlots();
-    void attack();//what is this for?
+    void attack(); //what is this for?
     void attackNearestEnemy(); //used in text view
     void takeNearestHealthPack();
     void playerPoisoned(bool val);
     void deathScreen();
-    float calculateDistance(const std::pair<int, int>& pos1, const std::pair<int, int>& pos2) {
-        return std::abs(pos1.first - pos2.first) + std::abs(pos1.second - pos2.second);
-    }
 
     MainWindow * window;
 
@@ -59,6 +62,7 @@ public slots:
     void newWorldLoadedSlot();
     void mainWindowEventSlot(QKeyEvent *event);
     void xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health);
+    void autoplaySlot(bool activate);
 };
 
 #endif // WORLDVIEW_H
