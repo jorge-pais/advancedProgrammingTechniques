@@ -3,7 +3,9 @@
 
 #include <QObject>
 #include <QKeyEvent>
+#include <QtConcurrent/QtConcurrent>
 #include <unistd.h>
+#include <type_traits>
 
 #include "world.h"
 #include "worlddelegate.h"
@@ -41,9 +43,7 @@ public:
     void setDelegates(std::shared_ptr<WorldDelegate> delegate, std::shared_ptr<WorldDelegate> otherDelegate);
     std::shared_ptr<WorldDelegate> getDelegate() const;
     void connectSlots();
-    void attack(); //what is this for?
-    void attackNearestEnemy(); //used in text view
-    void takeNearestHealthPack();
+    //void attack(); //what is this for?
     void playerPoisoned(bool val);
     void deathScreen();
 
@@ -63,6 +63,8 @@ public slots:
     void mainWindowEventSlot(QKeyEvent *event);
     void xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health);
     void autoplaySlot(bool activate);
+    void attackNearestEnemy(); //used in text view
+    void takeNearestHealthPack();
 };
 
 #endif // WORLDVIEW_H

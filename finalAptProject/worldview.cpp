@@ -100,7 +100,18 @@ void WorldView::goToNearestEntity(std::vector<std::shared_ptr<T>> entities){
 
     std::shared_ptr<T> closest; int x, y; float min = __FLT_MAX__;
     for(auto & entity: entities){
+        // hm spaghetti, idk why this doesn't work without the brackets
+        if constexpr (std::is_same<T, Enemy>::value){
+            if(entity->getDefeated())
+                continue;
+        }
+        else{
+            if(entity->getValue() == 0)
+                continue;
+        }
+
         x = entity->getXPos(); y = entity->getYPos();
+
         float dist = sqrt((x-progX)*(x-progX) + (y-progY)*(y-progY));
         if(dist < min){
             dist = min; 
@@ -120,6 +131,7 @@ void WorldView::attackNearestEnemy(){
 void WorldView::takeNearestHealthPack(){
     qCDebug(worldViewCat) << "takeNearestHealthPack() called";
     //find nearest healthpack and then use the pathfinder to send the protagonist there and increase health
+    
     goToNearestEntity(delegate->getWorldHealthPacks());
 }
 
@@ -275,28 +287,75 @@ void WorldView::deathScreen(){
     }
 }
 
-/// TODO: The autoplay should maybe be in a different class?
+/// TODO: this is still quite buggy, but it works!
 void WorldView::autoplaySlot(bool activate){
-    qCDebug(worldViewCat) << "autoplaySlot() called " << activate;
 
-    auto player = delegate->getWorldProtagonist();
-    auto enemies = delegate->getWorldEnemies(); 
+    /*
+    make the autoplaySlot function run asynchronously by using a separate thread. However, you need to be careful when using multithreading with Qt, especially when it comes to updating GUI elements from a non-main thread, which is not allowed.
+
+    One way to achieve this is by using QtConcurrent::run(), which runs a function in a separate thread and returns a QFuture that represents the result of the computation.
+
+    Here's how you can modify your autoplaySlot function:
+
+    #include <QtConcurrent/QtConcurrent>
+
+    void WorldView::autoplaySlot(bool activate){
+        qCDebug(worldViewCat) << "autoplaySlot() called " << activate;
+
+        autoplayEnabled = activate;
+
+        if(autoplayEnabled){
+            QtConcurrent::run([this](){
+                auto player = delegate->getWorldProtagonist();
+                auto enemies = delegate->getWorldEnemies(); 
+
+                while(autoplayEnabled){
+                    std::shared_ptr<Enemy> attack = nullptr; 
+
+                    for(auto enemy : enemies)
+                        if(enemy->getValue() < player->getHealth())
+                            attack = enemy;
+
+                    if(attack == nullptr)
+                        QMetaObject::invokeMethod(this, "takeNearestHealthPack", Qt::QueuedConnection);
+                    else
+                        QMetaObject::invokeMethod(this, "playerGotoSignal", Qt::QueuedConnection, Q_ARG(int, attack->getXPos()), Q_ARG(int, attack->getYPos()));
+
+                    QThread::sleep(5);
+                }
+            });
+        }
+    }
+    In this code, QtConcurrent::run() is used to run the autoplay logic in a separate thread. QMetaObject::invokeMethod() is used to call slot functions from the new thread, ensuring that they are executed in the main thread. This is necessary because GUI-related operations should only be performed in the main thread.
+
+    Please note that you need to include the QtConcurrent header and add QT += concurrent to your .pro file to use QtConcurrent::run().
+
+    Also, remember that multithreading can introduce new complexities and potential issues into your program, such as race conditions and deadlocks, so it should be used with care
+    */
+    qCDebug(worldViewCat) << "autoplaySlot() called " << activate;
 
     autoplayEnabled = activate;
 
-    /* while(autoplayEnabled){ /// doesn't work
-        std::shared_ptr<Enemy> attack = nullptr; 
-        
-        for(auto enemy : enemies)
-            if(enemy->getValue() < player->getHealth())
-                attack = enemy;
-        
+    if(autoplayEnabled){
+        QtConcurrent::run([this](){
+            auto player = delegate->getWorldProtagonist();
+            auto enemies = delegate->getWorldEnemies();
 
-        if(attack == nullptr)
-            takeNearestHealthPack();
-        else
-            playerGotoSignal(attack->getXPos(), attack->getYPos());
+            // this is working more or less, 
+            while(autoplayEnabled){
+                std::shared_ptr<Enemy> attack = nullptr;
 
-        sleep(5);
-    } */
+                for(auto enemy : enemies)
+                    if((enemy->getValue() <= player->getHealth()) && !enemy->getDefeated())
+                        attack = enemy;
+
+                if(attack == nullptr)
+                    QMetaObject::invokeMethod(this, "takeNearestHealthPack", Qt::QueuedConnection);
+                else
+                    QMetaObject::invokeMethod(this, "playerGotoSignal", Qt::QueuedConnection, Q_ARG(int, attack->getXPos()), Q_ARG(int, attack->getYPos()));
+
+                QThread::sleep(2);
+            }
+        });
+    }
 }

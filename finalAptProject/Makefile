@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CONCURRENT_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -flto -fno-fat-lto-objects -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -std=c++20 -O2 -flto -fno-fat-lto-objects -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I../../worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I. -I. -I/usr/lib/qt/mkspecs/linux-g++
+INCPATH       = -I. -I../../worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I. -I. -I/usr/lib/qt/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = finalAptProject1.0.0
 DISTDIR = /home/jorgep/repos/team-d6-fa/finalAptProject/.tmp/finalAptProject1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1 -pipe -std=c++20 -O2 -flto=8 -fno-fat-lto-objects -fuse-linker-plugin -fPIC
-LIBS          = $(SUBLIBS) -L/home/jorgep/repos/team-d6-fa/finalAptProject/../../worldlib/ -lworld /usr/lib/libQt5Widgets.so /usr/lib/libQt5Gui.so /usr/lib/libQt5Core.so -lGL -lpthread   
+LIBS          = $(SUBLIBS) -L/home/jorgep/repos/team-d6-fa/finalAptProject/../../worldlib/ -lworld /usr/lib/libQt5Widgets.so /usr/lib/libQt5Gui.so /usr/lib/libQt5Concurrent.so /usr/lib/libQt5Core.so -lGL -lpthread   
 AR            = gcc-ar cqs
 RANLIB        = 
 SED           = sed
@@ -911,7 +911,7 @@ moc_mainwindow.cpp: mainwindow.h \
 		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
 moc_settingswindow.cpp: settingswindow.h \
 		settings.h \
@@ -929,7 +929,7 @@ moc_settingswindow.cpp: settingswindow.h \
 		protagonistsprite.h \
 		moc_predefs.h \
 		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include settingswindow.h -o moc_settingswindow.cpp
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include settingswindow.h -o moc_settingswindow.cpp
 
 moc_textview.cpp: textview.h \
 		worldview.h \
@@ -947,13 +947,13 @@ moc_textview.cpp: textview.h \
 		settings.h \
 		moc_predefs.h \
 		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include textview.h -o moc_textview.cpp
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include textview.h -o moc_textview.cpp
 
 moc_world.cpp: world.h \
 		world_global.h \
 		moc_predefs.h \
 		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include world.h -o moc_world.cpp
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include world.h -o moc_world.cpp
 
 moc_worlddelegate.cpp: worlddelegate.h \
 		world.h \
@@ -971,7 +971,7 @@ moc_worlddelegate.cpp: worlddelegate.h \
 		settings.h \
 		moc_predefs.h \
 		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worlddelegate.h -o moc_worlddelegate.cpp
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worlddelegate.h -o moc_worlddelegate.cpp
 
 moc_worldview.cpp: worldview.h \
 		world.h \
@@ -989,7 +989,7 @@ moc_worldview.cpp: worldview.h \
 		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worldview.h -o moc_worldview.cpp
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worldview.h -o moc_worldview.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:

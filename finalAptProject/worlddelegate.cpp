@@ -294,6 +294,10 @@ void WorldDelegate::gotoSlot(int newX, int newY){
 
 /// Aux function for the movement slots
 int WorldDelegate::singleMove(int x, int y){
+    // Check if we're dead in case of the path taking
+    if(protagonist->getHealth() <= 0) 
+        return 1;
+
     // Calculate the energy cost of the move
     float energyCost = getTile(x, y)->getValue();
     
