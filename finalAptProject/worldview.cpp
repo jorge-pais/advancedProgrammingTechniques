@@ -198,8 +198,6 @@ void WorldView::newWorldLoadedSlot(){
     gView->renderPoisonTiles();
 
     gView->centerView();
-    enemyDeadSlot();
-
 }
 
 void WorldView::protagonistHealthChangedSlot(int h) {
