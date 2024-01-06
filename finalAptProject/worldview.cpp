@@ -161,7 +161,6 @@ void WorldView::poisonLevelUpdatedSlot(int value) {
             }
         }
     }
-    
 }
 
 void WorldView::positionChangedSlot(int x, int y) {
@@ -280,7 +279,8 @@ void WorldView::deathScreen(){
 
     if(deadBox.clickedButton() == buttonRetry){
         qCDebug(worldViewCat) << "retry!";
-        
+
+        window->createNewGame();
     }
     else if(deadBox.clickedButton() == buttonQuit){
         qCDebug(worldViewCat) << "quit!";
@@ -307,15 +307,18 @@ void WorldView::autoplaySlot(bool activate){
                 std::shared_ptr<Enemy> attack = nullptr;
 
                 for(auto enemy : enemies)
-                    if((enemy->getValue() <= player->getHealth()) && !enemy->getDefeated())
+                    if((enemy->getValue() <= player->getHealth()) && !enemy->getDefeated()){
                         attack = enemy;
+                    }
 
+                // The problem with this strategy is that the the PEnemies get don't get defeated immediately
                 if(attack == nullptr)
                     QMetaObject::invokeMethod(this, "takeNearestHealthPack", Qt::QueuedConnection);
                 else
                     QMetaObject::invokeMethod(this, "playerGotoSignal", Qt::QueuedConnection, Q_ARG(int, attack->getXPos()), Q_ARG(int, attack->getYPos()));
 
                 QThread::sleep(1);
+                //return;
             }
         });
     }

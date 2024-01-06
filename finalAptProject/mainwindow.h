@@ -48,6 +48,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void createNewGame();
+
 signals:
     void mainWindowEventSignal(QKeyEvent *event);
     void autoplaySignal(bool activate);
@@ -76,6 +78,7 @@ private:
 
     void toolbarConfig();
     void setupViews();
+    void render();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

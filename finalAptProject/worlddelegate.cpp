@@ -103,7 +103,10 @@ void WorldDelegate::setProtagonistHealth(float healthValue){
     this->protagonist->setHealth(healthValue >= 100 ? 100 : healthValue); 
 }
 
-void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { this->protagonist->setPos(newWorldX, newWorldY); }
+void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { 
+    if(protagonist->getHealth() < 1e-4) return;
+    this->protagonist->setPos(newWorldX, newWorldY); 
+}
 
 void WorldDelegate::setProtagonistEnergy(float energyValue){ 
     this->protagonist->setEnergy(energyValue >= 100 ? 100 : energyValue); 
@@ -162,6 +165,7 @@ void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
     qCDebug(worldDelegateCat) << "attack() called";
     std::string enemyType = enemyStatus(*enemy);
     if (enemyType == "PEnemy") {
+        /// TODO: we have to prevent this being proc'd twice!!!
         emit poisonSignal();
     }
     auto tiles = getWorldTiles();
@@ -228,7 +232,7 @@ void WorldDelegate::activateDoor(){
 void WorldDelegate::movedSlot(int dx, int dy) {
     qCDebug(worldDelegateCat) << "movedSlot() called";
 
-    if(protagonist->getHealth() <= 0) return;
+    if(protagonist->getHealth() <= 1e-4) return;
 
     // Calculate new postition, check if it's valid
     int newX = protagonist->getXPos() + dx;
@@ -291,15 +295,14 @@ void WorldDelegate::gotoSlot(int newX, int newY){
 
 /// Aux function for the movement slots
 int WorldDelegate::singleMove(int x, int y){
-    // Check if we're dead in case of the path taking
-    if(protagonist->getHealth() <= 0) 
-        return 1;
-
     // Calculate the energy cost of the move
     float energyCost = getTile(x, y)->getValue();
     
     // If the protagonist's health is 0 or less, stop the loop and return
-    if (protagonist->getEnergy() < energyCost && protagonist->getEnergy() <= 0) 
+    if (protagonist->getEnergy() < energyCost && protagonist->getEnergy() <= 0)  
+        return 1;
+
+    if(protagonist->getHealth() <= 1e-4)
         return 1;
 
     // check for poison tile
@@ -310,6 +313,7 @@ int WorldDelegate::singleMove(int x, int y){
             isPoisoned = true;
         }
     }
+
     view->playerPoisoned(isPoisoned);
 
     // Check if there's an enemy on the path

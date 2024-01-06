@@ -8,14 +8,15 @@ QLoggingCategory mainWindowCat("mainWindow");
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow),
-    world(std::make_shared<World>()),
-    otherWorld(std::make_shared<World>()),
-    wView(std::make_shared<WorldView>(this)),
-    worldDelegate(std::make_shared<WorldDelegate>(wView, world)),
-    otherWorldDelegate(std::make_shared<WorldDelegate>(wView, otherWorld))
+    wView(std::make_shared<WorldView>(this))
 {
     ui->setupUi(this);
     srand(time(0));
+
+    world = std::make_shared<World>();
+    otherWorld = std::make_shared<World>();
+    worldDelegate = std::make_shared<WorldDelegate>(wView, world);
+    otherWorldDelegate = std::make_shared<WorldDelegate>(wView, otherWorld);
 
     wView->setDelegates(worldDelegate, otherWorldDelegate);
 
@@ -62,6 +63,14 @@ MainWindow::MainWindow(QWidget *parent)
     wView->connectSlots();
     wView->setViews(gView, tView);
 
+    render();
+
+    toolbarConfig();
+
+    settings = std::make_shared<Settings>(gView);
+}
+
+void MainWindow::render(){
     // render the graphicalView tiles and entities;
     gView->renderTiles();
     gView->renderEntities();
@@ -72,10 +81,52 @@ MainWindow::MainWindow(QWidget *parent)
     //show health and energy from the start
     tView->updateHealthDisplay(worldDelegate->getWorldProtagonist()->getHealth());
     tView->updateEnergyDisplay(worldDelegate->getWorldProtagonist()->getEnergy());
+}
 
-    toolbarConfig();
+void MainWindow::createNewGame(){
+    gView->clearDoor();
+    gView->clearEntities();
+    gView->clearPlayer();
+    gView->clearTiles();
 
-    settings = std::make_shared<Settings>(gView);
+    wView->blockSignals(true);
+    QObject::disconnect(this, nullptr, nullptr, nullptr);
+    QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
+    QObject::disconnect(worldDelegate.get(), nullptr, nullptr, nullptr);
+    QObject::disconnect(otherWorldDelegate.get(), nullptr, nullptr, nullptr);
+    /* wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
+    worldDelegate->disconnect();
+    otherWorldDelegate->disconnect(); */
+
+    world = std::make_shared<World>();
+    otherWorld = std::make_shared<World>();
+    worldDelegate = std::make_shared<WorldDelegate>(wView, world);
+    otherWorldDelegate = std::make_shared<WorldDelegate>(wView, otherWorld);
+
+    wView->setDelegates(worldDelegate, otherWorldDelegate);
+
+    // Create the world from the file, this was to be
+    QString worldPath{":/images/resources/world_images/worldmap.png"};
+    world->createWorld(worldPath, 5, 6, 0.0);
+    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
+    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
+
+    // initialize the worldDelegate
+    worldDelegate->initializeWDelegate();
+    otherWorldDelegate->initializeWDelegate();
+
+    wView->blockSignals(false);
+
+    //connect slots and setup
+    worldDelegate->addDoor(rand());
+    otherWorldDelegate->addDoor(rand());
+    worldDelegate->connectSignals();
+    worldDelegate->connectSlots();
+    otherWorldDelegate->connectSignals();
+    wView->connectSlots();
+    wView->setViews(gView, tView);
+
+    render();
 }
 
 void MainWindow::submitCommand(){
@@ -132,10 +183,12 @@ void MainWindow::newGame(){
     qCDebug(mainWindowCat) << "newGame()";
 
     // for now just list the maps, in order to load them to the new game window prompt
-    QDirIterator it(":/images/resources/world_images", QDirIterator::Subdirectories);
+    /* QDirIterator it(":/images/resources/world_images", QDirIterator::Subdirectories);
     while(it.hasNext()){
         qCDebug(mainWindowCat) << it.next();
-    }
+    } */
+
+    createNewGame();
 }
 
 void MainWindow::toggleOverlay(){
