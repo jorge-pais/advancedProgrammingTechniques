@@ -84,10 +84,10 @@ void GraphicalView::poisonTile(int x, int y, int poisonLevel){
     rect->setZValue(3);
 }
 
+/// @brief Renders all poison tiles in the map.
 void GraphicalView::renderPoisonTiles(){
-    for(const auto& tile : this->worldView->getDelegate()->getPoisonTiles()){
+    for(const auto& tile : this->worldView->getDelegate()->getPoisonTiles())
         poisonTile(tile->getXPos(), tile->getYPos(), tile->getValue());
-    }
 }
 
 /// @brief Renders the entities in the game world.

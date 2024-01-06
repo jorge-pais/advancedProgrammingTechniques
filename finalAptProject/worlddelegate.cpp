@@ -25,7 +25,6 @@ void WorldDelegate::connectSignals(){
             }
         }
     }
-
 }
 
 void WorldDelegate::connectSlots(){
@@ -66,16 +65,14 @@ void WorldDelegate::initializeWDelegate(){
     this->protagonist = std::move(world->getProtagonist());
 
     /// check if the protagonist is in a infinite energy tile
-    /*
-    if(std::isinf(getTile(protagonist->getXPos(), protagonist->getYPos())->getValue())){
+    /* if(std::isinf(getTile(protagonist->getXPos(), protagonist->getYPos())->getValue())){
         for(auto & tile : tiles){
             if(!std::isinf(tile->getValue())){
                 this->protagonist->setPos(tile->getXPos(), tile->getYPos());
                 break;
             }
         }
-    }
-    */
+    } */
 
     rows = world->getRows();
     cols = world->getCols();
@@ -341,6 +338,7 @@ int WorldDelegate::singleMove(int x, int y){
 
 std::string WorldDelegate::serialize(){
     /// TODO: this method is untested as of yet!
+    /// also unused
     std::stringstream out;
 
     out << "/----TILES----/\n";
