@@ -8,11 +8,16 @@ QLoggingCategory graphicalViewCat("graphicalView");
 /// @param graphicsView The QGraphicsView object to be used.
 /// @param scene The QGraphicsScene object to be used.
 /// @param worldView The WorldView object to be used.
-GraphicalView::GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldView> worldView) :
-    view(graphicsView), scene(scene), worldView(worldView)
+GraphicalView::GraphicalView(QGraphicsView* graphicsView, std::shared_ptr<WorldView> worldView) :
+    view(graphicsView), worldView(worldView)
 {   
+    scene = new QGraphicsScene();
     // Create the scene
     graphicsView->setScene(scene);
+}
+
+GraphicalView::~GraphicalView(){
+    delete scene;
 }
 
 /// @brief Renders the tiles of the game world.
@@ -84,10 +89,10 @@ void GraphicalView::poisonTile(int x, int y, int poisonLevel){
     rect->setZValue(3);
 }
 
+/// @brief Renders all poison tiles in the map.
 void GraphicalView::renderPoisonTiles(){
-    for(const auto& tile : this->worldView->getDelegate()->getPoisonTiles()){
+    for(const auto& tile : this->worldView->getDelegate()->getPoisonTiles())
         poisonTile(tile->getXPos(), tile->getYPos(), tile->getValue());
-    }
 }
 
 /// @brief Renders the entities in the game world.
@@ -96,7 +101,7 @@ void GraphicalView::renderEntities(){
 
     for(const auto & enemyPtr : worldView->getDelegate()->getWorldEnemies()){
         //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
-        SpriteWithValue* a = new SpriteWithValue(enemyPtr);
+        auto a = std::make_shared<SpriteWithValue>(enemyPtr);
         entities.push_back(a);
         scene->addItem(a->sprite.get());
         scene->addItem(a->text.get());
@@ -104,7 +109,7 @@ void GraphicalView::renderEntities(){
 
     for(const auto & healthPtr : worldView->getDelegate()->getWorldHealthPacks()){
         //std::shared_ptr<SpriteWithValue> a = std::make_shared<SpriteWithValue>(enemyPtr);
-        SpriteWithValue* a = new SpriteWithValue(healthPtr);
+        auto a = std::make_shared<SpriteWithValue>(healthPtr);
         healthPacks.push_back(a);
         scene->addItem(a->sprite.get());
         scene->addItem(a->text.get());
@@ -112,8 +117,6 @@ void GraphicalView::renderEntities(){
 }
 
 /// @brief Renders the door entity on the scene.
-/// @param x The x-coordinate of the door.
-/// @param y The y-coordinate of the door.
 void GraphicalView::renderDoor(){
     auto sprite = QPixmap(":/images/resources/entities/door.png");
     sprite = sprite.scaled(
@@ -144,7 +147,7 @@ void GraphicalView::clearPlayer(){
 void GraphicalView::renderPlayer(){
     // Initialize the player, after this the render/update method should be called
     qCDebug(graphicalViewCat) << "renderPlayer() called";
-    player = new ProtagonistSprite(worldView->getDelegate()->getWorldProtagonist());
+    player = std::make_shared<ProtagonistSprite>(worldView->getDelegate()->getWorldProtagonist());
     scene->addItem(player->sprite.get());
     scene->addItem(player->text.get());
     scene->addItem(player->energyBar.get());
@@ -252,6 +255,13 @@ void GraphicalView::pathTile(int x, int y){
 
 /// @brief Remove all pathfinding tiles from the scene.
 void GraphicalView::clearPath(){
+    if(path.size() == 0) return;
+    
     for(auto tile: path)
-        scene->removeItem(tile);
+        scene->removeItem(tile);    
+    path.clear();
 }
+
+/// @brief Sets the worldView when loading a new game
+/// @param wView Shared pointer to the worldView object
+void GraphicalView::setView(std::shared_ptr<WorldView> wView){ this->worldView = wView; }

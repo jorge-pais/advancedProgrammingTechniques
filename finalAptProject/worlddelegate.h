@@ -74,6 +74,7 @@ public:
     std::shared_ptr<Tile> getDoor();
     void connectSlots();
     void connectSignals();
+    void terminate();
 
     std::string serialize();
 

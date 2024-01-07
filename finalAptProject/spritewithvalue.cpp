@@ -7,8 +7,6 @@ SpriteWithValue::SpriteWithValue() : sprite(nullptr), text(nullptr){}
 /// @param entity A shared pointer to a Tile.
 SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
 
-    text = std::make_shared<QGraphicsTextItem>(QString::number(entity->getValue()));
-
     // If we could modify the world classes, this would be more efficient,
     // as a tile method could be implemented and then overloaded by each entity class
     if(dynamic_cast<XEnemy*>(entity.get())){
@@ -23,24 +21,22 @@ SpriteWithValue::SpriteWithValue(std::shared_ptr<Tile> entity){
     }else{
         spriteSet["alive"] = QPixmap(":/images/resources/entities/platter.png");
         spriteSet["dead"] = QPixmap(); // puff! disappear!
-        if(entity->getValue() == 0){
-            text = std::make_shared<QGraphicsTextItem>(QString());
-        }
     }   
 
     spriteSet["alive"] = scaleSprite(spriteSet["alive"]);
     spriteSet["dead"] = scaleSprite(spriteSet["dead"]);
 
-    // This will come in handy when loading the map from a serialized version and some entities might already be dead
-    Enemy* aux = dynamic_cast<Enemy*>(entity.get());
-
-    bool dead = aux ? aux->getDefeated() : !(entity.get()->getValue());
-
-    sprite = std::make_shared<QGraphicsPixmapItem>(dead ? spriteSet["dead"] : spriteSet["alive"]);
+    text = std::make_shared<QGraphicsTextItem>(QString::number(entity->getValue()));
+    sprite = std::make_shared<QGraphicsPixmapItem>(spriteSet["alive"]);
 
     setPosition(entity->getXPos(), entity->getYPos());
+
     sprite->setZValue(4);
     text->setZValue(4);
+
+    Enemy* aux = dynamic_cast<Enemy*>(entity.get());
+    if(aux ? aux->getDefeated() : (entity.get()->getValue() == 0))
+        setDead();
 }
 
 /// @brief Gets the x-coordinate of the sprite.
