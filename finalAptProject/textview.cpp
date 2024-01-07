@@ -238,5 +238,3 @@ void TextView::printUnknownCommand()
 {
     printMessage("Unknown command. Type 'help' for a list of available commands.");
 }
-
-void TextView::setView(std::shared_ptr<WorldView> wView){ this->view = wView; }

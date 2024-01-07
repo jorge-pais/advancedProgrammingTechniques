@@ -112,7 +112,6 @@ void WorldDelegate::setProtagonistHealth(float healthValue){
 }
 
 void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { 
-    if(protagonist->getHealth() < 1e-4) return;
     this->protagonist->setPos(newWorldX, newWorldY); 
 }
 

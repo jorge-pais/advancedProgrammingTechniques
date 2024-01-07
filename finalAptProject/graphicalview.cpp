@@ -18,6 +18,13 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, std::shared_ptr<WorldV
 
 GraphicalView::~GraphicalView(){
     delete scene;
+    
+    for(auto tile : path)
+        delete tile;
+    for(auto tile : poisonTiles)
+        delete tile;
+    for(auto tile : tiles)
+        delete tile;
 }
 
 /// @brief Renders the tiles of the game world.
@@ -261,7 +268,3 @@ void GraphicalView::clearPath(){
         scene->removeItem(tile);    
     path.clear();
 }
-
-/// @brief Sets the worldView when loading a new game
-/// @param wView Shared pointer to the worldView object
-void GraphicalView::setView(std::shared_ptr<WorldView> wView){ this->worldView = wView; }

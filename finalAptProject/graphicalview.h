@@ -64,8 +64,6 @@ public:
     void pathTile(int x, int y);
     void clearPath();
 
-    void setView(std::shared_ptr<WorldView> wView);
-
 private:
     QGraphicsView * view;
     QGraphicsScene * scene;
