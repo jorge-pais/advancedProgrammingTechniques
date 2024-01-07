@@ -77,6 +77,8 @@ void MainWindow::render(){
     gView->renderPlayer();
     gView->renderDoor();
 
+    gView->centerView();
+
     tView->renderTiles();
     //show health and energy from the start
     tView->updateHealthDisplay(worldDelegate->getWorldProtagonist()->getHealth());
@@ -89,11 +91,10 @@ void MainWindow::createNewGame(){
     gView->clearPlayer();
     gView->clearTiles();
 
-    wView->blockSignals(true);
+    worldDelegate->terminate();
+    otherWorldDelegate->terminate();
     QObject::disconnect(this, nullptr, nullptr, nullptr);
     QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
-    QObject::disconnect(worldDelegate.get(), nullptr, nullptr, nullptr);
-    QObject::disconnect(otherWorldDelegate.get(), nullptr, nullptr, nullptr);
     /* wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
     worldDelegate->disconnect();
     otherWorldDelegate->disconnect(); */
@@ -114,8 +115,6 @@ void MainWindow::createNewGame(){
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();
     otherWorldDelegate->initializeWDelegate();
-
-    wView->blockSignals(false);
 
     //connect slots and setup
     worldDelegate->addDoor(rand());

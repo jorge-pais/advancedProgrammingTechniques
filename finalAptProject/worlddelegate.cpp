@@ -34,6 +34,14 @@ void WorldDelegate::connectSlots(){
     QObject::connect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
 }
 
+void WorldDelegate::terminate(){
+    tiles.clear();
+    enemies.clear();
+    healthPacks.clear();
+    poisonTiles.clear();
+    QObject::disconnect(this, nullptr, nullptr, nullptr);
+}
+
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
     //if (tiles != nullptr && healthPacks != nullptr && enemies != nullptr) return
@@ -116,6 +124,7 @@ void WorldDelegate::setProtagonistEnergy(float energyValue){
 std::shared_ptr<Tile> WorldDelegate::getDoor(){
     return door;
 }
+
 void WorldDelegate::addDoor(int seed){
     srand(seed);
     bool done = false;
@@ -162,10 +171,12 @@ std::string WorldDelegate::enemyStatus(Enemy& enemy)
 
 void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 {
+    if(protagonist->getHealth() <= 1e-4)
+        return;
+        
     qCDebug(worldDelegateCat) << "attack() called";
     std::string enemyType = enemyStatus(*enemy);
     if (enemyType == "PEnemy") {
-        /// TODO: we have to prevent this being proc'd twice!!!
         emit poisonSignal();
     }
     auto tiles = getWorldTiles();
