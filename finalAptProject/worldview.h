@@ -43,6 +43,8 @@ public:
     float calculateDistance(const std::pair<int, int>& pos1, const std::pair<int, int>& pos2) {
         return std::abs(pos1.first - pos2.first) + std::abs(pos1.second - pos2.second);
     }
+    void clearPaths();
+    void setPaths(int nextX, int nextY);
 
     MainWindow * window;
 
