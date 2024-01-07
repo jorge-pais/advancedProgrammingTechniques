@@ -21,13 +21,13 @@ private:
     std::shared_ptr<WorldDelegate> delegate = nullptr;
     std::shared_ptr<WorldDelegate> otherDelegate = nullptr;
     //std::shared_ptr<GraphicalView> gView;
-    std::shared_ptr<TextView> tView;
+    //std::shared_ptr<TextView> tView;
 
     template <typename T> void goToNearestEntity(std::vector<std::shared_ptr<T>> entities);
 
 public:
     std::shared_ptr<GraphicalView> gView;
-
+    std::shared_ptr<TextView> tView;
     //WorldView();
     WorldView(MainWindow * mainWindow);
     //WorldView(WorldDelegate& delegate);
