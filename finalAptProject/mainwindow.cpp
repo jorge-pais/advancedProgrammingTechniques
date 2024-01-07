@@ -86,18 +86,23 @@ void MainWindow::render(){
 }
 
 void MainWindow::createNewGame(){
+    // clear everything on the graphical view
     gView->clearDoor();
     gView->clearEntities();
     gView->clearPlayer();
     gView->clearTiles();
 
-    worldDelegate->disconnect();
-    otherWorldDelegate->disconnect();
-    QObject::disconnect(this, nullptr, nullptr, nullptr);
-    QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
-    wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
 
-    //wView = std::make_shared<WorldView>(this);
+    //worldDelegate->disconnect();
+    //otherWorldDelegate->disconnect();
+    //QObject::disconnect(this, nullptr, nullptr, nullptr);
+    //QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
+    //wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
+
+    // Hopefully after doing this, none of the previous objects is retained,
+    // and the heap memory associated with them will be released,
+    // as none of these objects can be referenced (right?)
+    wView = std::make_shared<WorldView>(this);
     world = std::make_shared<World>();
     otherWorld = std::make_shared<World>();
     worldDelegate = std::make_shared<WorldDelegate>(wView, world);
@@ -123,6 +128,9 @@ void MainWindow::createNewGame(){
     otherWorldDelegate->connectSignals();
     wView->connectSlots();
     wView->setViews(gView, tView);
+
+    gView->setView(wView);
+    tView->setView(wView);
 
     render();
 }

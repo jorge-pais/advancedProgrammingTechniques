@@ -256,3 +256,7 @@ void GraphicalView::clearPath(){
         scene->removeItem(tile);    
     path.clear();
 }
+
+/// @brief Sets the worldView when loading a new game
+/// @param wView Shared pointer to the worldView object
+void GraphicalView::setView(std::shared_ptr<WorldView> wView){ this->worldView = wView; }
