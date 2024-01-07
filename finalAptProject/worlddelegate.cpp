@@ -34,13 +34,13 @@ void WorldDelegate::connectSlots(){
     QObject::connect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
 }
 
-void WorldDelegate::terminate(){
+/* void WorldDelegate::terminate(){
     tiles.clear();
     enemies.clear();
     healthPacks.clear();
     poisonTiles.clear();
     QObject::disconnect(this, nullptr, nullptr, nullptr);
-}
+} */
 
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";

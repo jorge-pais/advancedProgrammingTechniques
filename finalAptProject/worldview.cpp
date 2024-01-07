@@ -282,6 +282,7 @@ void WorldView::deathScreen(){
     if(deadBox.clickedButton() == buttonRetry){
         qCDebug(worldViewCat) << "retry!";
 
+        QCoreApplication::processEvents();
         window->createNewGame();
     }
     else if(deadBox.clickedButton() == buttonQuit){

@@ -91,14 +91,13 @@ void MainWindow::createNewGame(){
     gView->clearPlayer();
     gView->clearTiles();
 
-    worldDelegate->terminate();
-    otherWorldDelegate->terminate();
+    worldDelegate->disconnect();
+    otherWorldDelegate->disconnect();
     QObject::disconnect(this, nullptr, nullptr, nullptr);
     QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
-    /* wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
-    worldDelegate->disconnect();
-    otherWorldDelegate->disconnect(); */
+    wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
 
+    //wView = std::make_shared<WorldView>(this);
     world = std::make_shared<World>();
     otherWorld = std::make_shared<World>();
     worldDelegate = std::make_shared<WorldDelegate>(wView, world);
