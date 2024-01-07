@@ -31,8 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     otherWorldDelegate->initializeWDelegate();
 
     // Initialize GraphicalView
-    QGraphicsScene* scene = new QGraphicsScene();
-    gView = std::make_shared<GraphicalView>(ui->graphicsView, scene, wView);
+    gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
 
     //Initialize TextView
     tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView, ui->healthBrowser, ui->energyBroswer);
@@ -93,16 +92,17 @@ void MainWindow::createNewGame(){
     gView->clearTiles();
 
 
-    //worldDelegate->disconnect();
-    //otherWorldDelegate->disconnect();
-    //QObject::disconnect(this, nullptr, nullptr, nullptr);
-    //QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
-    //wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
+    worldDelegate->disconnect();
+    otherWorldDelegate->disconnect();
+    QObject::disconnect(this, nullptr, nullptr, nullptr);
+    QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
+    wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
 
     // Hopefully after doing this, none of the previous objects is retained,
     // and the heap memory associated with them will be released,
     // as none of these objects can be referenced (right?)
     wView = std::make_shared<WorldView>(this);
+    gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
     world = std::make_shared<World>();
     otherWorld = std::make_shared<World>();
     worldDelegate = std::make_shared<WorldDelegate>(wView, world);
@@ -128,9 +128,6 @@ void MainWindow::createNewGame(){
     otherWorldDelegate->connectSignals();
     wView->connectSlots();
     wView->setViews(gView, tView);
-
-    gView->setView(wView);
-    tView->setView(wView);
 
     render();
 }
