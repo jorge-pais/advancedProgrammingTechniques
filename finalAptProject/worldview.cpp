@@ -89,7 +89,9 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event) {
     }
 
     //handle the events and then emit these signals with appropriate parameters
-    emit playerMovedSignal(dx, dy);
+    if(delegate->getWorldProtagonist()->getHealth() > 0)
+        emit playerMovedSignal(dx, dy);
+    
     gView->clearPath();
 }
 
