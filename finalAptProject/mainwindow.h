@@ -74,6 +74,7 @@ private:
     std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
     std::shared_ptr<Settings> settings;
+    bool linear;
 
     void toolbarConfig();
     void setupViews();

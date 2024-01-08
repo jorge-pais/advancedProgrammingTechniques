@@ -49,8 +49,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::initialize(){
 
+    linear = true; //setting this value to true generates the worlds linearly, otherwise one world has the doors to all the other ones
+    //adding an extra string below makes the code automatically generate everything for you, the worlds are linked based on the linear boolean above
     worldStrings.push_back(":/images/resources/world_images/worldmap.png");
     worldStrings.push_back(":/images/resources/world_images/worldmap2.png");
+    worldStrings.push_back(":/images/resources/world_images/worldmap3.png");
+    worldStrings.push_back(":/images/resources/world_images/worldmap5.png");
 
     worldDelegates.clear();
     for(auto& map : worldStrings){
@@ -59,22 +63,8 @@ void MainWindow::initialize(){
         worlds.push_back(world);
         worldDelegates.push_back(std::make_shared<WorldDelegate>(wView, world));
     }
-   /*
-    world = std::make_shared<World>();
-    otherWorlds.push_back(std::make_shared<World>());
-    worldDelegate = std::make_shared<WorldDelegate>(wView, world);
-    otherWorldDelegates.clear();
-    otherWorldDelegates.push_back(std::make_shared<WorldDelegate>(wView, otherWorlds.at(0)));
 
-    wView->setDelegates(worldDelegates.at(0), otherWorldDelegates);
-
-    // Create the world from the file, this was to be
-    QString worldPath{":/images/resources/world_images/worldmap.png"};
-    world->createWorld(worldPath, 5, 6, 0.0);
-    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    otherWorlds.at(0)->createWorld(otherWorldPath, 5, 6, 0.0);
-*/
-
+    //sorry
     bool wowThisCodeIsReallyBadButINeedAQuickFix = false;
     std::vector<std::shared_ptr<WorldDelegate>> badcode;
     for(auto& del : worldDelegates){
@@ -96,10 +86,22 @@ void MainWindow::initialize(){
 
 void MainWindow::setup(){
     //add doors
+    for(int i = 1; i < worldDelegates.size(); i++){
+        if(linear){
+            worldDelegates.at(i-1) ->addDoor(rand(), i);
+            worldDelegates.at(i) ->addDoor(rand(), i);
+        }
+        else{
+            worldDelegates.at(0) ->addDoor(rand(), i);
+            worldDelegates.at(i) ->addDoor(rand(), i);
+        }
+    }
+    /*
     worldDelegates.at(0)->addDoor(rand(), 1);
     worldDelegates.at(0)->addDoor(rand(), 2);
     worldDelegates.at(1)->addDoor(rand(), 1);
     worldDelegates.at(1)->addDoor(rand(), 2);
+    */
 
     //connect signals/slots
     worldDelegates.at(0)->connectSlots();
