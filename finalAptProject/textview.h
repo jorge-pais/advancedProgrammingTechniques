@@ -46,7 +46,7 @@ public:
     std::vector<std::shared_ptr<Tile>> worldHealthPacks;
     std::shared_ptr<Protagonist> protagonist;
     //void centerPlayer();
-
+    
 private:
     QTextBrowser* textView;
     QTextBrowser* healthBrowser;

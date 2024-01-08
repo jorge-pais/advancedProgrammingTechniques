@@ -48,8 +48,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void createNewGame();
+
 signals:
     void mainWindowEventSignal(QKeyEvent *event);
+    void autoplaySignal(bool activate);
 
 private slots:
     void submitCommand();
@@ -59,21 +62,25 @@ public slots:
     void openHelp();
     void newGame();
     void toggleOverlay();
+    void autoplay();
 
 private:
     Ui::MainWindow *ui;
 
-    std::shared_ptr<World> world;
-    std::shared_ptr<World> otherWorld;
+    std::vector<QString> worldStrings;
+    std::vector<std::shared_ptr<World>> worlds;
     std::shared_ptr<WorldView> wView;
-    std::shared_ptr<WorldDelegate> worldDelegate;
-    std::shared_ptr<WorldDelegate> otherWorldDelegate;
+    std::vector<std::shared_ptr<WorldDelegate>> worldDelegates;
     std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
     std::shared_ptr<Settings> settings;
+    bool linear;
 
     void toolbarConfig();
     void setupViews();
+    void render();
+    void setup();
+    void initialize();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

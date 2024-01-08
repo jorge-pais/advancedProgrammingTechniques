@@ -25,7 +25,6 @@ void WorldDelegate::connectSignals(){
             }
         }
     }
-
 }
 
 void WorldDelegate::connectSlots(){
@@ -34,6 +33,14 @@ void WorldDelegate::connectSlots(){
     QObject::connect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
     QObject::connect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
 }
+
+/* void WorldDelegate::terminate(){
+    tiles.clear();
+    enemies.clear();
+    healthPacks.clear();
+    poisonTiles.clear();
+    QObject::disconnect(this, nullptr, nullptr, nullptr);
+} */
 
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
@@ -66,16 +73,14 @@ void WorldDelegate::initializeWDelegate(){
     this->protagonist = std::move(world->getProtagonist());
 
     /// check if the protagonist is in a infinite energy tile
-    /*
-    if(std::isinf(getTile(protagonist->getXPos(), protagonist->getYPos())->getValue())){
+    /* if(std::isinf(getTile(protagonist->getXPos(), protagonist->getYPos())->getValue())){
         for(auto & tile : tiles){
             if(!std::isinf(tile->getValue())){
                 this->protagonist->setPos(tile->getXPos(), tile->getYPos());
                 break;
             }
         }
-    }
-    */
+    } */
 
     rows = world->getRows();
     cols = world->getCols();
@@ -106,17 +111,20 @@ void WorldDelegate::setProtagonistHealth(float healthValue){
     this->protagonist->setHealth(healthValue >= 100 ? 100 : healthValue); 
 }
 
-void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { this->protagonist->setPos(newWorldX, newWorldY); }
+void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { 
+    this->protagonist->setPos(newWorldX, newWorldY); 
+}
 
 void WorldDelegate::setProtagonistEnergy(float energyValue){ 
     this->protagonist->setEnergy(energyValue >= 100 ? 100 : energyValue); 
     std::cout << protagonist->getEnergy() << std::endl;
 }
 
-std::shared_ptr<Tile> WorldDelegate::getDoor(){
-    return door;
+std::vector<std::shared_ptr<Tile>> WorldDelegate::getDoors(){
+    return doors;
 }
-void WorldDelegate::addDoor(int seed){
+
+void WorldDelegate::addDoor(int seed, int destination){
     srand(seed);
     bool done = false;
     bool found = false;
@@ -137,6 +145,11 @@ void WorldDelegate::addDoor(int seed){
                 found = true;
             }
         }
+        for(const auto& door : doors){
+            if(door->getXPos() == x && door->getYPos() == y){
+                found = true;
+            }
+        }
         if(x == 0 && y == 0){
             found = true;;
         }
@@ -145,7 +158,7 @@ void WorldDelegate::addDoor(int seed){
         }
     }
 
-    door = std::make_shared<Tile>(x, y, 0);
+    doors.push_back(std::make_shared<Tile>(x, y, destination));
 
 }
 
@@ -162,6 +175,9 @@ std::string WorldDelegate::enemyStatus(Enemy& enemy)
 
 void WorldDelegate::attack(std::shared_ptr<Enemy> enemy)
 {
+    if(protagonist->getHealth() <= 1e-4)
+        return;
+        
     qCDebug(worldDelegateCat) << "attack() called";
     std::string enemyType = enemyStatus(*enemy);
     if (enemyType == "PEnemy") {
@@ -220,18 +236,18 @@ void WorldDelegate::addPoisonTile(int x, int y, float value){
     }
 }
 
-void WorldDelegate::activateDoor(){
+void WorldDelegate::activateDoor(int destination){
 
     QObject::disconnect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
     QObject::disconnect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
 
-    emit newWorldLoadedSignal();
+    emit newWorldLoadedSignal(destination);
 }
 
 void WorldDelegate::movedSlot(int dx, int dy) {
     qCDebug(worldDelegateCat) << "movedSlot() called";
 
-    if(protagonist->getHealth() <= 0) return;
+    if(protagonist->getHealth() <= 1e-4) return;
 
     // Calculate new postition, check if it's valid
     int newX = protagonist->getXPos() + dx;
@@ -239,9 +255,11 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     if( (dx == 0 && dy==0) || newX < 0 || newY < 0 || 
         (newX > cols - 1) || (newY > rows - 1))
         return;
-    if(newX == door->getXPos() && newY == door->getYPos()){
-        activateDoor();
+    for(const auto& door : doors){
+        if(newX == door->getXPos() && newY == door->getYPos()){
+            activateDoor(door->getValue());
         return;
+        }
     }
 
     singleMove(newX, newY);
@@ -298,7 +316,10 @@ int WorldDelegate::singleMove(int x, int y){
     float energyCost = getTile(x, y)->getValue();
     
     // If the protagonist's health is 0 or less, stop the loop and return
-    if (protagonist->getEnergy() < energyCost && protagonist->getEnergy() <= 0) 
+    if (protagonist->getEnergy() < energyCost && protagonist->getEnergy() <= 0)  
+        return 1;
+
+    if(protagonist->getHealth() <= 1e-4)
         return 1;
 
     // check for poison tile
@@ -309,6 +330,7 @@ int WorldDelegate::singleMove(int x, int y){
             isPoisoned = true;
         }
     }
+
     view->playerPoisoned(isPoisoned);
 
     // Check if there's an enemy on the path
@@ -337,6 +359,7 @@ int WorldDelegate::singleMove(int x, int y){
 
 std::string WorldDelegate::serialize(){
     /// TODO: this method is untested as of yet!
+    /// also unused
     std::stringstream out;
 
     out << "/----TILES----/\n";

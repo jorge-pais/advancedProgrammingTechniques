@@ -41,6 +41,7 @@ private:
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Tile>> healthPacks;
     std::vector<std::shared_ptr<Tile>> poisonTiles;
+    std::vector<std::shared_ptr<Tile>> doors;
 
     std::shared_ptr<Protagonist> protagonist;
 
@@ -49,7 +50,8 @@ private:
     int singleMove(int x, int y);
 
     int deadEnemies;
-    std::shared_ptr<Tile> door;
+
+    void activateDoor(int destination);
 
 public:
     WorldDelegate();
@@ -69,11 +71,11 @@ public:
     void setProtagonistEnergy(float energyValue);
     std::string enemyStatus(Enemy& enemy);
     void attack(std::shared_ptr<Enemy> enemy); // maybe we won't need this due to the slot
-    void activateDoor();
-    void addDoor(int seed);
-    std::shared_ptr<Tile> getDoor();
+    void addDoor(int seed, int destination);
+    std::vector<std::shared_ptr<Tile>> getDoors();
     void connectSlots();
     void connectSignals();
+    void terminate();
 
     std::string serialize();
 
@@ -81,7 +83,7 @@ signals:
     void poisonSignal();
     void xEnemyStoleSignal(int x, int y, int oldX, int oldY, float health);
     void playerDiedSignal();
-    void newWorldLoadedSignal();
+    void newWorldLoadedSignal(int destination);
 
 public slots:
     void movedSlot(int x, int y);
