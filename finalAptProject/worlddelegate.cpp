@@ -295,7 +295,7 @@ void WorldDelegate::gotoSlot(int newX, int newY){
     const int moveY[] = {-1, -1, +0, +1, +1, +1, +0, -1};
 
     int nextX, nextY;
-    view->clearPath();
+    view->clearPaths();
 
     // Use the path to move the protagonist
     for (int move : path) {
@@ -306,7 +306,7 @@ void WorldDelegate::gotoSlot(int newX, int newY){
         if(singleMove(nextX, nextY))
             return;
 
-        view->gView->pathTile(nextX, nextY);
+        view->setPaths(nextX, nextY);
     }
 }
 

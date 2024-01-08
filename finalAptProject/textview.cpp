@@ -66,7 +66,11 @@ void TextView::renderTiles() {
         //textView->setTextColor(Qt::black);// tile is a pair<x, y>
     }
 
-    textView->disconnect(SIGNAL(textChanged()));
+    for (const auto& pathCoord : pathTiles) {
+           worldView[pathCoord.second][pathCoord.first] = '^';
+       }
+
+    textView->disconnect(SIGNAL(textChanged()));//to disable autscrolling
 
     // grid
     QString line;
@@ -98,6 +102,17 @@ void TextView::resetColorAfterDelay() {
 void TextView::resetColor(){
     updateHealthDisplay(view->getDelegate()->getWorldProtagonist()->getHealth());
 }
+
+void TextView::setPath(int x, int y) {
+    pathTiles.insert({x, y});
+    //renderTiles();
+}
+
+void TextView::clearPath() {
+    pathTiles.clear();
+    //renderTiles(); //render to remove the path
+}
+
 void TextView::poisonTile(int x, int y, int poisonLevel){
     poisonedTiles.insert({x, y});
 }
