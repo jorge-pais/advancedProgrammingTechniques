@@ -117,23 +117,29 @@ void GraphicalView::renderEntities(){
 }
 
 /// @brief Renders the door entity on the scene.
-void GraphicalView::renderDoor(){
+void GraphicalView::renderDoors(){
     auto sprite = QPixmap(":/images/resources/entities/door.png");
     sprite = sprite.scaled(
             TILE_SIZE, TILE_SIZE,
             Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation);
-    door = new QGraphicsPixmapItem(sprite);
-    int x = this->worldView->getDelegate()->getDoor()->getXPos();
-    int y = this->worldView->getDelegate()->getDoor()->getYPos();
-    door->setPos(x*TILE_SIZE, y*TILE_SIZE);
+    for(const auto& dDoor : this->worldView->getDelegate()->getDoors()){
+        QGraphicsPixmapItem* door = new QGraphicsPixmapItem(sprite);
+        int x = dDoor->getXPos();
+        int y = dDoor->getYPos();
+        door->setPos(x*TILE_SIZE, y*TILE_SIZE);
 
-    scene->addItem(door);
+        scene->addItem(door);
+        doors.push_back(door);
+    }
+
 }
 
 /// @brief Removes the door from the scene.
-void GraphicalView::clearDoor(){
-    scene->removeItem(door);
+void GraphicalView::clearDoors(){
+    for(auto door : doors){
+        scene->removeItem(door);
+    }
 }
 
 /// @brief Removes the player character from the scene.

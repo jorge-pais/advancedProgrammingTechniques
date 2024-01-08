@@ -181,21 +181,21 @@ void WorldView::clearPath(){
     ///TODO: Something in textview also!
 }
 
-void WorldView::newWorldLoadedSlot(){
+void WorldView::newWorldLoadedSlot(int destination){
 
     delegate.swap(otherDelegate);
     delegate->connectSlots();
 
     delegate->setProtagonistHealth(otherDelegate->getWorldProtagonist()->getHealth());
-    delegate->setProtagonistPosition(delegate->getDoor()->getXPos(),delegate->getDoor()->getYPos());
+    delegate->setProtagonistPosition(delegate->getDoors().at(0)->getXPos(),delegate->getDoors().at(0)->getYPos());
 
     gView->clearTiles();
     gView->clearEntities();
-    gView->clearDoor();
+    gView->clearDoors();
 
     gView->renderTiles();
     gView->renderEntities();
-    gView->renderDoor();
+    gView->renderDoors();
     gView->renderPoisonTiles();
 
     gView->centerView();
