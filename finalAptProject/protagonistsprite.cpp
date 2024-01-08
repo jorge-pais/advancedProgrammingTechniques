@@ -38,6 +38,7 @@ ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
 /// @brief Sets the energy value for the protagonist.
 /// @param value The energy value to be set.
 void ProtagonistSprite::setEnergy(float value){
+    if(this == nullptr) return;
     int newH = static_cast<int> (TILE_SIZE * value/100.0);
     energyBar->setRect(energyBar->rect().x(), energyBar->rect().y(), energyBar->rect().width(), newH);
 }
@@ -46,6 +47,7 @@ void ProtagonistSprite::setEnergy(float value){
 /// @param x The x-coordinate of the position.
 /// @param y The y-coordinate of the position.
 void ProtagonistSprite::setPosition(int x, int y){
+    if(this == nullptr) return;
     //if(sprite)
     sprite->setPos(x*TILE_SIZE, y*TILE_SIZE);
     //if(text)
@@ -60,6 +62,7 @@ void ProtagonistSprite::setPosition(int x, int y){
 /// @param nextState The next state of the animation.
 /// @param time The time duration for the animation.
 void ProtagonistSprite::animate(aState nextState, float time){
+    if(this == nullptr) return;
     QPixmap start, end = spriteSet["alive"];
 
     if(nextState < animationState)
@@ -102,6 +105,7 @@ void ProtagonistSprite::animate(aState nextState, float time){
 /// @brief Sets the protagonist sprite to the dead state.
 /// @param spriteOffset The sprite offset for the dead state.
 void ProtagonistSprite::setDead(int spriteOffset){
+    if(this == nullptr) return;
     animationState = DEAD;
     SpriteWithValue::setDead(spriteOffset);
     energyBar->setRect(0, 0, 0, 0);
@@ -110,6 +114,8 @@ void ProtagonistSprite::setDead(int spriteOffset){
 /// @brief Tints the protagonist sprite based on the poisoned state.
 /// @param poisoned The poisoned state of the protagonist.
 void ProtagonistSprite::tint(bool poisoned){
+    if(this == nullptr) return;
+
     QGraphicsColorizeEffect * colourEffect = dynamic_cast<QGraphicsColorizeEffect*>(sprite->graphicsEffect());
     
     if(!poisoned){

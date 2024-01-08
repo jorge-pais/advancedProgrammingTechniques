@@ -33,11 +33,12 @@ struct CompareFirstVal{
 class GraphicalView
 {
 public:
-    GraphicalView(QGraphicsView* graphicsView, QGraphicsScene * scene, std::shared_ptr<WorldView> worldView);
+    GraphicalView(QGraphicsView* graphicsView, std::shared_ptr<WorldView> worldView);
+    ~GraphicalView();
 
-    ProtagonistSprite * player;
-    std::vector<SpriteWithValue *> entities;
-    std::vector<SpriteWithValue *> healthPacks;
+    std::shared_ptr<ProtagonistSprite> player;
+    std::vector<std::shared_ptr<SpriteWithValue>> entities;
+    std::vector<std::shared_ptr<SpriteWithValue>> healthPacks;
     std::vector<QGraphicsItem *> path;
 
     void renderTiles(bool useTile = false);
@@ -62,6 +63,8 @@ public:
     
     void pathTile(int x, int y);
     void clearPath();
+
+    void setView(std::shared_ptr<WorldView> wView);
 
 private:
     QGraphicsView * view;
