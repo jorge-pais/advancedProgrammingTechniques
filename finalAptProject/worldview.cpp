@@ -19,9 +19,11 @@ void WorldView::connectSlots(){
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
     QObject::connect(delegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
 
-    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
-    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
-    QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
+    for(auto& otherDelegate : otherDelegates){
+        QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::posChanged, this, &WorldView::positionChangedSlot);
+        QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::healthChanged, this, &WorldView::protagonistHealthChangedSlot);
+        QObject::connect(otherDelegate->getWorldProtagonist().get(), &Protagonist::energyChanged, this, &WorldView::protagonistEnergyChangedSlot);
+    }
 
     connect(this->window, &MainWindow::mainWindowEventSignal, this, &WorldView::mainWindowEventSlot);
     connect(this->window, &MainWindow::autoplaySignal, this, &WorldView::autoplaySlot);
@@ -34,11 +36,13 @@ void WorldView::connectSlots(){
         }
     }
 
-    for(auto& enemy : otherDelegate->getWorldEnemies()){
-        QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
-        PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
-        if(pEnemy){
-            QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
+    for(auto& otherDelegate : otherDelegates){
+        for(auto& enemy : otherDelegate->getWorldEnemies()){
+            QObject::connect(enemy.get(), &Enemy::dead, this, &WorldView::enemyDeadSlot);
+            PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy.get());
+            if(pEnemy){
+                QObject::connect(pEnemy, &PEnemy::poisonLevelUpdated, this, &WorldView::poisonLevelUpdatedSlot);
+            }
         }
     }
 }
@@ -48,10 +52,10 @@ void WorldView::setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr
     this->tView = text;
 }
 
-void WorldView::setDelegates(std::shared_ptr<WorldDelegate> del, std::shared_ptr<WorldDelegate> otherDel){
+void WorldView::setDelegates(std::shared_ptr<WorldDelegate> del, std::vector<std::shared_ptr<WorldDelegate>> otherDels){
     qCDebug(worldViewCat) << "setDelegate() called";
     this->delegate = del;
-    this->otherDelegate = otherDel;
+    this->otherDelegates = otherDels;
 }
 
 void WorldView::mainWindowEventSlot(QKeyEvent *event) {
@@ -182,21 +186,27 @@ void WorldView::clearPath(){
     ///TODO: Something in textview also!
 }
 
-void WorldView::newWorldLoadedSlot(){
+void WorldView::newWorldLoadedSlot(int destination){
 
-    delegate.swap(otherDelegate);
+    for(auto& del : otherDelegates){
+        for(const auto& door : del->getDoors()){
+            if(door->getValue() == destination){
+                del->setProtagonistHealth(delegate->getWorldProtagonist()->getHealth());
+                del->setProtagonistPosition(door->getXPos(),door->getYPos());
+                delegate.swap(del);
+            }
+        }
+    }
+
     delegate->connectSlots();
-
-    delegate->setProtagonistHealth(otherDelegate->getWorldProtagonist()->getHealth());
-    delegate->setProtagonistPosition(delegate->getDoor()->getXPos(),delegate->getDoor()->getYPos());
 
     gView->clearTiles();
     gView->clearEntities();
-    gView->clearDoor();
+    gView->clearDoors();
 
     gView->renderTiles();
     gView->renderEntities();
-    gView->renderDoor();
+    gView->renderDoors();
     gView->renderPoisonTiles();
 
     gView->centerView();

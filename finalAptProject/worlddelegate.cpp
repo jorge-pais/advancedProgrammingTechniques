@@ -120,11 +120,11 @@ void WorldDelegate::setProtagonistEnergy(float energyValue){
     std::cout << protagonist->getEnergy() << std::endl;
 }
 
-std::shared_ptr<Tile> WorldDelegate::getDoor(){
-    return door;
+std::vector<std::shared_ptr<Tile>> WorldDelegate::getDoors(){
+    return doors;
 }
 
-void WorldDelegate::addDoor(int seed){
+void WorldDelegate::addDoor(int seed, int destination){
     srand(seed);
     bool done = false;
     bool found = false;
@@ -145,6 +145,11 @@ void WorldDelegate::addDoor(int seed){
                 found = true;
             }
         }
+        for(const auto& door : doors){
+            if(door->getXPos() == x && door->getYPos() == y){
+                found = true;
+            }
+        }
         if(x == 0 && y == 0){
             found = true;;
         }
@@ -153,7 +158,7 @@ void WorldDelegate::addDoor(int seed){
         }
     }
 
-    door = std::make_shared<Tile>(x, y, 0);
+    doors.push_back(std::make_shared<Tile>(x, y, destination));
 
 }
 
@@ -231,12 +236,12 @@ void WorldDelegate::addPoisonTile(int x, int y, float value){
     }
 }
 
-void WorldDelegate::activateDoor(){
+void WorldDelegate::activateDoor(int destination){
 
     QObject::disconnect(this->view.get(), &WorldView::playerMovedSignal, this, &WorldDelegate::movedSlot);
     QObject::disconnect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
 
-    emit newWorldLoadedSignal();
+    emit newWorldLoadedSignal(destination);
 }
 
 void WorldDelegate::movedSlot(int dx, int dy) {
@@ -250,9 +255,11 @@ void WorldDelegate::movedSlot(int dx, int dy) {
     if( (dx == 0 && dy==0) || newX < 0 || newY < 0 || 
         (newX > cols - 1) || (newY > rows - 1))
         return;
-    if(newX == door->getXPos() && newY == door->getYPos()){
-        activateDoor();
+    for(const auto& door : doors){
+        if(newX == door->getXPos() && newY == door->getYPos()){
+            activateDoor(door->getValue());
         return;
+        }
     }
 
     singleMove(newX, newY);

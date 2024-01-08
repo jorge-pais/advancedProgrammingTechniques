@@ -22,7 +22,7 @@ class WorldView : public QObject
     Q_OBJECT
 private:
     std::shared_ptr<WorldDelegate> delegate = nullptr;
-    std::shared_ptr<WorldDelegate> otherDelegate = nullptr;
+    std::vector<std::shared_ptr<WorldDelegate>> otherDelegates;
     //std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
 
@@ -40,7 +40,7 @@ public:
     WorldView(MainWindow * mainWindow);
     //WorldView(WorldDelegate& delegate);
     void setViews(std::shared_ptr<GraphicalView> graphic, std::shared_ptr<TextView> text);
-    void setDelegates(std::shared_ptr<WorldDelegate> delegate, std::shared_ptr<WorldDelegate> otherDelegate);
+    void setDelegates(std::shared_ptr<WorldDelegate> delegate, std::vector<std::shared_ptr<WorldDelegate>> otherDelegates);
     std::shared_ptr<WorldDelegate> getDelegate() const;
     void connectSlots();
     //void attack(); //what is this for?
@@ -60,7 +60,7 @@ public slots:
     void protagonistHealthChangedSlot(int h);
     void protagonistEnergyChangedSlot(int e);
     void enemyDeadSlot();
-    void newWorldLoadedSlot();
+    void newWorldLoadedSlot(int destination);
     void mainWindowEventSlot(QKeyEvent *event);
     void xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health);
     void autoplaySlot(bool activate);

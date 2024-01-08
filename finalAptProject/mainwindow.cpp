@@ -13,22 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     srand(time(0));
 
-    world = std::make_shared<World>();
-    otherWorld = std::make_shared<World>();
-    worldDelegate = std::make_shared<WorldDelegate>(wView, world);
-    otherWorldDelegate = std::make_shared<WorldDelegate>(wView, otherWorld);
-
-    wView->setDelegates(worldDelegate, otherWorldDelegate);
-
-    // Create the world from the file, this was to be
-    QString worldPath{":/images/resources/world_images/worldmap.png"};
-    world->createWorld(worldPath, 5, 6, 0.0);
-    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
-
-    // initialize the worldDelegate
-    worldDelegate->initializeWDelegate();
-    otherWorldDelegate->initializeWDelegate();
+    initialize();
 
     // Initialize GraphicalView
     gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
@@ -54,14 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
     //connect slots and setup
-    worldDelegate->addDoor(rand());
-    otherWorldDelegate->addDoor(rand());
-    worldDelegate->connectSignals();
-    worldDelegate->connectSlots();
-    otherWorldDelegate->connectSignals();
-    wView->connectSlots();
-    wView->setViews(gView, tView);
-
+    setup();
     render();
 
     toolbarConfig();
@@ -69,31 +47,98 @@ MainWindow::MainWindow(QWidget *parent)
     settings = std::make_shared<Settings>(gView);
 }
 
+void MainWindow::initialize(){
+
+    linear = true; //setting this value to true generates the worlds linearly, otherwise one world has the doors to all the other ones
+    //adding an extra string below makes the code automatically generate everything for you, the worlds are linked based on the linear boolean above
+    worldStrings.push_back(":/images/resources/world_images/worldmap.png");
+    worldStrings.push_back(":/images/resources/world_images/worldmap2.png");
+    worldStrings.push_back(":/images/resources/world_images/worldmap3.png");
+    worldStrings.push_back(":/images/resources/world_images/worldmap5.png");
+
+    worldDelegates.clear();
+    for(auto& map : worldStrings){
+        auto world = std::make_shared<World>();
+        world->createWorld(map, 5, 6, 0.0);
+        worlds.push_back(world);
+        worldDelegates.push_back(std::make_shared<WorldDelegate>(wView, world));
+    }
+
+    //sorry
+    bool wowThisCodeIsReallyBadButINeedAQuickFix = false;
+    std::vector<std::shared_ptr<WorldDelegate>> badcode;
+    for(auto& del : worldDelegates){
+        if(!wowThisCodeIsReallyBadButINeedAQuickFix){
+            wowThisCodeIsReallyBadButINeedAQuickFix = true;
+        }
+        else{
+            badcode.push_back(del);
+        }
+    }
+    wView->setDelegates(worldDelegates.at(0), badcode);
+
+    // initialize the worldDelegate
+    for(auto& del : worldDelegates){
+        del->initializeWDelegate();
+    }
+
+}
+
+void MainWindow::setup(){
+    //add doors
+    for(int i = 1; i < worldDelegates.size(); i++){
+        if(linear){
+            worldDelegates.at(i-1) ->addDoor(rand(), i);
+            worldDelegates.at(i) ->addDoor(rand(), i);
+        }
+        else{
+            worldDelegates.at(0) ->addDoor(rand(), i);
+            worldDelegates.at(i) ->addDoor(rand(), i);
+        }
+    }
+    /*
+    worldDelegates.at(0)->addDoor(rand(), 1);
+    worldDelegates.at(0)->addDoor(rand(), 2);
+    worldDelegates.at(1)->addDoor(rand(), 1);
+    worldDelegates.at(1)->addDoor(rand(), 2);
+    */
+
+    //connect signals/slots
+    worldDelegates.at(0)->connectSlots();
+    for(auto& del : worldDelegates){
+        del->connectSignals();
+    }
+    wView->connectSlots();
+    wView->setViews(gView, tView);
+
+}
+
 void MainWindow::render(){
     // render the graphicalView tiles and entities;
     gView->renderTiles();
     gView->renderEntities();
     gView->renderPlayer();
-    gView->renderDoor();
+    gView->renderDoors();
 
     gView->centerView();
 
     tView->renderTiles();
     //show health and energy from the start
-    tView->updateHealthDisplay(worldDelegate->getWorldProtagonist()->getHealth());
-    tView->updateEnergyDisplay(worldDelegate->getWorldProtagonist()->getEnergy());
+    tView->updateHealthDisplay(worldDelegates.at(0)->getWorldProtagonist()->getHealth());
+    tView->updateEnergyDisplay(worldDelegates.at(0)->getWorldProtagonist()->getEnergy());
 }
 
 void MainWindow::createNewGame(){
     // clear everything on the graphical view
-    gView->clearDoor();
+    gView->clearDoors();
     gView->clearEntities();
     gView->clearPlayer();
     gView->clearTiles();
 
-    // attempt to disconnect all signals to prevent bizarre behaviour
-    worldDelegate->disconnect();
-    otherWorldDelegate->disconnect();
+
+    for(auto& del : worldDelegates){
+        del->disconnect();
+    }
     QObject::disconnect(this, nullptr, nullptr, nullptr);
     QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
     wView->disconnect();
@@ -103,31 +148,11 @@ void MainWindow::createNewGame(){
     // as none of these objects can be referenced (right?)
     wView = std::make_shared<WorldView>(this);
     gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
-    world = std::make_shared<World>();
-    otherWorld = std::make_shared<World>();
-    worldDelegate = std::make_shared<WorldDelegate>(wView, world);
-    otherWorldDelegate = std::make_shared<WorldDelegate>(wView, otherWorld);
 
-    wView->setDelegates(worldDelegate, otherWorldDelegate);
-
-    // Create the world from the file, this was to be
-    QString worldPath{":/images/resources/world_images/worldmap.png"};
-    world->createWorld(worldPath, 5, 6, 0.0);
-    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
-
-    // initialize the worldDelegate
-    worldDelegate->initializeWDelegate();
-    otherWorldDelegate->initializeWDelegate();
+    initialize();
 
     //connect slots and setup
-    worldDelegate->addDoor(rand());
-    otherWorldDelegate->addDoor(rand());
-    worldDelegate->connectSignals();
-    worldDelegate->connectSlots();
-    otherWorldDelegate->connectSignals();
-    wView->connectSlots();
-    wView->setViews(gView, tView);
+    setup();
 
     render();
 }

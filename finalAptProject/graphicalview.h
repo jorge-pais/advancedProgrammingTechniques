@@ -57,8 +57,8 @@ public:
     void clearTiles();
     void clearEntities();
     void clearPlayer();
-    void clearDoor();
-    void renderDoor();
+    void clearDoors();
+    void renderDoors();
     void renderPoisonTiles();
     
     void pathTile(int x, int y);
@@ -70,7 +70,7 @@ private:
     std::shared_ptr<WorldView> worldView;
     QGraphicsPixmapItem * overlay = nullptr;
     bool overlayOn = false;
-    QGraphicsPixmapItem * door;
+    std::vector<QGraphicsPixmapItem *> doors;
 
     std::vector<QGraphicsItem *> tiles;
     std::vector<QGraphicsItem *> poisonTiles;

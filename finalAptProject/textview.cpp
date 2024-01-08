@@ -54,16 +54,15 @@ void TextView::renderTiles() {
 
 
     // Place door on the grid
-    auto door = delegate->getDoor();
-    if (door) {
+    for(const auto& door : delegate->getDoors()){
         worldView[door->getYPos()][door->getXPos()] = 'D';
     }
 
     worldView[protagonist->getYPos()][protagonist->getXPos()] = 'P';
 
-    for (const auto& tile : poisonedTiles) {
+    for (const auto& tile : delegate->getPoisonTiles()) {
         //textView->setTextColor(Qt::red);
-        worldView[tile.second][tile.first] = '*';
+        worldView[tile->getYPos()][tile->getXPos()] = '*';
         //textView->setTextColor(Qt::black);// tile is a pair<x, y>
     }
 
@@ -238,3 +237,5 @@ void TextView::printUnknownCommand()
 {
     printMessage("Unknown command. Type 'help' for a list of available commands.");
 }
+
+void TextView::setView(std::shared_ptr<WorldView> wView){ this->view = wView; }
