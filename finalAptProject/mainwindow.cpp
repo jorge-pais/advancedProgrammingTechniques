@@ -16,9 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
     world = std::make_shared<World>();
     otherWorld = std::make_shared<World>();
     worldDelegate = std::make_shared<WorldDelegate>(wView, world);
-    otherWorldDelegate = std::make_shared<WorldDelegate>(wView, otherWorld);
+    otherWorldDelegates.push_back(std::make_shared<WorldDelegate>(wView, otherWorld));
 
-    wView->setDelegates(worldDelegate, otherWorldDelegate);
+    wView->setDelegates(worldDelegate, otherWorldDelegates);
 
     // Create the world from the file, this was to be
     QString worldPath{":/images/resources/world_images/worldmap.png"};
@@ -28,7 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();
-    otherWorldDelegate->initializeWDelegate();
+    for(auto& del : otherWorldDelegates){
+        del->initializeWDelegate();
+    }
 
     // Initialize GraphicalView
     gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
@@ -54,20 +56,30 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
     //connect slots and setup
-    worldDelegate->addDoor(rand(), 2);
-    worldDelegate->addDoor(rand(), 2);
-    otherWorldDelegate->addDoor(rand(), 1);
-    worldDelegate->connectSignals();
-    worldDelegate->connectSlots();
-    otherWorldDelegate->connectSignals();
-    wView->connectSlots();
-    wView->setViews(gView, tView);
-
+    setup();
     render();
 
     toolbarConfig();
 
     settings = std::make_shared<Settings>(gView);
+}
+
+void MainWindow::setup(){
+    //add doors
+    worldDelegate->addDoor(rand(), 1);
+    worldDelegate->addDoor(rand(), 2);
+    otherWorldDelegates.at(0)->addDoor(rand(), 1);
+    otherWorldDelegates.at(0)->addDoor(rand(), 2);
+
+    //connect signals/slots
+    worldDelegate->connectSignals();
+    worldDelegate->connectSlots();
+    for(auto& del : otherWorldDelegates){
+        del->connectSignals();
+    }
+    wView->connectSlots();
+    wView->setViews(gView, tView);
+
 }
 
 void MainWindow::render(){
@@ -94,7 +106,9 @@ void MainWindow::createNewGame(){
 
 
     worldDelegate->disconnect();
-    otherWorldDelegate->disconnect();
+    for(auto& del : otherWorldDelegates){
+        del->disconnect();
+    }
     QObject::disconnect(this, nullptr, nullptr, nullptr);
     QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
     wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
@@ -107,9 +121,10 @@ void MainWindow::createNewGame(){
     world = std::make_shared<World>();
     otherWorld = std::make_shared<World>();
     worldDelegate = std::make_shared<WorldDelegate>(wView, world);
-    otherWorldDelegate = std::make_shared<WorldDelegate>(wView, otherWorld);
+    otherWorldDelegates.clear();
+    otherWorldDelegates.push_back(std::make_shared<WorldDelegate>(wView, otherWorld));
 
-    wView->setDelegates(worldDelegate, otherWorldDelegate);
+    wView->setDelegates(worldDelegate, otherWorldDelegates);
 
     // Create the world from the file, this was to be
     QString worldPath{":/images/resources/world_images/worldmap.png"};
@@ -119,17 +134,12 @@ void MainWindow::createNewGame(){
 
     // initialize the worldDelegate
     worldDelegate->initializeWDelegate();
-    otherWorldDelegate->initializeWDelegate();
+    for(auto& del : otherWorldDelegates){
+        del->initializeWDelegate();
+    }
 
     //connect slots and setup
-    worldDelegate->addDoor(rand(), 1);
-    worldDelegate->addDoor(rand(), 1);
-    otherWorldDelegate->addDoor(rand(), 2);
-    worldDelegate->connectSignals();
-    worldDelegate->connectSlots();
-    otherWorldDelegate->connectSignals();
-    wView->connectSlots();
-    wView->setViews(gView, tView);
+    setup();
 
     render();
 }
