@@ -54,8 +54,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::submitCommand);
 
     //connect slots and setup
-    worldDelegate->addDoor(rand());
-    otherWorldDelegate->addDoor(rand());
+    worldDelegate->addDoor(rand(), 2);
+    worldDelegate->addDoor(rand(), 2);
+    otherWorldDelegate->addDoor(rand(), 1);
     worldDelegate->connectSignals();
     worldDelegate->connectSlots();
     otherWorldDelegate->connectSignals();
@@ -74,7 +75,7 @@ void MainWindow::render(){
     gView->renderTiles();
     gView->renderEntities();
     gView->renderPlayer();
-    gView->renderDoor();
+    gView->renderDoors();
 
     gView->centerView();
 
@@ -86,7 +87,7 @@ void MainWindow::render(){
 
 void MainWindow::createNewGame(){
     // clear everything on the graphical view
-    gView->clearDoor();
+    gView->clearDoors();
     gView->clearEntities();
     gView->clearPlayer();
     gView->clearTiles();
@@ -121,8 +122,9 @@ void MainWindow::createNewGame(){
     otherWorldDelegate->initializeWDelegate();
 
     //connect slots and setup
-    worldDelegate->addDoor(rand());
-    otherWorldDelegate->addDoor(rand());
+    worldDelegate->addDoor(rand(), 1);
+    worldDelegate->addDoor(rand(), 1);
+    otherWorldDelegate->addDoor(rand(), 2);
     worldDelegate->connectSignals();
     worldDelegate->connectSlots();
     otherWorldDelegate->connectSignals();
