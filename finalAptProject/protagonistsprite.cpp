@@ -2,6 +2,11 @@
 
 //#include "qloggingcategory.h"
 
+/// all the if(this == nullptr) return; lines are such
+/// a bodge due to smart pointers not working as intended!
+/// this causes the compile with -Wall to complain
+/// about the nonnull object being compared to NULL (-Wnonnull-compare)
+
 /// @brief Constructor for the ProtagonistSprite class.
 /// @param prog Shared pointer to the Protagonist object.
 ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
@@ -106,6 +111,7 @@ void ProtagonistSprite::animate(aState nextState, float time){
 /// @param spriteOffset The sprite offset for the dead state.
 void ProtagonistSprite::setDead(int spriteOffset){
     if(this == nullptr) return;
+
     animationState = DEAD;
     SpriteWithValue::setDead(spriteOffset);
     energyBar->setRect(0, 0, 0, 0);

@@ -18,6 +18,13 @@ GraphicalView::GraphicalView(QGraphicsView* graphicsView, std::shared_ptr<WorldV
 
 GraphicalView::~GraphicalView(){
     delete scene;
+    
+    for(auto tile : path)
+        delete tile;
+    for(auto tile : poisonTiles)
+        delete tile;
+    for(auto tile : tiles)
+        delete tile;
 }
 
 /// @brief Renders the tiles of the game world.

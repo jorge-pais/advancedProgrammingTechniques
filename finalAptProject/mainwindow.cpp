@@ -141,7 +141,7 @@ void MainWindow::createNewGame(){
     }
     QObject::disconnect(this, nullptr, nullptr, nullptr);
     QObject::disconnect(wView.get(), nullptr, nullptr, nullptr);
-    wView->disconnect(); // attempt to disconnect all signals in order to prevent double movement
+    wView->disconnect();
 
     // Hopefully after doing this, none of the previous objects is retained,
     // and the heap memory associated with them will be released,

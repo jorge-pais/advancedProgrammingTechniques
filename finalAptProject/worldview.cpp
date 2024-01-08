@@ -173,6 +173,7 @@ void WorldView::positionChangedSlot(int x, int y) {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->animate(ProtagonistSprite::MOVE);
+    gView->player->setEnergy(delegate->getWorldProtagonist()->getEnergy());
     gView->player->setPosition(x, y);
     gView->centerView();
 
