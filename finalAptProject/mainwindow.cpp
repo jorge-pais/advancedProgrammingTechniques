@@ -13,24 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     srand(time(0));
 
-    world = std::make_shared<World>();
-    otherWorld = std::make_shared<World>();
-    worldDelegate = std::make_shared<WorldDelegate>(wView, world);
-    otherWorldDelegates.push_back(std::make_shared<WorldDelegate>(wView, otherWorld));
-
-    wView->setDelegates(worldDelegate, otherWorldDelegates);
-
-    // Create the world from the file, this was to be
-    QString worldPath{":/images/resources/world_images/worldmap.png"};
-    world->createWorld(worldPath, 5, 6, 0.0);
-    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
-
-    // initialize the worldDelegate
-    worldDelegate->initializeWDelegate();
-    for(auto& del : otherWorldDelegates){
-        del->initializeWDelegate();
-    }
+    initialize();
 
     // Initialize GraphicalView
     gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
@@ -62,6 +45,30 @@ MainWindow::MainWindow(QWidget *parent)
     toolbarConfig();
 
     settings = std::make_shared<Settings>(gView);
+}
+
+void MainWindow::initialize(){
+
+    world = std::make_shared<World>();
+    otherWorlds.push_back(std::make_shared<World>());
+    worldDelegate = std::make_shared<WorldDelegate>(wView, world);
+    otherWorldDelegates.clear();
+    otherWorldDelegates.push_back(std::make_shared<WorldDelegate>(wView, otherWorlds.at(0)));
+
+    wView->setDelegates(worldDelegate, otherWorldDelegates);
+
+    // Create the world from the file, this was to be
+    QString worldPath{":/images/resources/world_images/worldmap.png"};
+    world->createWorld(worldPath, 5, 6, 0.0);
+    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
+    otherWorlds.at(0)->createWorld(otherWorldPath, 5, 6, 0.0);
+
+    // initialize the worldDelegate
+    worldDelegate->initializeWDelegate();
+    for(auto& del : otherWorldDelegates){
+        del->initializeWDelegate();
+    }
+
 }
 
 void MainWindow::setup(){
@@ -118,25 +125,8 @@ void MainWindow::createNewGame(){
     // as none of these objects can be referenced (right?)
     wView = std::make_shared<WorldView>(this);
     gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
-    world = std::make_shared<World>();
-    otherWorld = std::make_shared<World>();
-    worldDelegate = std::make_shared<WorldDelegate>(wView, world);
-    otherWorldDelegates.clear();
-    otherWorldDelegates.push_back(std::make_shared<WorldDelegate>(wView, otherWorld));
 
-    wView->setDelegates(worldDelegate, otherWorldDelegates);
-
-    // Create the world from the file, this was to be
-    QString worldPath{":/images/resources/world_images/worldmap.png"};
-    world->createWorld(worldPath, 5, 6, 0.0);
-    QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
-    otherWorld->createWorld(otherWorldPath, 5, 6, 0.0);
-
-    // initialize the worldDelegate
-    worldDelegate->initializeWDelegate();
-    for(auto& del : otherWorldDelegates){
-        del->initializeWDelegate();
-    }
+    initialize();
 
     //connect slots and setup
     setup();

@@ -68,7 +68,7 @@ private:
     Ui::MainWindow *ui;
 
     std::shared_ptr<World> world;
-    std::shared_ptr<World> otherWorld;
+    std::vector<std::shared_ptr<World>> otherWorlds;
     std::shared_ptr<WorldView> wView;
     std::shared_ptr<WorldDelegate> worldDelegate;
     std::vector<std::shared_ptr<WorldDelegate>> otherWorldDelegates;
@@ -80,6 +80,7 @@ private:
     void setupViews();
     void render();
     void setup();
+    void initialize();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
