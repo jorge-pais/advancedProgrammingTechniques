@@ -19,6 +19,7 @@
         <file>resources/entities/tux5.png</file>
         <file>resources/world_images/worldmap2.png</file>
         <file>resources/entities/door.png</file>
+        <file>resources/world_images/worldmap3.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

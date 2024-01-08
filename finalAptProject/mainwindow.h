@@ -67,11 +67,10 @@ public slots:
 private:
     Ui::MainWindow *ui;
 
-    std::shared_ptr<World> world;
-    std::vector<std::shared_ptr<World>> otherWorlds;
+    std::vector<QString> worldStrings;
+    std::vector<std::shared_ptr<World>> worlds;
     std::shared_ptr<WorldView> wView;
-    std::shared_ptr<WorldDelegate> worldDelegate;
-    std::vector<std::shared_ptr<WorldDelegate>> otherWorldDelegates;
+    std::vector<std::shared_ptr<WorldDelegate>> worldDelegates;
     std::shared_ptr<GraphicalView> gView;
     std::shared_ptr<TextView> tView;
     std::shared_ptr<Settings> settings;

@@ -49,23 +49,46 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::initialize(){
 
+    worldStrings.push_back(":/images/resources/world_images/worldmap.png");
+    worldStrings.push_back(":/images/resources/world_images/worldmap2.png");
+
+    worldDelegates.clear();
+    for(auto& map : worldStrings){
+        auto world = std::make_shared<World>();
+        world->createWorld(map, 5, 6, 0.0);
+        worlds.push_back(world);
+        worldDelegates.push_back(std::make_shared<WorldDelegate>(wView, world));
+    }
+   /*
     world = std::make_shared<World>();
     otherWorlds.push_back(std::make_shared<World>());
     worldDelegate = std::make_shared<WorldDelegate>(wView, world);
     otherWorldDelegates.clear();
     otherWorldDelegates.push_back(std::make_shared<WorldDelegate>(wView, otherWorlds.at(0)));
 
-    wView->setDelegates(worldDelegate, otherWorldDelegates);
+    wView->setDelegates(worldDelegates.at(0), otherWorldDelegates);
 
     // Create the world from the file, this was to be
     QString worldPath{":/images/resources/world_images/worldmap.png"};
     world->createWorld(worldPath, 5, 6, 0.0);
     QString otherWorldPath{":/images/resources/world_images/worldmap2.png"};
     otherWorlds.at(0)->createWorld(otherWorldPath, 5, 6, 0.0);
+*/
+
+    bool wowThisCodeIsReallyBadButINeedAQuickFix = false;
+    std::vector<std::shared_ptr<WorldDelegate>> badcode;
+    for(auto& del : worldDelegates){
+        if(!wowThisCodeIsReallyBadButINeedAQuickFix){
+            wowThisCodeIsReallyBadButINeedAQuickFix = true;
+        }
+        else{
+            badcode.push_back(del);
+        }
+    }
+    wView->setDelegates(worldDelegates.at(0), badcode);
 
     // initialize the worldDelegate
-    worldDelegate->initializeWDelegate();
-    for(auto& del : otherWorldDelegates){
+    for(auto& del : worldDelegates){
         del->initializeWDelegate();
     }
 
@@ -73,15 +96,14 @@ void MainWindow::initialize(){
 
 void MainWindow::setup(){
     //add doors
-    worldDelegate->addDoor(rand(), 1);
-    worldDelegate->addDoor(rand(), 2);
-    otherWorldDelegates.at(0)->addDoor(rand(), 1);
-    otherWorldDelegates.at(0)->addDoor(rand(), 2);
+    worldDelegates.at(0)->addDoor(rand(), 1);
+    worldDelegates.at(0)->addDoor(rand(), 2);
+    worldDelegates.at(1)->addDoor(rand(), 1);
+    worldDelegates.at(1)->addDoor(rand(), 2);
 
     //connect signals/slots
-    worldDelegate->connectSignals();
-    worldDelegate->connectSlots();
-    for(auto& del : otherWorldDelegates){
+    worldDelegates.at(0)->connectSlots();
+    for(auto& del : worldDelegates){
         del->connectSignals();
     }
     wView->connectSlots();
@@ -100,8 +122,8 @@ void MainWindow::render(){
 
     tView->renderTiles();
     //show health and energy from the start
-    tView->updateHealthDisplay(worldDelegate->getWorldProtagonist()->getHealth());
-    tView->updateEnergyDisplay(worldDelegate->getWorldProtagonist()->getEnergy());
+    tView->updateHealthDisplay(worldDelegates.at(0)->getWorldProtagonist()->getHealth());
+    tView->updateEnergyDisplay(worldDelegates.at(0)->getWorldProtagonist()->getEnergy());
 }
 
 void MainWindow::createNewGame(){
@@ -112,8 +134,7 @@ void MainWindow::createNewGame(){
     gView->clearTiles();
 
 
-    worldDelegate->disconnect();
-    for(auto& del : otherWorldDelegates){
+    for(auto& del : worldDelegates){
         del->disconnect();
     }
     QObject::disconnect(this, nullptr, nullptr, nullptr);
