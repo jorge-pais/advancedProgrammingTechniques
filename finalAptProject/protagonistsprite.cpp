@@ -3,7 +3,7 @@
 //#include "qloggingcategory.h"
 
 /// all the if(this == nullptr) return; lines are such
-/// a bodge due to smart pointers not working properly!
+/// a bodge due to smart pointers not working as intended!
 /// this causes the compile with -Wall to complain
 /// about the nonnull object being compared to NULL (-Wnonnull-compare)
 
