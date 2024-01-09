@@ -12,6 +12,7 @@ class HelpWindow : public QDialog {
 public:
     explicit HelpWindow(QWidget *parent = nullptr);
     void setHelpText(const QString &text);
+    void loadHelpContent();
 
 private:
     QLabel *label;

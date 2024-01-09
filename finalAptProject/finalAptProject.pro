@@ -59,3 +59,6 @@ DEPENDPATH += $$PWD/../../worldlib
 RESOURCES += \
     images.qrc
 
+DISTFILES += \
+    help
+
