@@ -27,6 +27,7 @@
 #include "worldview.h"
 #include "settingswindow.h"
 #include "settings.h"
+#include "helpwindow.h"
 
 //#include "settingsdialog.h"
 

@@ -233,6 +233,11 @@ void MainWindow::openSettings(){
 
 void MainWindow::openHelp(){
     qCDebug(mainWindowCat) << "openHelp() called";
+    HelpWindow *helpWindow = new HelpWindow(this); // Assuming you want the main window to be the parent
+    helpWindow->setHelpText("Help information goes here. Explain how to use the application.");
+    helpWindow->loadHelpContent();
+    helpWindow->setWindowTitle("Help");
+    helpWindow->exec();
 }
 
 void MainWindow::autoplay(){

@@ -190,11 +190,6 @@ void WorldView::positionChangedSlot(int x, int y) {
     tView->renderTiles();
 }
 
-void WorldView::clearPath(){
-    gView->clearPath();
-    ///TODO: Something in textview also!
-}
-
 void WorldView::newWorldLoadedSlot(int destination){
 
     for(auto& del : otherDelegates){
