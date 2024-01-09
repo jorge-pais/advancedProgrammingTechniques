@@ -12,6 +12,7 @@ QMAKE_CXXFLAGS += -std=c++20
 
 SOURCES += \
     graphicalview.cpp \
+    helpwindow.cpp \
     main.cpp \
     mainwindow.cpp \
     protagonistsprite.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     graphicalview.h \
+    helpwindow.h \
     mainwindow.h \
     pathfinderfunction.h \
     pathfinder.h \

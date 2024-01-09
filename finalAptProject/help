@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Help Information</title>
+</head>
+<body>
+<h1>Application Help</h1>
+<p>This section explains how to play the game.</p>
+<!-- Assume "example.png" is stored under "/images/entities" in your Qt Resource file -->
+<img src="qrc:/images/entities/tux.png" alt="protagonist Image">
+<p>This is you.</p>
+<p>you can move around using the WASD keys.</p>
+<!-- Add more sections as needed -->
+</body>
+</html>
