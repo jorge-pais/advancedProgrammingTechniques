@@ -879,9 +879,11 @@ qrc_images.cpp: images.qrc \
 		resources/entities/snowball-2.png \
 		resources/entities/platter.png \
 		resources/world_images/worldmap.png \
+		resources/world_images/worldmap3.png \
 		resources/world_images/maze3.png \
 		resources/world_images/worldmap2.png \
 		resources/world_images/maze2.png \
+		resources/world_images/worldmap5.png \
 		resources/world_images/maze1.png \
 		resources/world_images/worldmap4.png
 	/usr/bin/rcc -name images images.qrc -o qrc_images.cpp

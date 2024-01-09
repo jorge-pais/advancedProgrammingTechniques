@@ -182,6 +182,7 @@ void WorldView::positionChangedSlot(int x, int y) {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
     gView->player->animate(ProtagonistSprite::MOVE);
+    gView->player->setEnergy(delegate->getWorldProtagonist()->getEnergy());
     gView->player->setPosition(x, y);
     gView->centerView();
 
@@ -253,6 +254,17 @@ void WorldView::xEnemyStoleSlot(int x, int y, int oldX, int oldY, float health){
     }
 }
 
+void WorldView::clearPaths(){
+    tView->clearPath();
+    gView->clearPath();
+}
+
+void WorldView::setPaths(int nextX, int nextY){
+    gView->pathTile(nextX, nextY);
+    tView->setPath(nextX, nextY);
+}
+
+/// TODO: Only implemented for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";

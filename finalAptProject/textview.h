@@ -38,15 +38,15 @@ public:
     void updateHealthDisplay(float currentHealth);
     void updateEnergyDisplay(int currentEnergy);
     void processCommand(const QString& command);
+    void setPath(int x, int y);
+    void clearPath();
     void poisonTile(int x, int y, int poisonLevel);
     std::vector<std::shared_ptr<Tile>> worldTiles;
     std::vector<std::shared_ptr<Enemy>> worldEnemies;
     std::vector<std::shared_ptr<Tile>> worldHealthPacks;
     std::shared_ptr<Protagonist> protagonist;
     //void centerPlayer();
-
-    void setView(std::shared_ptr<WorldView> wView);
-
+    
 private:
     QTextBrowser* textView;
     QTextBrowser* healthBrowser;
@@ -58,8 +58,7 @@ private:
     float previousHealth;
     QTimer* colorResetTimer;
     std::set<std::pair<int, int>> poisonedTiles;
-
-
+    std::set<std::pair<int, int>> pathTiles;
     void printHelp();
     void printMessage(const QString& message);
     void printArgs();

@@ -24,7 +24,7 @@ private:
     std::shared_ptr<WorldDelegate> delegate = nullptr;
     std::vector<std::shared_ptr<WorldDelegate>> otherDelegates;
     //std::shared_ptr<GraphicalView> gView;
-    std::shared_ptr<TextView> tView;
+    //std::shared_ptr<TextView> tView;
 
     template <typename T> void goToNearestEntity(std::vector<std::shared_ptr<T>> entities);
     //float calculateDistance(const std::pair<int, int>& pos1, const std::pair<int, int>& pos2) {
@@ -35,7 +35,7 @@ private:
 
 public:
     std::shared_ptr<GraphicalView> gView;
-
+    std::shared_ptr<TextView> tView;
     //WorldView();
     WorldView(MainWindow * mainWindow);
     //WorldView(WorldDelegate& delegate);
@@ -46,7 +46,11 @@ public:
     //void attack(); //what is this for?
     void playerPoisoned(bool val);
     void deathScreen();
-    void clearPath();
+    float calculateDistance(const std::pair<int, int>& pos1, const std::pair<int, int>& pos2) {
+        return std::abs(pos1.first - pos2.first) + std::abs(pos1.second - pos2.second);
+    }
+    void clearPaths();
+    void setPaths(int nextX, int nextY);
 
     MainWindow * window;
 

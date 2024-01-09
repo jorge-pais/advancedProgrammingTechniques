@@ -112,7 +112,6 @@ void WorldDelegate::setProtagonistHealth(float healthValue){
 }
 
 void WorldDelegate::setProtagonistPosition(int newWorldX, int newWorldY) { 
-    if(protagonist->getHealth() < 1e-4) return;
     this->protagonist->setPos(newWorldX, newWorldY); 
 }
 
@@ -296,7 +295,7 @@ void WorldDelegate::gotoSlot(int newX, int newY){
     const int moveY[] = {-1, -1, +0, +1, +1, +1, +0, -1};
 
     int nextX, nextY;
-    view->clearPath();
+    view->clearPaths();
 
     // Use the path to move the protagonist
     for (int move : path) {
@@ -307,7 +306,7 @@ void WorldDelegate::gotoSlot(int newX, int newY){
         if(singleMove(nextX, nextY))
             return;
 
-        view->gView->pathTile(nextX, nextY);
+        view->setPaths(nextX, nextY);
     }
 }
 
