@@ -5,6 +5,7 @@
 #include <memory>
 #include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QStandardItemModel>
 
 #include "settings.h"
 
@@ -28,14 +29,13 @@ private:
 
     std::string chooseFile();
 
+    void setLevel();
+
 private slots:
     void accept();
     void reject();
 
     void chooseTile();
-    void chooseLevel();
-    void chooseOverlay();
-
 };
 
 #endif // SETTINGSWINDOW_H

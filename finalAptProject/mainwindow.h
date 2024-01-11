@@ -83,6 +83,9 @@ private:
     void setup();
     void initialize();
 
+    QAction *autoplayAction;
+    QAction *overlayAction;
+
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
 };

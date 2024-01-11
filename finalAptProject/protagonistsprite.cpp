@@ -48,6 +48,13 @@ void ProtagonistSprite::setEnergy(float value){
     energyBar->setRect(energyBar->rect().x(), energyBar->rect().y(), energyBar->rect().width(), newH);
 }
 
+/// @brief Sets the health of the sprite.
+/// @param health The health value to set.
+void ProtagonistSprite::setHealth(float health){
+    if(this == nullptr) return;
+    if(text) text->setPlainText(QString::number(health));
+}
+
 /// @brief Sets the position of the protagonist sprite.
 /// @param x The x-coordinate of the position.
 /// @param y The y-coordinate of the position.

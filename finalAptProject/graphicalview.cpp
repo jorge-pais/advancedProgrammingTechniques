@@ -135,7 +135,7 @@ void GraphicalView::renderDoors(){
         int x = dDoor->getXPos();
         int y = dDoor->getYPos();
         door->setPos(x*TILE_SIZE, y*TILE_SIZE);
-
+        door->setZValue(3);
         scene->addItem(door);
         doors.push_back(door);
     }
@@ -222,22 +222,29 @@ QPixmap GraphicalView::getTile(float value){
 }
 
 /// @brief Sets an overlay image for the game world.
-/// @param image The QPixmap object representing the overlay image.
-void GraphicalView::setOverlay(QPixmap image){
+/// @param image A string to the filepath of the overlay image.
+void GraphicalView::setOverlay(std::string image){
     qCDebug(graphicalViewCat) << "setOverlay() called";
 
-    if(overlay) // remove the current overlay
+    if(overlay){ // remove the current overlay
         scene->removeItem(overlay);
+    }
     
-    if(image.isNull()) return;
+    if(image.empty()){
+        scene->removeItem(overlay);
+        overlay = nullptr;
+        return;
+    }
 
     int h = worldView->getDelegate()->getWorldColumns()*TILE_SIZE;
     int w = worldView->getDelegate()->getWorldRows()*TILE_SIZE;
-    QPixmap img = image.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+    auto img = QPixmap(QString::fromStdString(image));
+    img = img.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
     overlay = new QGraphicsPixmapItem(img);
     overlay->setZValue(2); //above the tiles, below the entity sprites
-    
+
     if(overlayOn)
         scene->addItem(overlay);
 }
