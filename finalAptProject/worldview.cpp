@@ -147,22 +147,31 @@ void WorldView::poisonLevelUpdatedSlot(int value) {
 
     PEnemy * pEnemy = dynamic_cast<PEnemy*>(sender());
 
-    if(pEnemy->getPoisonLevel() == value){
-        float initialPoison = pEnemy->getValue();
-        float difference = (initialPoison - value)/10;
+    bool found = false;
+    for(const auto& enemy : delegate->getWorldEnemies()){
+        if(enemy->getXPos() == pEnemy->getXPos() && enemy->getYPos() == pEnemy->getYPos()){
+            found = true;
+        }
+    }
 
-        for(int i = -difference; i < difference; i++){
-            for(int j = -difference; j < difference; j++){
-                if( abs(i) + abs(j) == difference -1){
-                    int poisonX = pEnemy->getXPos() + i;
-                    int poisonY = pEnemy->getYPos() + j;
-                    if(poisonX < 0 || poisonY < 0 || (poisonX > this->delegate->getWorldColumns() - 1) || (poisonY > this->delegate->getWorldRows() - 1))
-                    {} // change the condition
-                    else{
-                        this->gView->poisonTile(poisonX, poisonY, value);
-                        this->tView->poisonTile(poisonX, poisonY, value);
-                        this->delegate->addPoisonTile(poisonX, poisonY, value);
-                    }
+    if(!found){
+        return;
+    }
+
+    float initialPoison = pEnemy->getValue();
+    float difference = (initialPoison - value)/10;
+
+    for(int i = -difference; i < difference; i++){
+        for(int j = -difference; j < difference; j++){
+            if( abs(i) + abs(j) == difference -1){
+                int poisonX = pEnemy->getXPos() + i;
+                int poisonY = pEnemy->getYPos() + j;
+                if(poisonX < 0 || poisonY < 0 || (poisonX > this->delegate->getWorldColumns() - 1) || (poisonY > this->delegate->getWorldRows() - 1))
+                {} // change the condition
+                else{
+                    this->gView->poisonTile(poisonX, poisonY, value);
+                    this->tView->poisonTile(poisonX, poisonY, value);
+                    this->delegate->addPoisonTile(poisonX, poisonY, value);
                 }
             }
         }
