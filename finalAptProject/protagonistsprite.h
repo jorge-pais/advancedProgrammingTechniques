@@ -34,6 +34,7 @@ public:
     } animationState;
 
     void setEnergy(float value);
+    void setHealth(float health);
     //void animate(QPixmap start, QPixmap end, float time);
     void animate(aState nextState, float time = 0.10);
     void tint(bool poisoned);

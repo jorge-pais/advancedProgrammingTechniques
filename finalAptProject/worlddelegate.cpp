@@ -34,14 +34,6 @@ void WorldDelegate::connectSlots(){
     QObject::connect(this->view.get(), &WorldView::playerGotoSignal, this, &WorldDelegate::gotoSlot);
 }
 
-/* void WorldDelegate::terminate(){
-    tiles.clear();
-    enemies.clear();
-    healthPacks.clear();
-    poisonTiles.clear();
-    QObject::disconnect(this, nullptr, nullptr, nullptr);
-} */
-
 void WorldDelegate::initializeWDelegate(){
     qCDebug(worldDelegateCat) << "initializeWorld() called";
     //if (tiles != nullptr && healthPacks != nullptr && enemies != nullptr) return
@@ -355,6 +347,14 @@ int WorldDelegate::singleMove(int x, int y){
     }
 
     return 0;
+}
+
+void WorldDelegate::setOverlay(std::string filePath){
+    overlay = filePath;
+}
+
+std::string WorldDelegate::getOverlay(){
+    return this->overlay;
 }
 
 std::string WorldDelegate::serialize(){
