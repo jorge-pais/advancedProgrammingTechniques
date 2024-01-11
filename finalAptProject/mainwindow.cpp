@@ -148,6 +148,7 @@ void MainWindow::createNewGame(){
     // as none of these objects can be referenced (right?)
     wView = std::make_shared<WorldView>(this);
     gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
+    tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView, ui->healthBrowser, ui->energyBroswer);
 
     initialize();
 
