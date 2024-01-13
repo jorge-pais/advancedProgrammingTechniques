@@ -1,33 +1,52 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Help Information</title>
+    <title>Help Information</title>
 </head>
+
 <body>
-<h1>Application Help</h1>
-<h2>Basics</h2>
-<p>This section explains how to play the game.</p>
-<!-- Assume "example.png" is stored under "/images/entities" in your Qt Resource file -->
-<p>This is you.</p>
-<img src=":/images/resources/entities/tux.png" alt="protagonist Image">
-<p>You can move around using the WASD keys.</p>
-<p>Go over an enemy to attack.</p>
-<img src=":/images/resources/entities/snowball-2.png" alt="blue enemy">
-<p>Killing an enemy squishes it.</p>
-<img src=":/images/resources/entities/squished-left.png" alt="blue squished">
-<p>Go over an fish platter to heal.</p>
-<img src=":/images/resources/entities/platter.png" alt="health pack">
-<p>Go over a door to go to another level.</p>
-<img src=":/images/resources/entities/door.png" alt="door">
-<p>Go over the door again to go back.</p>
-<h2>Enemy Types</h2>
-<p>The pink enemy applies poision which damages both you and it.</p>
-<img src=":/images/resources/entities/smartball-2.png" alt="pink enemy">
-<p>The eye-patched enemy is a necromancer and teleports to the corpse of fellow dead enemies and resurrects itself there.</p>
-<img src=":/images/resources/entities/captain_left-2.png" alt="pink enemy">
-<h2>Switching Views</h2>
-<p>You can switch tabs to switch views. Type help to see list of available commands.</p>
-<p></p>
-<!-- Add more sections as needed -->
+    <h1>Application Help</h1>
+    <h2>Basics</h2>
+    <p>This section explains how to play the game.</p>
+    <!-- Assume "example.png" is stored under "/images/entities" in your Qt Resource file -->
+    <p>This is you.</p>
+    <img src=":/images/resources/entities/tux.png" alt="protagonist Image">
+    <p>You can move around using the <kbd>WASD</kbd> keys.</p>
+    <p>Go over an enemy to attack.</p>
+    <img src=":/images/resources/entities/snowball-2.png" alt="blue enemy">
+    <p>Killing an enemy squishes it.</p>
+    <img src=":/images/resources/entities/squished-left.png" alt="blue squished">
+    <p>Go over an fish platter to heal.</p>
+    <img src=":/images/resources/entities/platter.png" alt="health pack">
+    <p>Go over a door to go to another level.</p>
+    <img src=":/images/resources/entities/door.png" alt="door">
+    <p>Go over the door again to go back.</p>
+    <h2>Enemy Types</h2>
+    <p>The pink enemy applies poison which damages both you and it.</p>
+    <img src=":/images/resources/entities/smartball-2.png" alt="pink enemy">
+    <p>The eye-patched enemy is a necromancer and teleports to the corpse of fellow dead enemies and resurrects itself there.</p>
+    <img src=":/images/resources/entities/captain_left-2.png" alt="pink enemy">
+    <h2>Switching Views</h2>
+    <p>You can switch tabs (by clicking them or using <kbd>Ctrl</kbd> + <kbd>tab</kbd>) to switch views.Type help on the text user interface to see list of available commands.</p>
+    <h2>Graphical View</h2>
+    <h3>Overlay</h3>
+    You can set overlays for each level within the settings window. This can then be toggled from the toolbar. Do make sure to load a new game first!
+    <h3>Overlay</h3>
+    A universal tileset can also be set through the settings window. Simply create a file with the following syntax:<br>
+
+    <code>
+        &lt;low1&gt; &lt;high1&gt; &lt;file1&gt; <br>
+        &lt;low2&gt; &lt;high2&gt; &lt;file2&gt; <br>
+        ...
+    </code><br>
+
+    And point to it on the settings window. It can then be toggled from the toolbar in the GUI.
+
+    <h3>Zoom</h3>
+    Use <kbd>Ctrl</kbd> + <kbd>+</kbd> to zoom in on the GUI and <kbd>Ctrl</kbd> + <kbd>-</kbd> to zoom out.
+    <p></p>
+    <!-- Add more sections as needed -->
 </body>
+
 </html>

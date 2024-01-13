@@ -64,6 +64,7 @@ public slots:
     void newGame();
     void toggleOverlay();
     void autoplay();
+    void toggleTileset();
 
 private:
     Ui::MainWindow *ui;
@@ -85,6 +86,7 @@ private:
 
     QAction *autoplayAction;
     QAction *overlayAction;
+    QAction *tileSetAction;
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

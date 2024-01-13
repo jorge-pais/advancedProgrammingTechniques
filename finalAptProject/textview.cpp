@@ -17,8 +17,9 @@ TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<
 
     //previousHealth = view->getDelegate()->getWorldProtagonist()->getHealth();
     previousHealth = 100.0; // bodge, but it works
-    colorResetTimer = new QTimer(this);
-    connect(colorResetTimer, &QTimer::timeout, this, &TextView::resetColor);
+    //colorResetTimer = new QTimer(this);
+    colorResetTimer = nullptr;
+    //connect(colorResetTimer, &QTimer::timeout, this, &TextView::resetColor);
 }
 
 void TextView::renderTiles() {
@@ -93,13 +94,6 @@ void TextView::renderTiles() {
 
 }
 
-void TextView::resetColorAfterDelay() {
-    colorResetTimer->stop();
-    colorResetTimer->start(2000); //ms
-    qCDebug(textViewCat) << "resetColorAfterDelay() is called";
-
-}
-
 void TextView::resetColor(){
     updateHealthDisplay(view->getDelegate()->getWorldProtagonist()->getHealth());
 }
@@ -121,20 +115,29 @@ void TextView::poisonTile(int x, int y, int poisonLevel){
 void TextView::updateHealthDisplay(float currentHealth) {
     QString healthText = QString::number(currentHealth);
 
+    qCDebug(textViewCat) << "updateHealthDisplay called() with " << currentHealth;
+
+    if(colorResetTimer == nullptr)
+        colorResetTimer = new QTimer(this);
+    else
+        colorResetTimer->stop();
 
     if (currentHealth < previousHealth) {
         healthBrowser->setTextColor(Qt::red);
         healthBrowser->setText(healthText);
-        resetColorAfterDelay();
     } else if (currentHealth > previousHealth) {
         healthBrowser->setTextColor(Qt::green);
         healthBrowser->setText(healthText);
-        resetColorAfterDelay();
     }
-    else{
+    
+    connect(colorResetTimer, &QTimer::timeout, [this, healthText](){
         healthBrowser->setTextColor(Qt::black);
         healthBrowser->setText(healthText);
-    }
+        colorResetTimer->deleteLater();
+        colorResetTimer = nullptr;
+    });
+    colorResetTimer->start(2000);
+    
     previousHealth = currentHealth;
 }
 

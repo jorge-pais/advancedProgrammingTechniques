@@ -29,7 +29,7 @@ GraphicalView::~GraphicalView(){
 
 /// @brief Renders the tiles of the game world.
 /// @param useTile If true, uses the tileset for rendering. If false, uses grayscale squares.
-void GraphicalView::renderTiles(bool useTile){
+void GraphicalView::renderTiles(){
     qCDebug(graphicalViewCat) << "renderTiles() called";
 
     std::vector<std::shared_ptr<Tile>> worldTiles = worldView->getDelegate()->getWorldTiles();
@@ -40,7 +40,7 @@ void GraphicalView::renderTiles(bool useTile){
         y = tilePtr->getYPos();
         value = tilePtr->getValue();
 
-        if(useTile){ // hopefully the compiler optimizes this
+        if(tileOn && !tileSet.empty()){ // hopefully the compiler optimizes this
             auto pixTile = scene->addPixmap(getTile(value));
             pixTile->setPos(x*TILE_SIZE, y*TILE_SIZE);
             tiles.push_back(pixTile);
@@ -209,11 +209,22 @@ void GraphicalView::clearTileSet(){
     tileSet.clear();
 }
 
+/// @brief Toggles the view and re-renders using the tile or not 
+/// @param useTile Whether or not to use the tile set to render
+void GraphicalView::toggleTiles(bool useTile){
+    tileOn = useTile;
+    for(auto tile : tiles)
+        scene->removeItem(tile);
+    tiles.clear();
+
+    renderTiles();
+}
+
 /// @brief Returns the tile from the tileset corresponding to a given value.
 /// @param value The value to be used for determining the tile.
 /// @return QPixmap object representing the tile.
 QPixmap GraphicalView::getTile(float value){
-    qDebug(graphicalViewCat) << value;
+    //qDebug(graphicalViewCat) << value;
     for(const auto & sprite: tileSet) // determine the tile
         if (value >= sprite.first.first && value < sprite.first.second)
             return sprite.second;

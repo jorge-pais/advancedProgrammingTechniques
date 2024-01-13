@@ -1,5 +1,4 @@
-#include <QFile>
-#include <QTextStream>
+
 #include "helpwindow.h"
 
 #include "qloggingcategory.h"
@@ -9,8 +8,15 @@ HelpWindow::HelpWindow(QWidget *parent) : QDialog(parent), label(new QLabel(this
     QVBoxLayout *layout = new QVBoxLayout(this);
     label->setText("This is the help text...");
     label->setWordWrap(true);
-    layout->addWidget(label);
+
+    // Create a QScrollArea to make the QLabel scrollable
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true); // Make the scroll area resizable
+    scrollArea->setWidget(label); // Set the QLabel as the widget for the scroll area
+
+    layout->addWidget(scrollArea); // Add the scroll area to the layout instead of the label
 }
+
 
 void HelpWindow::setHelpText(const QString &text) {
     label->setText(text);
