@@ -18,7 +18,7 @@ void HelpWindow::setHelpText(const QString &text) {
 
 void HelpWindow::loadHelpContent() {
     qCDebug(helpWindowCat) << "loadHelpContent() is called";
-       QString filePath = "help"; // If it's a file in the application's directory
+       QString filePath = ":/help.html"; // If it's a file in the application's directory
        QFile helpFile(filePath);
        if (helpFile.exists()) {
            qCDebug(helpWindowCat) << "File exists: " << filePath;
