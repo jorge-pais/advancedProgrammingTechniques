@@ -34,7 +34,7 @@ public:
     TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<WorldView> view, QTextBrowser* healthBrowser, QTextBrowser* energyBrowser);
     void renderTiles();
     void resetColor();
-    void resetColorAfterDelay();
+    //void resetColorAfterDelay();
     void updateHealthDisplay(float currentHealth);
     void updateEnergyDisplay(int currentEnergy);
     void processCommand(const QString& command);
