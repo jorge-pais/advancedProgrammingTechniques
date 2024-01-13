@@ -317,6 +317,8 @@ int WorldDelegate::singleMove(int x, int y){
     // check for poison tile
     bool isPoisoned = false;
     for(const auto& poisonTile : poisonTiles){
+        if(!poisonTile) return 1; // == nullptr
+
         if(poisonTile->getXPos() == x && poisonTile->getYPos() == y){
             setProtagonistHealth(protagonist->getHealth() - poisonTile->getValue());
             isPoisoned = true;

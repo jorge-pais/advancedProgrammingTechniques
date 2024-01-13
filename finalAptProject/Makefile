@@ -64,6 +64,7 @@ SOURCES       = graphicalview.cpp \
 		worlddelegate.cpp \
 		worldview.cpp \
 		xenemy.cpp qrc_images.cpp \
+		qrc_misc.cpp \
 		moc_helpwindow.cpp \
 		moc_mainwindow.cpp \
 		moc_settingswindow.cpp \
@@ -84,6 +85,7 @@ OBJECTS       = graphicalview.o \
 		worldview.o \
 		xenemy.o \
 		qrc_images.o \
+		qrc_misc.o \
 		moc_helpwindow.o \
 		moc_mainwindow.o \
 		moc_settingswindow.o \
@@ -591,7 +593,8 @@ Makefile: finalAptProject.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/
 		/usr/lib/qt/mkspecs/features/yacc.prf \
 		/usr/lib/qt/mkspecs/features/lex.prf \
 		finalAptProject.pro \
-		images.qrc
+		images.qrc \
+		misc.qrc
 	$(QMAKE) -o Makefile finalAptProject.pro
 /usr/lib/qt/mkspecs/features/spec_pre.prf:
 /usr/lib/qt/mkspecs/common/unix.conf:
@@ -825,6 +828,7 @@ Makefile: finalAptProject.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/
 /usr/lib/qt/mkspecs/features/lex.prf:
 finalAptProject.pro:
 images.qrc:
+misc.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile finalAptProject.pro
 
@@ -839,7 +843,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
+	$(COPY_FILE) --parents images.qrc misc.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents graphicalview.h helpwindow.h mainwindow.h pathfinderfunction.h pathfinder.h pathfinder_class.h protagonistsprite.h settings.h settingswindow.h spritewithvalue.h textview.h world.h world_global.h worlddelegate.h worldview.h xenemy.h $(DISTDIR)/
 	$(COPY_FILE) --parents graphicalview.cpp helpwindow.cpp main.cpp mainwindow.cpp protagonistsprite.cpp settings.cpp settingswindow.cpp spritewithvalue.cpp textview.cpp worlddelegate.cpp worldview.cpp xenemy.cpp $(DISTDIR)/
@@ -867,9 +871,9 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all: qrc_images.cpp
+compiler_rcc_make_all: qrc_images.cpp qrc_misc.cpp
 compiler_rcc_clean:
-	-$(DEL_FILE) qrc_images.cpp
+	-$(DEL_FILE) qrc_images.cpp qrc_misc.cpp
 qrc_images.cpp: images.qrc \
 		/usr/bin/rcc \
 		resources/entities/tux5.png \
@@ -894,6 +898,11 @@ qrc_images.cpp: images.qrc \
 		resources/world_images/maze1.png \
 		resources/world_images/worldmap4.png
 	/usr/bin/rcc -name images images.qrc -o qrc_images.cpp
+
+qrc_misc.cpp: misc.qrc \
+		/usr/bin/rcc \
+		help.html
+	/usr/bin/rcc -name misc misc.qrc -o qrc_misc.cpp
 
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
@@ -1188,6 +1197,9 @@ xenemy.o: xenemy.cpp xenemy.h \
 
 qrc_images.o: qrc_images.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_images.o qrc_images.cpp
+
+qrc_misc.o: qrc_misc.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_misc.o qrc_misc.cpp
 
 moc_helpwindow.o: moc_helpwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_helpwindow.o moc_helpwindow.cpp

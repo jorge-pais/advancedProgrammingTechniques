@@ -57,7 +57,8 @@ INCLUDEPATH += $$PWD/../../worldlib
 DEPENDPATH += $$PWD/../../worldlib
 
 RESOURCES += \
-    images.qrc
+    images.qrc \
+    misc.qrc
 
 DISTFILES += \
     help
