@@ -1,60 +1,62 @@
 # Final Project - Advanced Programming Techniques
 
-## Week 7 - Tasks
+## Basics
 
-- Jorge - Basic UI
-- Kris - Attacking game logic
-- Hussain - Setting up classes
+This section explains how to play the game.
 
+This is you:
 
-## Week 8 - Tasks
+![tux](./finalAptProject/resources/entities/tux.png)
 
-- Jorge - Update UI from the current game state, setup keyevent signals from main window 
-- Kris - Handling signals to game logic and response to view
-- Hussain - Signals and slots and emitting all signals
+You can move around using the ```WASD``` keys.
 
-## Week 9 - Tasks
+Go over an enemy to attack.
 
-- Continuation of last weeks tasks
+![enemy](./finalAptProject/resources/entities/snowball-2.png)
 
-## Week 10 - Tasks
+Killing an enemy squishes it.
 
-- Jorge - Finish graphical view
-- Kris - Implement attack function and energy
-- Hussain - Implement text view and switching between the views
+![dead enemy](./finalAptProject/resources/entities/squished-left.png)
 
-## Week 11 - Tasks
+Go over an fish platter to heal.
 
-- Jorge - Debugging of movement issues and integration
-- Kris - Work on implementing signals in worldview + further fixing of the game logic
-- Hussain - Basic working textview and autocomplete
+![health pack](./finalAptProject/resources/entities/platter.png)
 
-## Week 12 - Tasks
+Go over a door to go to another level. Go over it gain to go back!
 
-- Jorge - Further debugging of the movement
-- Kris - Work on further fixes for PEnemy
-- Hussain - Start on pathfinder
+![door](./finalAptProject/resources/entities/door.png)
 
-## Week 13 - Tasks
+## Enemy types
 
-- Jorge - Player centering and zoom
-- Kris - XEnemy
-- Hussain - Update UML
+The pink enemy applies poison which damages both you and it.
 
-## Week 14 - Tasks
+![pink enemy](./finalAptProject/resources/entities/smartball-2.png)
 
-- Jorge - Animations and deathscreen
-- Kris - Integrate XEnemy with the zoom feature
-- Hussain - Autocomplete
+The eye-patched enemy is a necromancer and teleports to the corpse of fellow dead enemies and resurrects itself there.
 
-## Week 15 - Tasks
+![red enemy](./finalAptProject/resources/entities/captain_left-2.png)
 
-- Jorge - Concurrency, autoplay, overlay, bugfixing
-- Kris - Added door for level feature
-- Hussain - Visualization and commands in textview, update UML
+## Views
 
-## Week 16 - Tasks
+You can switch tabs (by clicking them or using ```Ctrl``` + ```tab```) to switch views. Type help on the text user interface to see list of available commands.
 
-- Jorge - Level and overlay selection, bugfixing
-- Kris - Add support for multiple doors
-- Hussain - Help menu, finalize UML
+### Graphical View
+
+#### Overlay
+
+You can set overlays for each level within the settings window. This can then be toggled from the toolbar. Do make sure to load a new game first!
+
+#### Tileset
+
+A universal tileset can also be set through the settings window. Simply create a file with the following syntax:
+```
+<low1> <high1> <file1>
+<low2> <high2> <file2>
+...
+```
+
+And point to it on the settings window. It can then be toggled from the toolbar in the GUI.
+
+#### Zoom
+
+Use ```Ctrl``` + ```+``` to zoom in on the GUI and ```Ctrl``` + ```-``` to zoom out.
