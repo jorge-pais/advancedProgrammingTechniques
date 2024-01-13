@@ -50,7 +50,7 @@ public:
     QPixmap getTile(float value);
     void addTileSet(float low, float high, QPixmap tile);
     
-    void setOverlay(QPixmap image);
+    void setOverlay(std::string image);
     void toggleOverlay(bool v);
 
     void clearTileSet();

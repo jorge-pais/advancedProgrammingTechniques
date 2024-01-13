@@ -43,14 +43,14 @@ private:
     std::vector<std::shared_ptr<Tile>> poisonTiles;
     std::vector<std::shared_ptr<Tile>> doors;
 
+    std::string overlay = "";
+
     std::shared_ptr<Protagonist> protagonist;
 
     int rows, cols;
-
-    int singleMove(int x, int y);
-
     int deadEnemies;
 
+    int singleMove(int x, int y);
     void activateDoor(int destination);
 
 public:
@@ -76,6 +76,8 @@ public:
     void connectSlots();
     void connectSignals();
     void terminate();
+    void setOverlay(std::string filePath);
+    std::string getOverlay();
 
     std::string serialize();
 

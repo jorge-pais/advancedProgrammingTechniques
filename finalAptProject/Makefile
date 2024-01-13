@@ -53,6 +53,7 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = graphicalview.cpp \
+		helpwindow.cpp \
 		main.cpp \
 		mainwindow.cpp \
 		protagonistsprite.cpp \
@@ -63,6 +64,7 @@ SOURCES       = graphicalview.cpp \
 		worlddelegate.cpp \
 		worldview.cpp \
 		xenemy.cpp qrc_images.cpp \
+		moc_helpwindow.cpp \
 		moc_mainwindow.cpp \
 		moc_settingswindow.cpp \
 		moc_textview.cpp \
@@ -70,6 +72,7 @@ SOURCES       = graphicalview.cpp \
 		moc_worlddelegate.cpp \
 		moc_worldview.cpp
 OBJECTS       = graphicalview.o \
+		helpwindow.o \
 		main.o \
 		mainwindow.o \
 		protagonistsprite.o \
@@ -81,13 +84,15 @@ OBJECTS       = graphicalview.o \
 		worldview.o \
 		xenemy.o \
 		qrc_images.o \
+		moc_helpwindow.o \
 		moc_mainwindow.o \
 		moc_settingswindow.o \
 		moc_textview.o \
 		moc_world.o \
 		moc_worlddelegate.o \
 		moc_worldview.o
-DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
+DIST          = help \
+		/usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
 		/usr/lib/qt/mkspecs/common/linux.conf \
 		/usr/lib/qt/mkspecs/common/sanitize.conf \
@@ -318,6 +323,7 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/features/yacc.prf \
 		/usr/lib/qt/mkspecs/features/lex.prf \
 		finalAptProject.pro graphicalview.h \
+		helpwindow.h \
 		mainwindow.h \
 		pathfinderfunction.h \
 		pathfinder.h \
@@ -332,6 +338,7 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		worlddelegate.h \
 		worldview.h \
 		xenemy.h graphicalview.cpp \
+		helpwindow.cpp \
 		main.cpp \
 		mainwindow.cpp \
 		protagonistsprite.cpp \
@@ -834,8 +841,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.h mainwindow.h pathfinderfunction.h pathfinder.h pathfinder_class.h protagonistsprite.h settings.h settingswindow.h spritewithvalue.h textview.h world.h world_global.h worlddelegate.h worldview.h xenemy.h $(DISTDIR)/
-	$(COPY_FILE) --parents graphicalview.cpp main.cpp mainwindow.cpp protagonistsprite.cpp settings.cpp settingswindow.cpp spritewithvalue.cpp textview.cpp worlddelegate.cpp worldview.cpp xenemy.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.h helpwindow.h mainwindow.h pathfinderfunction.h pathfinder.h pathfinder_class.h protagonistsprite.h settings.h settingswindow.h spritewithvalue.h textview.h world.h world_global.h worlddelegate.h worldview.h xenemy.h $(DISTDIR)/
+	$(COPY_FILE) --parents graphicalview.cpp helpwindow.cpp main.cpp mainwindow.cpp protagonistsprite.cpp settings.cpp settingswindow.cpp spritewithvalue.cpp textview.cpp worlddelegate.cpp worldview.cpp xenemy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui settingswindow.ui $(DISTDIR)/
 
 
@@ -894,9 +901,14 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
 	g++ -pipe -std=c++20 -O2 -flto -fno-fat-lto-objects -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_settingswindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
+compiler_moc_header_make_all: moc_helpwindow.cpp moc_mainwindow.cpp moc_settingswindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_settingswindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
+	-$(DEL_FILE) moc_helpwindow.cpp moc_mainwindow.cpp moc_settingswindow.cpp moc_textview.cpp moc_world.cpp moc_worlddelegate.cpp moc_worldview.cpp
+moc_helpwindow.cpp: helpwindow.h \
+		moc_predefs.h \
+		/usr/bin/moc
+	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include helpwindow.h -o moc_helpwindow.cpp
+
 moc_mainwindow.cpp: mainwindow.h \
 		worlddelegate.h \
 		world.h \
@@ -910,6 +922,7 @@ moc_mainwindow.cpp: mainwindow.h \
 		mainwindow.h \
 		settingswindow.h \
 		settings.h \
+		helpwindow.h \
 		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/bin/moc
@@ -926,6 +939,7 @@ moc_settingswindow.cpp: settingswindow.h \
 		textview.h \
 		mainwindow.h \
 		settingswindow.h \
+		helpwindow.h \
 		pathfinder_class.h \
 		spritewithvalue.h \
 		protagonistsprite.h \
@@ -947,6 +961,7 @@ moc_textview.cpp: textview.h \
 		mainwindow.h \
 		settingswindow.h \
 		settings.h \
+		helpwindow.h \
 		moc_predefs.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include textview.h -o moc_textview.cpp
@@ -971,6 +986,7 @@ moc_worlddelegate.cpp: worlddelegate.h \
 		mainwindow.h \
 		settingswindow.h \
 		settings.h \
+		helpwindow.h \
 		moc_predefs.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include /home/jorgep/repos/team-d6-fa/finalAptProject/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jorgep/repos/team-d6-fa/finalAptProject -I/home/jorgep/repos/worldlib -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtConcurrent -I/usr/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include worlddelegate.h -o moc_worlddelegate.cpp
@@ -988,6 +1004,7 @@ moc_worldview.cpp: worldview.h \
 		mainwindow.h \
 		settingswindow.h \
 		settings.h \
+		helpwindow.h \
 		pathfinder_class.h \
 		moc_predefs.h \
 		/usr/bin/moc
@@ -1028,10 +1045,14 @@ graphicalview.o: graphicalview.cpp graphicalview.h \
 		mainwindow.h \
 		settingswindow.h \
 		settings.h \
+		helpwindow.h \
 		pathfinder_class.h \
 		spritewithvalue.h \
 		protagonistsprite.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o graphicalview.o graphicalview.cpp
+
+helpwindow.o: helpwindow.cpp helpwindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o helpwindow.o helpwindow.cpp
 
 main.o: main.cpp mainwindow.h \
 		worlddelegate.h \
@@ -1045,7 +1066,8 @@ main.o: main.cpp mainwindow.h \
 		textview.h \
 		pathfinder_class.h \
 		settingswindow.h \
-		settings.h
+		settings.h \
+		helpwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -1061,6 +1083,7 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		pathfinder_class.h \
 		settingswindow.h \
 		settings.h \
+		helpwindow.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
@@ -1081,6 +1104,7 @@ settings.o: settings.cpp settings.h \
 		textview.h \
 		mainwindow.h \
 		settingswindow.h \
+		helpwindow.h \
 		pathfinder_class.h \
 		spritewithvalue.h \
 		protagonistsprite.h
@@ -1096,6 +1120,7 @@ settingswindow.o: settingswindow.cpp settingswindow.h \
 		worldview.h \
 		textview.h \
 		mainwindow.h \
+		helpwindow.h \
 		pathfinder_class.h \
 		spritewithvalue.h \
 		protagonistsprite.h \
@@ -1120,7 +1145,8 @@ textview.o: textview.cpp textview.h \
 		protagonistsprite.h \
 		mainwindow.h \
 		settingswindow.h \
-		settings.h
+		settings.h \
+		helpwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o textview.o textview.cpp
 
 worlddelegate.o: worlddelegate.cpp worlddelegate.h \
@@ -1135,6 +1161,7 @@ worlddelegate.o: worlddelegate.cpp worlddelegate.h \
 		mainwindow.h \
 		settingswindow.h \
 		settings.h \
+		helpwindow.h \
 		pathfinder_class.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worlddelegate.o worlddelegate.cpp
 
@@ -1150,7 +1177,8 @@ worldview.o: worldview.cpp worldview.h \
 		textview.h \
 		mainwindow.h \
 		settingswindow.h \
-		settings.h
+		settings.h \
+		helpwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worldview.o worldview.cpp
 
 xenemy.o: xenemy.cpp xenemy.h \
@@ -1160,6 +1188,9 @@ xenemy.o: xenemy.cpp xenemy.h \
 
 qrc_images.o: qrc_images.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_images.o qrc_images.cpp
+
+moc_helpwindow.o: moc_helpwindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_helpwindow.o moc_helpwindow.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

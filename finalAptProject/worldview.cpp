@@ -181,6 +181,8 @@ void WorldView::poisonLevelUpdatedSlot(int value) {
 void WorldView::positionChangedSlot(int x, int y) {
     qCDebug(worldViewCat) << "positionChangedSlot() called";
     // show the protagonist moving on screen
+    if(gView->player == nullptr) return;
+    
     gView->player->animate(ProtagonistSprite::MOVE);
     gView->player->setEnergy(delegate->getWorldProtagonist()->getEnergy());
     gView->player->setPosition(x, y);
@@ -190,13 +192,8 @@ void WorldView::positionChangedSlot(int x, int y) {
     tView->renderTiles();
 }
 
-void WorldView::clearPath(){
-    gView->clearPath();
-    ///TODO: Something in textview also!
-}
-
 void WorldView::newWorldLoadedSlot(int destination){
-
+    gView->setOverlay(""); //bodge!
     for(auto& del : otherDelegates){
         for(const auto& door : del->getDoors()){
             if(door->getValue() == destination){
@@ -219,6 +216,7 @@ void WorldView::newWorldLoadedSlot(int destination){
     gView->renderPoisonTiles();
 
     gView->centerView();
+    gView->setOverlay(delegate->getOverlay());
 }
 
 void WorldView::protagonistHealthChangedSlot(int h) {
@@ -313,7 +311,10 @@ void WorldView::deathScreen(){
     if(deadBox.clickedButton() == buttonRetry){
         qCDebug(worldViewCat) << "retry!";
 
+        autoplayEnabled = false;
+
         QCoreApplication::processEvents();
+        
         window->createNewGame();
     }
     else if(deadBox.clickedButton() == buttonQuit){

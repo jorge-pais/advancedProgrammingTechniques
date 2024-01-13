@@ -27,6 +27,7 @@
 #include "worldview.h"
 #include "settingswindow.h"
 #include "settings.h"
+#include "helpwindow.h"
 
 //#include "settingsdialog.h"
 
@@ -81,6 +82,9 @@ private:
     void render();
     void setup();
     void initialize();
+
+    QAction *autoplayAction;
+    QAction *overlayAction;
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

@@ -15,7 +15,8 @@ TextView::TextView(QTextBrowser* textView, QLineEdit* lineEdit, std::shared_ptr<
 
     textView->setTextCursor(cursor);
 
-    previousHealth = view->getDelegate()->getWorldProtagonist()->getHealth();
+    //previousHealth = view->getDelegate()->getWorldProtagonist()->getHealth();
+    previousHealth = 100.0; // bodge, but it works
     colorResetTimer = new QTimer(this);
     connect(colorResetTimer, &QTimer::timeout, this, &TextView::resetColor);
 }

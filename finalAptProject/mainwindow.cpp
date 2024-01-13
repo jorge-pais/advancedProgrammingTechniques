@@ -13,13 +13,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     srand(time(0));
 
+    settings = std::make_shared<Settings>();
+
     initialize();
 
-    // Initialize GraphicalView
+    // Initialize GraphicalView and TextView
     gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
-
-    //Initialize TextView
     tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView, ui->healthBrowser, ui->energyBroswer);
+    settings->setGView(gView);
+
+    // Configure text ui elements
     QFont font;
     font.setFamily("Courier");
     font.setStyleHint(QFont::Monospace);
@@ -43,25 +46,24 @@ MainWindow::MainWindow(QWidget *parent)
     render();
 
     toolbarConfig();
-
-    settings = std::make_shared<Settings>(gView);
 }
 
 void MainWindow::initialize(){
-
     linear = true; //setting this value to true generates the worlds linearly, otherwise one world has the doors to all the other ones
     //adding an extra string below makes the code automatically generate everything for you, the worlds are linked based on the linear boolean above
-    worldStrings.push_back(":/images/resources/world_images/worldmap.png");
-    worldStrings.push_back(":/images/resources/world_images/worldmap2.png");
-    worldStrings.push_back(":/images/resources/world_images/worldmap3.png");
-    worldStrings.push_back(":/images/resources/world_images/worldmap5.png");
 
     worldDelegates.clear();
-    for(auto& map : worldStrings){
+    for(auto& level : settings->levels){
         auto world = std::make_shared<World>();
+        auto map = QString::fromStdString(level.first);
+
         world->createWorld(map, 5, 6, 0.0);
         worlds.push_back(world);
-        worldDelegates.push_back(std::make_shared<WorldDelegate>(wView, world));
+
+        auto wDelegate = std::make_shared<WorldDelegate>(wView, world);
+    
+        wDelegate->setOverlay(level.second);
+        worldDelegates.push_back(wDelegate);
     }
 
     //sorry
@@ -96,12 +98,6 @@ void MainWindow::setup(){
             worldDelegates.at(i) ->addDoor(rand(), i);
         }
     }
-    /*
-    worldDelegates.at(0)->addDoor(rand(), 1);
-    worldDelegates.at(0)->addDoor(rand(), 2);
-    worldDelegates.at(1)->addDoor(rand(), 1);
-    worldDelegates.at(1)->addDoor(rand(), 2);
-    */
 
     //connect signals/slots
     worldDelegates.at(0)->connectSlots();
@@ -119,6 +115,8 @@ void MainWindow::render(){
     gView->renderEntities();
     gView->renderPlayer();
     gView->renderDoors();
+
+    gView->setOverlay(worldDelegates.at(0)->getOverlay());
 
     gView->centerView();
 
@@ -148,6 +146,9 @@ void MainWindow::createNewGame(){
     // as none of these objects can be referenced (right?)
     wView = std::make_shared<WorldView>(this);
     gView = std::make_shared<GraphicalView>(ui->graphicsView, wView);
+    tView = std::make_shared<TextView>(ui->textBrowser, ui->lineEdit, wView, ui->healthBrowser, ui->energyBroswer);
+
+    settings->setGView(gView);
 
     initialize();
 
@@ -155,6 +156,8 @@ void MainWindow::createNewGame(){
     setup();
 
     render();
+    autoplayAction->setChecked(false);
+    overlayAction->setChecked(false);
 }
 
 void MainWindow::submitCommand(){
@@ -188,10 +191,15 @@ void MainWindow::toolbarConfig(){
     connect(newGameAction, &QAction::triggered, this, &MainWindow::newGame);
     toolbar->addAction(newGameAction);
 
-    QAction *overlayAction = new QAction("Overlay", this);
+    overlayAction = new QAction("Overlay", this);
     overlayAction->setCheckable(true);
     connect(overlayAction, &QAction::triggered, this, &MainWindow::toggleOverlay);
     toolbar->addAction(overlayAction);
+
+    autoplayAction = new QAction("Autoplay", this);
+    autoplayAction->setCheckable(true);
+    connect(autoplayAction, &QAction::triggered, this, &MainWindow::autoplay);
+    toolbar->addAction(autoplayAction);
 
     QAction *settingsAction = new QAction("Settings", this);
     connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
@@ -200,11 +208,6 @@ void MainWindow::toolbarConfig(){
     QAction *helpAction = new QAction("Help", this);
     connect(helpAction, &QAction::triggered, this, &MainWindow::openHelp);
     toolbar->addAction(helpAction);
-
-    QAction *autoplayAction = new QAction("Autoplay", this);
-    autoplayAction->setCheckable(true);
-    connect(autoplayAction, &QAction::triggered, this, &MainWindow::autoplay);
-    toolbar->addAction(autoplayAction);
 }
 
 void MainWindow::newGame(){
@@ -233,6 +236,11 @@ void MainWindow::openSettings(){
 
 void MainWindow::openHelp(){
     qCDebug(mainWindowCat) << "openHelp() called";
+    HelpWindow *helpWindow = new HelpWindow(this); // Assuming you want the main window to be the parent
+    helpWindow->setHelpText("Help information goes here. Explain how to use the application.");
+    helpWindow->loadHelpContent();
+    helpWindow->setWindowTitle("Help");
+    helpWindow->exec();
 }
 
 void MainWindow::autoplay(){
