@@ -99,7 +99,7 @@ void WorldView::mainWindowEventSlot(QKeyEvent *event) {
     gView->clearPath();
 }
 
-template <typename T> /// TODO: these functions are untested as of yet
+template <typename T>
 void WorldView::goToNearestEntity(std::vector<std::shared_ptr<T>> entities){
     int progX = delegate->getWorldProtagonist()->getXPos();
     int progY = delegate->getWorldProtagonist()->getYPos();
@@ -262,7 +262,6 @@ void WorldView::setPaths(int nextX, int nextY){
     tView->setPath(nextX, nextY);
 }
 
-/// TODO: Only implemented for graphical view as of now
 void WorldView::protagonistEnergyChangedSlot(int e)
 {
     qCDebug(worldViewCat) << "protagonistEnergyChangedSlot() called";
@@ -324,7 +323,6 @@ void WorldView::deathScreen(){
     }
 }
 
-/// TODO: this is still quite buggy, but it works!
 void WorldView::autoplaySlot(bool activate){
     qCDebug(worldViewCat) << "autoplaySlot() called " << activate;
 

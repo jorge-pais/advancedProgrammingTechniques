@@ -70,7 +70,7 @@ public:
     void setProtagonistPosition(int newWorldX, int newWorldY);
     void setProtagonistEnergy(float energyValue);
     std::string enemyStatus(Enemy& enemy);
-    void attack(std::shared_ptr<Enemy> enemy); // maybe we won't need this due to the slot
+    void attack(std::shared_ptr<Enemy> enemy);
     void addDoor(int seed, int destination);
     std::vector<std::shared_ptr<Tile>> getDoors();
     void connectSlots();

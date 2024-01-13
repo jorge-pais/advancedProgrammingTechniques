@@ -5,6 +5,9 @@
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QFile>
+#include <QTextStream>
+#include <QScrollArea>
 
 class HelpWindow : public QDialog {
     Q_OBJECT
