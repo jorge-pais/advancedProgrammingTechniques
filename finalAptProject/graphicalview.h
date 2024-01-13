@@ -41,7 +41,7 @@ public:
     std::vector<std::shared_ptr<SpriteWithValue>> healthPacks;
     std::vector<QGraphicsItem *> path;
 
-    void renderTiles(bool useTile = false);
+    void renderTiles();
     void renderEntities();
     void renderPlayer();
     void centerView();
@@ -52,6 +52,7 @@ public:
     
     void setOverlay(std::string image);
     void toggleOverlay(bool v);
+    void toggleTiles(bool useTile = false);
 
     void clearTileSet();
     void clearTiles();
@@ -70,6 +71,7 @@ private:
     std::shared_ptr<WorldView> worldView;
     QGraphicsPixmapItem * overlay = nullptr;
     bool overlayOn = false;
+    bool tileOn = false;
     std::vector<QGraphicsPixmapItem *> doors;
 
     std::vector<QGraphicsItem *> tiles;

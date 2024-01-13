@@ -35,9 +35,9 @@ ProtagonistSprite::ProtagonistSprite(std::shared_ptr<Protagonist> prog){
     energyBar->setBrush(brush); energyBar->setPen(pen);
 
     setPosition(prog->getXPos(), prog->getYPos());
-    sprite->setZValue(4);
-    text->setZValue(4);
-    energyBar->setZValue(4);
+    sprite->setZValue(5);
+    text->setZValue(5);
+    energyBar->setZValue(5);
 }
 
 /// @brief Sets the energy value for the protagonist.

@@ -158,6 +158,9 @@ void MainWindow::createNewGame(){
     render();
     autoplayAction->setChecked(false);
     overlayAction->setChecked(false);
+    tileSetAction->setChecked(false);
+
+    settings->loadTileSet(settings->getTileSet());
 }
 
 void MainWindow::submitCommand(){
@@ -201,6 +204,11 @@ void MainWindow::toolbarConfig(){
     connect(autoplayAction, &QAction::triggered, this, &MainWindow::autoplay);
     toolbar->addAction(autoplayAction);
 
+    tileSetAction = new QAction("Tileset", this);
+    tileSetAction->setCheckable(true);
+    connect(tileSetAction, &QAction::triggered, this, &MainWindow::toggleTileset);
+    toolbar->addAction(tileSetAction);
+
     QAction *settingsAction = new QAction("Settings", this);
     connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
     toolbar->addAction(settingsAction);
@@ -226,6 +234,12 @@ void MainWindow::toggleOverlay(){
     QAction *action = qobject_cast<QAction *>(sender());
     if(action)
         gView->toggleOverlay(action->isChecked());
+}
+
+void MainWindow::toggleTileset(){
+    QAction *action = qobject_cast<QAction *>(sender());
+    if(action)
+        gView->toggleTiles(action->isChecked());
 }
 
 void MainWindow::openSettings(){
